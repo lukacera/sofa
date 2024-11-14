@@ -1,5 +1,7 @@
 import React from 'react'
 import Header from '../components/Header'
+import { connectToDB } from '../utils/connectWithDB'
+
 const SingleEvent = () => {
   return (
     <div className='p-5 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300'>
