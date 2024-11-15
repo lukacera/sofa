@@ -9,7 +9,7 @@ const SingleEvent = () => {
     <div className='p-5 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300'>
       <CldImage
       alt="Sample image"
-      src="cld-sample-5" // Use this sample image or upload your own via the Media Explorer
+      src="cld-sample-2" // Use this sample image or upload your own via the Media Explorer
       width="500" // Transform the image: auto-crop to square aspect_ratio
       height="500"
       crop={{
