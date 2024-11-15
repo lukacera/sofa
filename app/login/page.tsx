@@ -3,12 +3,11 @@ import { signIn } from "next-auth/react";
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br 
-    from-main via-secondary to-white">
+    <div className="min-h-screen flex items-center justify-center bg-main/40">
       <div className="bg-mainWhite p-8 rounded-2xl shadow-xl w-full max-w-md space-y-8">
         <div className="text-center space-y-4">
-          <h2 className="text-3xl font-bold text-secondary">Welcome Back to Sofa</h2>
-          <p className="">Sign in to continue to your account</p>
+          <h2 className="text-3xl font-bold text-secondary">Welcome back to Sofa AI</h2>
+          <p>Sign in to continue to your account</p>
         </div>
 
         <div className="relative">
