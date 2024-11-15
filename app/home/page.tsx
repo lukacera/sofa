@@ -2,13 +2,9 @@
 import React from 'react'
 import Header from '../components/Header'
 import { CldImage } from 'next-cloudinary'
-import { useSession } from 'next-auth/react'
+import { Calendar } from 'lucide-react'
 
 const SingleEvent = () => {
-
-  const { data: session } = useSession()
-  console.log(session)
-
   return (
     <div className='p-5 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300'>
       <CldImage
@@ -46,41 +42,52 @@ export default function page() {
                   You have 3 events to attend this month! 🎉
                 </span>
               </div>
-              <button className='border p-2 border-transparent rounded-lg bg-secondaryDarker/50 
-              font-medium'>
-                Check the calendar
+              <button className='border p-2 border-transparent rounded-lg 
+              font-bold text-black flex items-center gap-2 bg-white'>
+                <Calendar size={24} />
+                <span>My Calendar</span>
               </button>
           </section>
           <section className='mt-20'>
-            <h2 className='font-bold text-2xl mb-5'>
-              Your upcoming events
-            </h2>
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'>
-              <SingleEvent />
-              <SingleEvent />
-              <SingleEvent />
+            <div className='flex flex-col items-center'>
+              <h2 className='font-bold text-2xl mb-5'>
+                Your upcoming events
+              </h2>
+              <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'>
+                <SingleEvent />
+                <SingleEvent />
+                <SingleEvent />
+              </div>
             </div>
           </section>
-          <section className='mt-20'>
-            <h2 className='font-bold text-2xl mb-5'>
-              Most popular events today
-            </h2>
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'>
-              <SingleEvent />
-              <SingleEvent />
-              <SingleEvent />
+          <section className='grid grid-cols-2 gap-10 mt-20'>
+            <div className='flex flex-col items-center'>
+              <h2 className='font-bold text-2xl mb-5'>
+                Most popular events today
+              </h2>
+              <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'>
+                <SingleEvent />
+                <SingleEvent />
+                <SingleEvent />
+              </div>
+            </div>
+            <div className='flex flex-col items-center'>
+              <h2 className='font-bold text-2xl mb-5'>
+                You might like
+              </h2>
+              <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'>
+                <SingleEvent />
+                <SingleEvent />
+                <SingleEvent />
+              </div>
             </div>
           </section>
-          <section className='mt-20'>
-            <h2 className='font-bold text-2xl mb-5'>
-              You might like
-            </h2>
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'>
-              <SingleEvent />
-              <SingleEvent />
-              <SingleEvent />
-            </div>
-          </section>
+          
+          <button className='bg-secondaryDarker text-mainWhite py-3 font-bold rounded-xl
+          grid place-items-center w-[40%] mx-auto mt-12 text-2xl'>
+            Check out all events
+          </button>
+
           <section className='mt-20'>
             <h2 className='font-bold text-2xl mb-5'>
               Near you
