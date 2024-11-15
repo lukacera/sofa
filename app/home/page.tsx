@@ -2,8 +2,12 @@
 import React from 'react'
 import Header from '../components/Header'
 import { CldImage } from 'next-cloudinary'
+import { useSession } from 'next-auth/react'
 
 const SingleEvent = () => {
+
+  const { data: session } = useSession()
+  console.log(session)
 
   return (
     <div className='p-5 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300'>
