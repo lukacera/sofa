@@ -3,10 +3,12 @@ import React from 'react'
 import Header from '../components/Header'
 import { CldImage } from 'next-cloudinary'
 import { Calendar } from 'lucide-react'
+import Link from 'next/link'
 
 const SingleEvent = () => {
   return (
-    <div className='p-5 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300'>
+    <Link href={`/event`} 
+    className='p-5 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300'>
       <CldImage
       alt="Sample image"
       src="cld-sample-2" // Use this sample image or upload your own via the Media Explorer
@@ -23,7 +25,7 @@ const SingleEvent = () => {
       <p className=''>
         12th of August
       </p>
-    </div>
+    </Link>
   )
 }
 
