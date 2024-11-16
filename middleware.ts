@@ -3,7 +3,7 @@ import { auth } from './auth'
 
 export default auth((req) => {
     // Public paths that don't require authentication
-    const publicPaths = ['/login', '/register', '/api/auth']
+    const publicPaths = ['/login', '/register', '/api']
 
     // Check if path is public
     const isPublicPath = publicPaths.some(path => 
