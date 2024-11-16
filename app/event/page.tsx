@@ -3,6 +3,7 @@ import React from 'react'
 import Header from '../components/Header'
 import { Clock, Pencil, TagIcon } from 'lucide-react'
 import { CldImage } from 'next-cloudinary'
+import TicketSection from '../components/SingleEventComponents/TicketSection'
 
 export default function page() {
   return (
@@ -87,6 +88,8 @@ export default function page() {
             </div>
           </div>
         </section>
+        {/* Tickets section */}
+        <TicketSection />
       </main>
     </div>
   )
