@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose';
+import { Company as CompanyType} from '../types/Company';
 
-const companySchema = new Schema({
-  // Basic company info
+const companySchema = new Schema<CompanyType>({
   name: { 
     type: String, 
     required: true,
@@ -14,13 +14,13 @@ const companySchema = new Schema({
     lowercase: true,
     trim: true
   },
-  // Address info
-  address: {
-    street: String,
-    city: String,
-    country: String
+  location: {
+    city: {
+      type: String,
+      required: true,
+      trim: true
+    }
   },
-
   // Events related
   createdEvents: [{
     type: Schema.Types.ObjectId,
@@ -33,6 +33,6 @@ const companySchema = new Schema({
 companySchema.index({ email: 1 });
 companySchema.index({ name: 1 });
 
-const Company = model('Company', companySchema);
+const Company = model<CompanyType>('Company', companySchema);
 
 export default Company;
