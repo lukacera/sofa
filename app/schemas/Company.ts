@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { Company as CompanyType} from '../types/Company';
+import { CompanyType} from '../types/Company';
 
 const companySchema = new Schema<CompanyType>({
   name: { 
@@ -24,7 +24,8 @@ const companySchema = new Schema<CompanyType>({
   // Events related
   createdEvents: [{
     type: Schema.Types.ObjectId,
-    ref: 'Event'
+    ref: 'Event',
+    default: []
   }]
 }, {
   timestamps: true

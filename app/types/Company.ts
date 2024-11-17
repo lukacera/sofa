@@ -1,13 +1,12 @@
-import { Event } from "./Event"
-export interface Company {
+import { EventType } from "./Event"
+export type CompanyType = {
     name: string
     description: string
-    website: string
     email: string
     location: {
       city: string
     }
     createdAt: Date
     updatedAt: Date
-    createdEvents: Event[]
+    createdEvents: EventType[]
 }

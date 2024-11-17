@@ -1,5 +1,5 @@
-import { Company } from "./Company";
-export interface Event {
+import { CompanyType } from './Company';
+export type EventType = {
     title: string;
     description: string;
     aiAnalsis: string;
@@ -15,8 +15,9 @@ export interface Event {
         total: number;
         sold: number;
     }[];
-    organizer: Company;
+    organizer: CompanyType;
+    tags: string[];
     status: 'draft' | 'published' | 'cancelled';
     createdAt: Date;
     updatedAt: Date;
-  }
+}
