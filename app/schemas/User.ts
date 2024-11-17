@@ -1,6 +1,6 @@
-import { Schema, model } from 'mongoose';
-
-const userSchema = new Schema({
+import mongoose, { Schema, model } from 'mongoose';
+import { UserType } from '../types/User';
+const userSchema = new Schema<UserType>({
   // Basic user info
   name: { 
     type: String, 
@@ -18,7 +18,6 @@ const userSchema = new Schema({
     type: String, 
     required: true 
   },
-
   // Event participation
   eventsAttending: [{
     type: Schema.Types.ObjectId,
@@ -31,6 +30,6 @@ const userSchema = new Schema({
 // Index for faster queries when searching by email
 userSchema.index({ email: 1 });
 
-const User = model('User', userSchema);
+const User = mongoose.models.User || model<UserType>('User', userSchema);
 
 export default User;
