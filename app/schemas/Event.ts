@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { model, Schema } from 'mongoose';
 import { EventType } from '../types/Event';
 
 const EventSchema = new Schema<EventType>({
@@ -20,11 +20,9 @@ const EventSchema = new Schema<EventType>({
     required: true
   },
   location: {
-    city: {
       type: String,
       required: true,
       trim: true
-    }
   },
   capacity: {
     type: Number,
@@ -61,15 +59,13 @@ const EventSchema = new Schema<EventType>({
     tags: [{
       type: String,
       required: true,
-      trim: true
+      trim: true    
     }]
   }],
   organizer: {
-    id: {
       type: Schema.Types.ObjectId,
       required: true,
       ref: 'User'
-    }
   },
   status: {
     type: String,
@@ -85,4 +81,6 @@ EventSchema.index({ status: 1 });
 EventSchema.index({ 'organizer.id': 1 });
 EventSchema.index({ date: 1 });
 
-export default mongoose.model<EventType>('Event', EventSchema);
+const Event = mongoose.models.Event || model<EventType>('Event', EventSchema);
+
+export default Event;

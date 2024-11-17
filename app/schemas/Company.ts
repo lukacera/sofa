@@ -1,5 +1,5 @@
-import { Schema, model } from 'mongoose';
-import { CompanyType} from '../types/Company';
+import mongoose, { Schema, model } from 'mongoose';
+import { CompanyType } from '../types/Company';
 
 const companySchema = new Schema<CompanyType>({
   name: { 
@@ -7,21 +7,17 @@ const companySchema = new Schema<CompanyType>({
     required: true,
     trim: true
   },
-  email: { 
-    type: String, 
+  location: {
+    type: String,
     required: true,
-    unique: true,
-    lowercase: true,
     trim: true
   },
-  location: {
-    city: {
-      type: String,
-      required: true,
-      trim: true
-    }
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true
   },
-  // Events related
   createdEvents: [{
     type: Schema.Types.ObjectId,
     ref: 'Event',
@@ -34,6 +30,6 @@ const companySchema = new Schema<CompanyType>({
 companySchema.index({ email: 1 });
 companySchema.index({ name: 1 });
 
-const Company = model<CompanyType>('Company', companySchema);
+const Company = mongoose.models.Company || model<CompanyType>('Company', companySchema);
 
 export default Company;
