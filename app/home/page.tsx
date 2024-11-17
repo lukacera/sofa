@@ -4,6 +4,7 @@ import Header from '../components/Header'
 import { CldImage } from 'next-cloudinary'
 import { Calendar } from 'lucide-react'
 import Link from 'next/link'
+import { useSession } from 'next-auth/react'
 
 const SingleEvent = () => {
   return (
@@ -29,7 +30,11 @@ const SingleEvent = () => {
   )
 }
 
-export default function page() {
+export default function Page() {
+  
+  const { data: session } = useSession()
+
+  console.log(session)
   return (
     <div className='max-w-screen bg-mainWhite'>
         <Header />
