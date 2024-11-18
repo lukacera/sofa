@@ -1,26 +1,118 @@
 "use client"
 import { signIn } from "next-auth/react";
+import { useState, FormEvent, ChangeEvent } from "react";
 
-export default function LoginPage() {
+export default function LoginPage(): JSX.Element {
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const handleEmailSignIn = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      await signIn("credentials", {
+        email,
+        password,
+        redirect: true,
+        callbackUrl: "/home",
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Setter => set the value of the input field, whichever is passed in the setter function
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>, setter: (value: string) => void): void => {
+    setter(e.target.value);
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-main/40">
-      <div className="bg-mainWhite p-8 rounded-2xl shadow-xl w-full max-w-md space-y-8">
+      <div className="bg-mainWhite p-8 rounded-2xl shadow-xl w-full max-w-md space-y-6">
         <div className="text-center space-y-4">
           <h2 className="text-3xl font-bold text-secondary">Welcome back to Sofa AI</h2>
           <p>Sign in to continue to your account</p>
         </div>
+
+        <form onSubmit={handleEmailSignIn} className="space-y-4">
+          <div className="space-y-2">
+            <label htmlFor="email" className="block text-sm font-medium">
+              Email address
+            </label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => handleInputChange(e, setEmail)}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 
+                      focus:ring-secondary focus:border-secondary"
+              placeholder="Enter your email"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="password" className="block text-sm font-medium">
+              Password
+            </label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => handleInputChange(e, setPassword)}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 
+                         focus:ring-secondary focus:border-secondary"
+              placeholder="Enter your password"
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <input
+                id="remember-me"
+                type="checkbox"
+                className="h-4 w-4 text-secondary focus:ring-secondary border-gray-300 rounded"
+              />
+              <label htmlFor="remember-me" className="ml-2 block text-sm">
+                Remember me
+              </label>
+            </div>
+            <button 
+              type="button" 
+              className="text-sm text-secondary hover:text-secondary/80"
+              onClick={() => signIn('credentials', { callbackUrl: '/forgot-password' })}
+            >
+              Forgot password?
+            </button>
+          </div>
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full flex items-center justify-center px-6 py-3 rounded-xl
+                     bg-mainDarker text-mainWhite hover:bg-secondary transition-colors
+                     duration-200 shadow-md hover:shadow-lg disabled:opacity-50"
+          >
+            {isLoading ? "Signing in..." : "Sign in"}
+          </button>
+        </form>
 
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-200"></div>
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-4 bg-mainWhite ">Continue with</span>
+            <span className="px-4 bg-mainWhite">Or continue with</span>
           </div>
         </div>
 
         <button
-          onClick={() => signIn('google', {redirectTo: "/home"})}
+          onClick={() => signIn('google', { callbackUrl: "/home" })}
+          type="button"
           className="w-full flex items-center justify-center gap-3 px-6 py-3 rounded-xl
                      bg-mainDarker text-mainWhite hover:bg-secondary transition-colors
                      duration-200 shadow-md hover:shadow-lg"
@@ -46,7 +138,7 @@ export default function LoginPage() {
           Sign in with Google
         </button>
 
-        <p className="text-center text-sm ">
+        <p className="text-center text-sm">
           By continuing, you agree to our Terms of Service and Privacy Policy
         </p>
       </div>

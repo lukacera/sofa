@@ -1,4 +1,4 @@
-import mongoose, { Schema, model } from 'mongoose';
+import mongoose, { Model, Schema } from 'mongoose';
 import { UserType } from '../types/User';
 const userSchema = new Schema<UserType>({
   // Basic user info
@@ -18,11 +18,13 @@ const userSchema = new Schema<UserType>({
     type: String, 
     required: true 
   },
-  // Event participation
-  eventsAttending: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Event'
-  }]
+  eventsAttending: {
+    type: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Event'
+    }],
+    default: []
+  }
 }, {
   timestamps: true // Adds createdAt and updatedAt automatically
 });
@@ -30,6 +32,11 @@ const userSchema = new Schema<UserType>({
 // Index for faster queries when searching by email
 userSchema.index({ email: 1 });
 
-const User = mongoose.models.User || model<UserType>('User', userSchema);
+let User: Model<UserType>;
+try {
+  User = mongoose.model<UserType>('User');
+} catch {
+  User = mongoose.model<UserType>('User', userSchema);
+}
 
 export default User;
