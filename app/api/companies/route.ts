@@ -8,7 +8,7 @@ export async function GET() {
         await connectToDB();
         
         const companies = await Company.find({})
-            .sort({ createdAt: -1 }); // Sortira po datumu kreiranja, najnovije prvo
+            .sort({ createdAt: -1 });
         
         return NextResponse.json(companies, { status: 200 });
     } catch (error) {
@@ -52,10 +52,8 @@ export async function POST(request: Request) {
     try {
         await connectToDB();
 
-        // Parsiranje body-ja
         const body: Partial<CompanyType> = await request.json();
         
-        // Validacija podataka
         const { isValid, errors } = validateCompanyData(body);
         
         if (!isValid) {
@@ -87,18 +85,8 @@ export async function POST(request: Request) {
         });
 
         return NextResponse.json(newCompany, { status: 201 });
-    } catch (error: any) {
+    } catch (error) {
         console.error("Error creating company:", error);
-        if (error.name === 'ValidationError') {
-            return NextResponse.json(
-                { 
-                    message: "Validation error", 
-                    errors: error.errors 
-                }, 
-                { status: 400 }
-            );
-        }
-        
         return NextResponse.json(
             { message: "Error creating company" }, 
             { status: 500 }
