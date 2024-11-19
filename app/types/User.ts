@@ -3,7 +3,6 @@ export type UserType = {
     name: string;
     email: string;
     eventsAttending: EventType[];
-    password: string | null;
-    image?: string;
+    password: string;
     createdAt?: Date;
 };

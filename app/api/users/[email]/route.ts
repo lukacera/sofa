@@ -13,22 +13,15 @@ export async function GET(req: NextRequest) {
         
         if (!user) {
             return NextResponse.json(
-                { 
-                    message: "User not found",
-                    user: null
-                }, 
+                { message: "User not found" }, 
                 { status: 404 }
             );
         }        
-        console.log("User found:", user);
         return NextResponse.json(user, { status: 200 });
     } catch (error) {
         console.error("Error fetching users:", error);
         return NextResponse.json(
-            { 
-                message: "Error fetching users",
-                user: null
-            }, 
+            { message: "Error fetching users" }, 
             { status: 500 }
         );
     }
