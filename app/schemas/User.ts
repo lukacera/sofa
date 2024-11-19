@@ -16,7 +16,8 @@ const userSchema = new Schema<UserType>({
   },
   password: { 
     type: String, 
-    required: true 
+    required: false,
+    default: null 
   },
   eventsAttending: {
     type: [{
