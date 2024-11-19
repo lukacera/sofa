@@ -12,13 +12,13 @@ export default auth(async (req) => {
         console.log('Redirecting to /home, bcs the login is the page')
         return NextResponse.redirect(new URL('/', req.url))
     }
+    
     // Root path redirect
     if (req.nextUrl.pathname === '/') {
         console.log('Redirecting to /home')
         return NextResponse.redirect(new URL('/home', req.url))
     }
 
-    console.log("passsed it")
     // If on protected path and not authenticated, redirect to login
     if (!isPublicPath && !session) {
         console.log('Redirecting to /login')
@@ -32,9 +32,7 @@ export default auth(async (req) => {
             console.log(`${baseUrl}/api/users/${session.user.email}`)
             const response = await fetch(`${baseUrl}/api/users/${session.user.email}`)
             const data = await response.json()
-            console.log('User data:', data)
             if (!data.user) {
-                console.error('User not found in DB')
                 await signOut()
                 return NextResponse.redirect(new URL('/login', req.url))
             }

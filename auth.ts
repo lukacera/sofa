@@ -18,7 +18,8 @@ import { JWT } from "next-auth/jwt"
 declare module "next-auth" {
   interface Session {
     user: {
-      id: string | null
+      id: string | null,
+      image: string | null,
     } & DefaultSession["user"]
   }
 }
@@ -37,7 +38,6 @@ export const authConfig: NextAuthConfig = {
           user = await User.create({
             email: profile.email,
             name: profile.name,
-            password: null,
             image: profile.picture
           });
         }
@@ -45,7 +45,8 @@ export const authConfig: NextAuthConfig = {
         return {
           id: user._id.toString(),
           email: user.email,
-          name: user.name
+          name: user.name,
+          image: user.image
         };
       }
     }),
@@ -116,9 +117,15 @@ export const authConfig: NextAuthConfig = {
     }): Promise<Session> {
       try {
         if (session.user) {
-          session.user.id = token.id as string;
-          session.user.name = token.name;
-          session.user.email = token.email;
+          await connectToDB();
+          const user = await User.findOne({email: session.user.email}).exec();
+        
+          if (user) {
+            session.user.id = token.id as string;
+            session.user.name = user.name; 
+            session.user.email = user.email; 
+            session.user.image = user.image as string; 
+          }
         }
 
         return session;

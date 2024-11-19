@@ -5,4 +5,5 @@ export type UserType = {
     eventsAttending: EventType[];
     password: string;
     createdAt?: Date;
+    image?: string;
 };
