@@ -16,7 +16,8 @@ const userSchema = new Schema<UserType>({
   },
   password: { 
     type: String, 
-    required: true 
+    required: false,
+    default: null 
   },
   eventsAttending: {
     type: [{
@@ -24,6 +25,10 @@ const userSchema = new Schema<UserType>({
       ref: 'Event'
     }],
     default: []
+  },
+  image: {
+    type: String,
+    default: null
   }
 }, {
   timestamps: true // Adds createdAt and updatedAt automatically

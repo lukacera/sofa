@@ -1,10 +1,11 @@
 "use client"
 import React from 'react'
-import Header from '../components/Header'
+import Header from '../../components/Header'
 import { CldImage } from 'next-cloudinary'
 import { Calendar } from 'lucide-react'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
+import { WithAuth } from '../../components/WithAuth'
 
 const SingleEvent = () => {
   return (
@@ -30,10 +31,9 @@ const SingleEvent = () => {
   )
 }
 
-export default function Page() {
-  
-  const { data: session } = useSession()
+function Page() {
 
+  const { data: session, status } = useSession()
   console.log(session)
   return (
     <div className='max-w-screen bg-mainWhite'>
@@ -109,3 +109,6 @@ export default function Page() {
     </div>
   )
 }
+
+
+export default WithAuth(Page)
