@@ -4,9 +4,7 @@ export type EventType = {
     description: string;
     aiAnalsis: string;
     date: Date;
-    location: {
-        city: string;
-    };
+    location: string;
     capacity: number;
     tickets: {
         name: string;

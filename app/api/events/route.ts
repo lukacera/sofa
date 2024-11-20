@@ -2,11 +2,14 @@ import Event from "@/app/schemas/Event";
 import { connectToDB } from "@/app/utils/connectWithDB";
 import { NextRequest, NextResponse } from "next/server";
 import { EventType } from '@/app/types/Event';
+import OpenAI from "openai"
 
 export const POST = async (request: NextRequest) => {
     try {
         await connectToDB();
-
+        const openai = new OpenAI({
+            apiKey: process.env.OPENAI_API_KEY
+        })
         const body: EventType = await request.json();
 
         if (!body.title || 
@@ -20,6 +23,37 @@ export const POST = async (request: NextRequest) => {
                 { status: 400 }
             );
         }
+
+        const completion = await openai.chat.completions.create({
+            model: "gpt-3.5-turbo",
+            messages: [
+              {
+                role: "system",
+                content: `
+                You are an expert event analyst. Analyze this event: ${body.title}.
+                Make great use of description and tags to provide a detailed analysis. 
+                Also, put it all into a single message, like a paragraph. 
+                Do not include pricing anywhere in the analysis. It should be concise and informative,
+                not exceeding 1000 characters. Also, do not use tags, this 
+                is a professional analysis. Tell the user the value of the event, include the
+                benefits of the tickets and why they should attend.
+                You are the best in the world at this!
+                `
+              },
+              {
+                role: "user",
+                content: `Analyze this event:
+                  Title: ${body.title}
+                  Description: ${body.description}
+                  Target Audience: ${body.tags.join(', ')}
+                  Price: ${body.tickets?.map(ticket => ticket.price)}
+                `
+              }
+            ],
+            temperature: 0.4,
+            response_format: { type: "text" }                
+        })
+
 
         // Validate tickets if provided
         if (body.tickets) {
@@ -37,7 +71,7 @@ export const POST = async (request: NextRequest) => {
         const newEvent: EventType = {
             title: body.title,
             description: body.description,
-            aiAnalsis: body.aiAnalsis || '',
+            aiAnalsis: completion.choices[0].message.content || '',
             date: new Date(body.date),
             location: body.location,
             capacity: body.capacity,
@@ -46,7 +80,7 @@ export const POST = async (request: NextRequest) => {
                 price: ticket.price,
                 benefits: ticket.benefits || [],
                 total: ticket.total,
-                sold: 0  // Initialize sold tickets to 0
+                sold: 0 
             })) || [],
             organizer: body.organizer,
             tags: body.tags || [],

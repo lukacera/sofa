@@ -20,9 +20,9 @@ const EventSchema = new Schema<EventType>({
     required: true
   },
   location: {
-      type: String,
-      required: true,
-      trim: true
+    type: String,
+    required: true,
+    trim: true
   },
   capacity: {
     type: Number,
