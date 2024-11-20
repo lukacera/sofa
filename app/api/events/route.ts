@@ -9,7 +9,12 @@ export const POST = async (request: NextRequest) => {
 
         const body: EventType = await request.json();
 
-        if (!body.title || !body.date || !body.description || !body.location || !body.capacity) {
+        if (!body.title || 
+            !body.date || 
+            !body.description || 
+            !body.location || 
+            !body.capacity
+        ) {
             return NextResponse.json(
                 { message: 'Missing required fields' },
                 { status: 400 }

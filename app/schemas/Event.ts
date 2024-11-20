@@ -30,38 +30,43 @@ const EventSchema = new Schema<EventType>({
     min: 1,
     default: 100
   },
-  tickets: [{
-    name: {
+  tickets: {
+    type: [{
+      name: {
+        type: String,
+        required: true,
+        trim: true
+      },
+      price: {
+        type: Number,
+        required: true,
+        min: 0
+      },
+      benefits: [{
+        type: String,
+        required: true,
+        trim: true
+      }],
+      total: {
+        type: Number,
+        required: true,
+        min: 1
+      },
+      sold: {
+        type: Number,
+        required: true,
+        default: 0
+      },
+    }],
+    default: [] 
+  },
+  tags: {
+    type: [{
       type: String,
-      required: true,
-      trim: true
-    },
-    price: {
-      type: Number,
-      required: true,
-      min: 0
-    },
-    benefits: [{
-      type: String,
-      required: true,
       trim: true
     }],
-    total: {
-      type: Number,
-      required: true,
-      min: 1
-    },
-    sold: {
-      type: Number,
-      required: true,
-      default: 0
-    },
-    tags: [{
-      type: String,
-      required: true,
-      trim: true    
-    }]
-  }],
+    default: []
+  },
   organizer: {
       type: Schema.Types.ObjectId,
       required: true,

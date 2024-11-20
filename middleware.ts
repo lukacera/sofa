@@ -9,19 +9,16 @@ export default auth(async (req) => {
     
     const session = req.auth
     if (req.nextUrl.pathname === '/login' && session) {
-        console.log('Redirecting to /home, bcs the login is the page')
         return NextResponse.redirect(new URL('/', req.url))
     }
     
     // Root path redirect
     if (req.nextUrl.pathname === '/') {
-        console.log('Redirecting to /home')
         return NextResponse.redirect(new URL('/home', req.url))
     }
 
     // If on protected path and not authenticated, redirect to login
     if (!isPublicPath && !session) {
-        console.log('Redirecting to /login')
         return NextResponse.redirect(new URL('/login', req.url))
     }
  
