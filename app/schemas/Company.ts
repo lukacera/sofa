@@ -19,7 +19,10 @@ const companySchema = new Schema<CompanyType>({
     trim: true,
     lowercase: true
   },
-
+  image: {
+    type: String,
+    default: ''
+  },
   createdEvents: [{
     type: Schema.Types.ObjectId,
     ref: 'Event',

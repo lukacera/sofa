@@ -6,5 +6,6 @@ export type CompanyType = {
     email: string
     createdAt: Date
     updatedAt: Date
-    createdEvents: EventType[]
+    createdEvents: EventType[],
+    image: string
 }

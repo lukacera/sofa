@@ -1,5 +1,6 @@
 "use client"
 import { signIn } from "next-auth/react";
+import Link from "next/link";
 import { useState, FormEvent, ChangeEvent } from "react";
 
 export default function LoginPage(): JSX.Element {
@@ -138,9 +139,16 @@ export default function LoginPage(): JSX.Element {
           Sign in with Google
         </button>
 
-        <p className="text-center text-sm">
-          By continuing, you agree to our Terms of Service and Privacy Policy
-        </p>
+        <div className="mt-8 text-center text-sm text-gray-600">
+            <p>Don&apos;t have an account yet?{" "}
+            <Link
+                href="/register"
+                className="text-secondary hover:text-secondary/80"
+            >
+                Sign up here
+            </Link>
+            </p>
+          </div>
       </div>
     </div>
   );
