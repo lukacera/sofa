@@ -111,7 +111,6 @@ export default function RegisterPage(): JSX.Element {
   return (
     <div className="min-h-screen flex items-center justify-center bg-main/40 p-4">
       <div className="bg-mainWhite p-6 rounded-2xl shadow-xl w-full max-w-md">
-        {/* More compact header */}
         <div className="text-center mb-5 flex flex-col gap-2">
           <h2 className="text-2xl font-bold text-secondary">
             Create your {userType === "company" ? "Company" : "Personal"} Account
@@ -119,7 +118,6 @@ export default function RegisterPage(): JSX.Element {
           <p className="text-gray-600">Sign up to start organizing amazing events</p>
         </div>
   
-        {/* Compact back button */}
         <button
           onClick={() => setUserType(null)}
           className="text-xs text-gray-600 hover:text-secondary flex items-center gap-1 mb-4"
@@ -128,7 +126,6 @@ export default function RegisterPage(): JSX.Element {
         </button>
   
         <form onSubmit={handleRegister} className="space-y-5">
-          {/* Form fields with reduced spacing */}
           <div>
             <label htmlFor="name" className="block text-sm font-medium mb-1">
               {userType === "company" ? "Company Name" : "Full Name"}

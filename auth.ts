@@ -32,14 +32,10 @@ export const authConfig: NextAuthConfig = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       async profile(profile) {
         await connectToDB();
-        let user = await User.findOne({ email: profile.email }).exec();
+        const user = await User.findOne({ email: profile.email }).exec();
 
         if (!user) {
-          user = await User.create({
-            email: profile.email,
-            name: profile.name,
-            image: profile.picture
-          });
+          throw new Error("User not registered");
         }
 
         return {
