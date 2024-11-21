@@ -2,7 +2,7 @@ import { CompanyType } from './Company';
 export type EventType = {
     title: string;
     description: string;
-    aiAnalsis: string;
+    aiAnalysis: string;
     date: Date;
     location: string;
     capacity: number;
@@ -15,7 +15,7 @@ export type EventType = {
     }[];
     organizer: CompanyType;
     tags: string[];
-    status: 'draft' | 'published' | 'cancelled';
+    status: 'finished' | 'published' | 'ongoing';
     createdAt: Date;
     updatedAt: Date;
 }

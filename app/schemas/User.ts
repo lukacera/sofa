@@ -1,7 +1,12 @@
 import mongoose, { Model, Schema } from 'mongoose';
 import { UserType } from '../types/User';
 const userSchema = new Schema<UserType>({
-  // Basic user info
+  type: {
+    type: String,
+    required: true,
+    enum: ['individual', 'company'],
+    default: 'individual'
+  },
   name: { 
     type: String, 
     required: true,
@@ -19,6 +24,12 @@ const userSchema = new Schema<UserType>({
     required: false,
     default: null 
   },
+ 
+  image: { 
+    type: String, 
+    required: false,
+    default: null 
+  },
   eventsAttending: {
     type: [{
       type: Schema.Types.ObjectId,
@@ -26,11 +37,24 @@ const userSchema = new Schema<UserType>({
     }],
     default: []
   },
-  image: { 
-    type: String, 
+  events: {
+    type: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Event'
+    }],
+    default: []
+  },
+  description: {
+    type: String,
     required: false,
-    default: null 
+    default: null
+  },
+  location: {
+    type: String,
+    required: false,
+    default: null
   }
+
 }, {
   timestamps: true // Adds createdAt and updatedAt automatically
 });
