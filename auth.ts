@@ -14,7 +14,6 @@ import bcrypt from "bcryptjs"
 import User from "./app/schemas/User"
 import { User as UserType } from "@auth/core/types"
 import { JWT } from "next-auth/jwt"
-
 declare module "next-auth" {
   interface Session {
     user: {
@@ -23,19 +22,36 @@ declare module "next-auth" {
     } & DefaultSession["user"]
   }
 }
-
+interface GoogleProfile extends Profile {
+  id: string;
+  email: string;
+  name: string;
+  image?: string;
+}
 export const authConfig: NextAuthConfig = {
   secret: process.env.AUTH_SECRET!,
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      async profile(profile) {
+      authorization: {
+        params: {
+          prompt: "select_account", 
+          access_type: "offline",
+          response_type: "code"
+        }
+      },
+      async profile(profile): Promise<GoogleProfile> {
         await connectToDB();
         const user = await User.findOne({ email: profile.email }).exec();
 
         if (!user) {
-          throw new Error("User not registered");
+          return {
+            id: "",
+            email: "",
+            name: "",
+            image: ""
+          }
         }
 
         return {
@@ -90,6 +106,29 @@ export const authConfig: NextAuthConfig = {
     })
   ],
   callbacks: {
+    async signIn({ 
+      account, 
+      profile
+    }: {
+      account: Account | null;
+      profile?: Profile | undefined;
+    }) {
+      if (account?.provider === "google") {
+        try {
+          await connectToDB();
+          const user = await User.findOne({ email: profile?.email }).exec();
+          
+          if (!user) {
+            return "/account-not-found";
+          }
+          return true; 
+        } catch (error) {
+          console.error("Sign in error:", error);
+          return false;
+        }
+      }
+      return true;
+    },
     async jwt({ 
       token, 
       user, 

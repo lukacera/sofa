@@ -112,7 +112,12 @@ export default function LoginPage(): JSX.Element {
         </div>
 
         <button
-          onClick={() => signIn('google', { callbackUrl: "/home" })}
+          onClick={() => signIn('google', 
+            { 
+              callbackUrl: "/home",
+              prompt: "none"
+            }
+          )}
           type="button"
           className="w-full flex items-center justify-center gap-3 px-6 py-3 rounded-xl
                      bg-mainDarker text-mainWhite hover:bg-secondary transition-colors
