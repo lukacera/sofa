@@ -14,6 +14,7 @@ import bcrypt from "bcryptjs"
 import User from "./app/schemas/User"
 import { User as UserType } from "@auth/core/types"
 import { JWT } from "next-auth/jwt"
+
 declare module "next-auth" {
   interface Session {
     user: {
