@@ -2,12 +2,13 @@ import { NextResponse } from 'next/server'
 import { auth, signOut } from './auth'
 
 export default auth(async (req) => {
-    const publicPaths = ['/login', '/register', '/api']
+    const publicPaths = ['/login', '/register', '/api', '/account-not-found']
     const isPublicPath = publicPaths.some(path => 
         req.nextUrl.pathname.startsWith(path)
     )
     
     const session = req.auth
+    console.log(req)
     if (req.nextUrl.pathname === '/login' && session) {
         return NextResponse.redirect(new URL('/', req.url))
     }

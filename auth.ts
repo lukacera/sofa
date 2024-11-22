@@ -1,19 +1,10 @@
-
 import NextAuth, { 
   NextAuthConfig,
   DefaultSession,
-  Account,
-  Profile,
-  Session
 } from "next-auth"
 import Google from "next-auth/providers/google"
-import Credentials from "next-auth/providers/credentials"
-import { AdapterUser } from "next-auth/adapters"
 import { connectToDB } from "./app/utils/connectWithDB"
-import bcrypt from "bcryptjs"
 import User from "./app/schemas/User"
-import { User as UserType } from "@auth/core/types"
-import { JWT } from "next-auth/jwt"
 
 declare module "next-auth" {
   interface Session {
@@ -23,134 +14,40 @@ declare module "next-auth" {
     } & DefaultSession["user"]
   }
 }
-interface GoogleProfile extends Profile {
-  id: string;
-  email: string;
-  name: string;
-  image?: string;
-}
+
 export const authConfig: NextAuthConfig = {
   secret: process.env.AUTH_SECRET!,
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      authorization: {
-        params: {
-          prompt: "select_account", 
-          access_type: "offline",
-          response_type: "code"
-        }
-      },
-      async profile(profile): Promise<GoogleProfile> {
-        await connectToDB();
-        const user = await User.findOne({ email: profile.email }).exec();
-
-        if (!user) {
-          return {
-            id: "",
-            email: "",
-            name: "",
-            image: ""
-          }
-        }
-
-        return {
-          id: user._id.toString(),
-          email: user.email,
-          name: user.name,
-          image: user.image
-        };
-      }
-    }),
-    Credentials({
-      credentials: {
-        email: { type: "email" },
-        password: { type: "password" }
-      },
-      async authorize(credentials): Promise<UserType | null> {
-        if (!credentials?.email || !credentials?.password) return null;
-
-        try {
-          await connectToDB();
-
-          const user = await User.findOne({ email: credentials.email }).exec();
-
-          if (!user) {
-            await User.create({
-              email: credentials.email,
-              password: await bcrypt.hash(credentials.password as string, 10),
-              name: "New User",
-              eventsAttending: [],
-            });
-
-            return null;
-          }
-
-          const passwordMatch = await bcrypt.compare(
-            credentials.password as string, 
-            user.password as string
-          );
-
-          if (!passwordMatch) return null;
-
-          return {
-            id: user._id.toString(),
-            email: user.email,
-            name: user.name
-          };
-        } catch (error) {
-          console.error(error);
-          return null;
-        }
-      }
     })
   ],
   callbacks: {
     async signIn({ 
-      account, 
-      profile
-    }: {
-      account: Account | null;
-      profile?: Profile | undefined;
+      profile 
     }) {
-      if (account?.provider === "google") {
-        try {
-          await connectToDB();
-          const user = await User.findOne({ email: profile?.email }).exec();
-          
-          if (!user) {
-            return "/account-not-found";
-          }
-          return true; 
-        } catch (error) {
-          console.error("Sign in error:", error);
-          return false;
+      if (!profile?.email) return false;
+      try {
+        await connectToDB();
+        const user = await User.findOne({ email: profile.email }).exec();
+        
+        if (!user) {
+          return '/account-not-found';
         }
+        return true;
+      } catch (error) {
+        console.error("Sign in error:", error);
+        return false;
       }
-      return true;
     },
-    async jwt({ 
-      token, 
-      user, 
-    }: { 
-      token: JWT; 
-      user?: UserType | AdapterUser; 
-      account?: Account | null; 
-      profile?: Profile | undefined;
-    }) {
+    async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
       }
       return token;
     },
-    async session({ 
-      session, 
-      token
-    }: { 
-      session: Session; 
-      token: JWT;
-    }): Promise<Session> {
+    async session({ session, token }) {
       try {
         if (session.user) {
           await connectToDB();
@@ -158,16 +55,15 @@ export const authConfig: NextAuthConfig = {
         
           if (user) {
             session.user.id = token.id as string;
-            session.user.name = user.name; 
-            session.user.email = user.email; 
-            session.user.image = user.image as string; 
+            session.user.name = user.name;
+            session.user.email = user.email;
+            session.user.image = user.image as string;
           }
         }
-
         return session;
       } catch (error) {
         console.error("Session error:", error);
-        return session;  // Vraćamo session u slučaju greške
+        return session;
       }
     }
   },

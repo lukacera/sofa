@@ -83,7 +83,8 @@ export default function Header() {
 
         {/* Loading placeholder - Show while session is loading */}
         {isLoading && (
-          <div className='hidden md:block w-8 h-8 rounded-full bg-gray-600/20 animate-pulse'></div>
+          <div className='hidden md:block w-10 h-10 rounded-full 
+          bg-gray-600/20 animate-pulse'></div>
         )}
 
         {/* Mobile Menu Button */}
