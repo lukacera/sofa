@@ -8,7 +8,6 @@ export default auth(async (req) => {
     )
     
     const session = req.auth
-    console.log(req)
     if (req.nextUrl.pathname === '/login' && session) {
         return NextResponse.redirect(new URL('/', req.url))
     }

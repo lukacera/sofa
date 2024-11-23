@@ -78,7 +78,7 @@ export default function AccountNotFound() {
           <Link
             href="/login"
             className="block w-full text-center py-4 text-gray-600 hover:text-secondary
-                     transition-colors duration-200"
+                     transition-colors duration-200 font-bold"
           >
             Back to Login
           </Link>

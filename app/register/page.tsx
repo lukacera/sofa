@@ -106,7 +106,14 @@ export default function RegisterPage(): JSX.Element {
         </div>
 
         <button
-          onClick={() => signIn('google', { callbackUrl: "/home" })}
+          onClick={() => signIn(
+            'google', 
+            { callbackUrl: "/home" ,
+            query: {
+              signInPage: false,
+              userType: "individual" 
+            }}
+          )}
           type="button"
           className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-xl
                    bg-mainDarker text-mainWhite hover:bg-secondary transition-all

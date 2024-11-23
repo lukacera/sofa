@@ -12,9 +12,12 @@ export default function LoginPage(): JSX.Element {
         </div>
 
         <button
-          onClick={() => signIn('google', { 
+          onClick={() => signIn('google', {
             callbackUrl: "/home",
-            prompt: "none"
+            query: {
+              signInPage: "true", // Make sure this is a string
+              userType: "individual" // or "company"
+            }
           })}
           type="button"
           className="w-full flex items-center justify-center gap-3 px-6 py-3 rounded-xl

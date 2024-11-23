@@ -5,6 +5,7 @@ import NextAuth, {
 import Google from "next-auth/providers/google"
 import { connectToDB } from "./app/utils/connectWithDB"
 import User from "./app/schemas/User"
+import { Profile } from "@auth/core/types"
 
 declare module "next-auth" {
   interface Session {
@@ -14,6 +15,16 @@ declare module "next-auth" {
     } & DefaultSession["user"]
   }
 }
+
+declare module "next-auth" {
+  interface SignInCallbackParams {
+    query?: { 
+      signInPage?: string,
+      userType?: "individual" | "company"
+    }
+  }
+}
+
 
 export const authConfig: NextAuthConfig = {
   secret: process.env.AUTH_SECRET!,
@@ -25,15 +36,33 @@ export const authConfig: NextAuthConfig = {
   ],
   callbacks: {
     async signIn({ 
-      profile 
+      profile,
+      query
+    }: {
+      profile?: Profile | undefined,
+      query?: { 
+        signInPage?: string,
+        userType?: "individual" | "company"
+      }
     }) {
       if (!profile?.email) return false;
       try {
         await connectToDB();
         const user = await User.findOne({ email: profile.email }).exec();
-        
-        if (!user) {
+        console.log("Is sign in page:", query?.signInPage);
+        if (!user && query?.signInPage === "true") {
           return '/account-not-found';
+        }
+        if (!user) {
+          await User.create({
+            name: profile.name,
+            email: profile.email,
+            image: profile.picture,
+            type: query?.userType ?? "individual",
+            description: query?.userType === "company" ? "" : null,
+            location: query?.userType === "company" ? "" : null,
+          })
+          return true;
         }
         return true;
       } catch (error) {
