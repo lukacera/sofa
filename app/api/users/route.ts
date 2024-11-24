@@ -2,7 +2,6 @@ import User from "@/app/schemas/User";
 import { connectToDB } from "@/app/utils/connectWithDB";
 import { NextResponse } from "next/server";
 import { UserType } from "@/app/types/User";
-import bcrypt from "bcryptjs";
 
 export async function GET() {
     try {
@@ -79,20 +78,20 @@ export async function POST(request: Request) {
             );
         }
 
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(body.password!, salt);
-
         const newUser = await User.create({
             name: body.name,
             email: body.email?.toLowerCase(),
-            password: hashedPassword, 
             eventsAttending: [],
-            createdAt: new Date()
+            createdAt: new Date(),
+            description: "",
+            location: "",
+            events: [],
+            image: body.image,
+            type: body.type
         });
 
         const userWithoutPassword = {
-            ...newUser.toObject(),
-            password: undefined
+            ...newUser.toObject()
         };
 
         return NextResponse.json(userWithoutPassword, { status: 201 });

@@ -8,6 +8,13 @@ export default auth(async (req) => {
     )
     
     const session = req.auth
+    
+
+    if (req.nextUrl.pathname.startsWith('/api/auth/callback/google')) {
+        console.log('Google callback')
+        return NextResponse.redirect(new URL('/home', req.url))
+    }
+
     if (req.nextUrl.pathname === '/login' && session) {
         return NextResponse.redirect(new URL('/', req.url))
     }
@@ -16,7 +23,6 @@ export default auth(async (req) => {
     if (req.nextUrl.pathname === '/') {
         return NextResponse.redirect(new URL('/home', req.url))
     }
-
     // If on protected path and not authenticated, redirect to login
     if (!isPublicPath && !session) {
         return NextResponse.redirect(new URL('/login', req.url))
@@ -26,7 +32,6 @@ export default auth(async (req) => {
     if (!isPublicPath && session) {
         try {
             const baseUrl = req.nextUrl.origin
-            console.log(`${baseUrl}/api/users/${session.user.email}`)
             const response = await fetch(`${baseUrl}/api/users/${session.user.email}`)
             const data = await response.json()
             if (!data.user) {

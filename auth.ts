@@ -32,7 +32,14 @@ export const authConfig: NextAuthConfig = {
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    })
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
+    }),
   ],
   callbacks: {
     async signIn({ 
@@ -94,7 +101,20 @@ export const authConfig: NextAuthConfig = {
         console.error("Session error:", error);
         return session;
       }
-    }
+    },
+    async redirect({ url, baseUrl }) {
+      console.log("Redirect URL:", url);
+      console.log("Base URL:", baseUrl);
+  
+      // Keep the query parameters in the redirect
+      if (url.startsWith(baseUrl)) {
+        console.log("Redirecting to:", url);
+        return url;
+      }
+  
+      // Fallback redirect
+      return baseUrl;
+    }  
   },
   pages: {
     signIn: '/login'

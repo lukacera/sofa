@@ -1,12 +1,70 @@
 "use client"
-import { signIn } from "next-auth/react";
+import { signIn, SignInResponse } from "next-auth/react";
 import { useState } from "react";
 import { Building2, User, ArrowLeft } from 'lucide-react';
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { UserType } from "../types/User";
+import { Profile } from "@auth/core/types";
 
 export default function RegisterPage(): JSX.Element {
   const [userType, setUserType] = useState<"company" | "individual" | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
+  const handleGoogleRegister = async () => {
+    try {
+      setIsLoading(true);
+      // First get Google profile data without redirecting
+      const result = await signIn('google', { 
+        redirect: false,
+      }) as SignInResponse & {
+        profile?: Profile
+      };
+      
+      if (result?.error) {
+        console.error('OAuth error:', result.error);
+        return;
+      }
+
+      if (!result?.ok) {
+        throw new Error('Failed to get Google profile');
+      }
+
+      const body: Partial<UserType> = {
+        email: result.profile?.email ?? '',
+        name: result.profile?.name ?? '',
+        image: result.profile?.picture ?? '',
+        type: userType ?? 'individual'
+      }
+
+      // Create user through API
+      const response = await fetch('/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: body ? JSON.stringify(body) : null,
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        if (error.error === 'User already exists') {
+          router.push('/login?error=account-exists');
+          return;
+        }
+        throw new Error('Failed to create account');
+      }
+
+      // If everything succeeded, redirect to home
+      router.push('/home');
+    } catch (error) {
+      console.error('Registration error:', error);
+      // Handle error appropriately
+    } finally {
+      setIsLoading(false);
+    }
+  };
   if (!userType) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-main/30 to-main/50 p-6">
@@ -106,14 +164,7 @@ export default function RegisterPage(): JSX.Element {
         </div>
 
         <button
-          onClick={() => signIn(
-            'google', 
-            { callbackUrl: "/home" ,
-            query: {
-              signInPage: false,
-              userType: "individual" 
-            }}
-          )}
+          onClick={() => handleGoogleRegister()}
           type="button"
           className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-xl
                    bg-mainDarker text-mainWhite hover:bg-secondary transition-all

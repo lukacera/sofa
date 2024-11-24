@@ -19,12 +19,6 @@ const userSchema = new Schema<UserType>({
     lowercase: true,
     trim: true
   },
-  password: { 
-    type: String, 
-    required: false,
-    default: null 
-  },
- 
   image: { 
     type: String, 
     required: false,
