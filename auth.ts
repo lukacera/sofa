@@ -32,45 +32,20 @@ export const authConfig: NextAuthConfig = {
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      authorization: {
-        params: {
-          prompt: "consent",
-          access_type: "offline",
-          response_type: "code",
-        },
-      },
     }),
   ],
   callbacks: {
     async signIn({ 
-      profile,
-      query
+      profile
     }: {
       profile?: Profile | undefined,
-      query?: { 
-        signInPage?: string,
-        userType?: "individual" | "company"
-      }
     }) {
       if (!profile?.email) return false;
       try {
+        console.log("Google Profile:", profile);
         await connectToDB();
         const user = await User.findOne({ email: profile.email }).exec();
-        console.log("Is sign in page:", query?.signInPage);
-        if (!user && query?.signInPage === "true") {
-          return '/account-not-found';
-        }
-        if (!user) {
-          await User.create({
-            name: profile.name,
-            email: profile.email,
-            image: profile.picture,
-            type: query?.userType ?? "individual",
-            description: query?.userType === "company" ? "" : null,
-            location: query?.userType === "company" ? "" : null,
-          })
-          return true;
-        }
+       
         return true;
       } catch (error) {
         console.error("Sign in error:", error);
@@ -101,23 +76,7 @@ export const authConfig: NextAuthConfig = {
         console.error("Session error:", error);
         return session;
       }
-    },
-    async redirect({ url, baseUrl }) {
-      console.log("Redirect URL:", url);
-      console.log("Base URL:", baseUrl);
-  
-      // Keep the query parameters in the redirect
-      if (url.startsWith(baseUrl)) {
-        console.log("Redirecting to:", url);
-        return url;
-      }
-  
-      // Fallback redirect
-      return baseUrl;
-    }  
-  },
-  pages: {
-    signIn: '/login'
+    }
   }
 };
 
