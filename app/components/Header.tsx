@@ -1,9 +1,9 @@
 import { signOut, useSession } from 'next-auth/react'
-import Image from 'next/image'
 import Link from 'next/link'
 import React, { useState, useRef, useEffect } from 'react'
 import { LogOut, Home, Calendar, Menu, User, X } from "lucide-react"
 import { usePathname } from 'next/navigation'
+import { CldImage } from 'next-cloudinary'
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -61,7 +61,7 @@ export default function Header() {
           <>
             {session ? (
               <div className='hidden md:flex items-center gap-3'>
-                <Image
+                <CldImage
                   src={session.user?.image ?? "https://res.cloudinary.com/dluypaeie/image/upload/v1732538732/Avatars_Circles_Glyph_Style_nrein3.jpg"}
                   alt='User Image'
                   width={35}
@@ -105,8 +105,8 @@ export default function Header() {
             {session && (
               <div className='p-4 border-b'>
                 <div className='flex items-center gap-3'>
-                  <Image
-                    src={"https://res.cloudinary.com/dluypaeie/image/upload/v1732538732/Avatars_Circles_Glyph_Style_nrein3.jpg"}
+                  <CldImage
+                    src={session.user.image ?? "https://res.cloudinary.com/dluypaeie/image/upload/v1732538732/Avatars_Circles_Glyph_Style_nrein3.jpg"}
                     alt='User Image'
                     width={40}
                     height={40}

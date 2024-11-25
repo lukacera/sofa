@@ -55,7 +55,7 @@ export default function page() {
             <div className='w-full h-[25rem] relative rounded-xl shadow-lg'>
               <CldImage
                 alt="Sample image"
-                src="cld-sample-2"
+                src="Avatars_Circles_Glyph_Style_nrein3"
                 fill
                 crop={{
                   type: 'auto',
