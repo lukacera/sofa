@@ -29,10 +29,6 @@ declare module "next-auth" {
   }
 
   interface User {
-    id: string;
-    email: string;
-    image: string;
-    name: string;
     role: "individual" | "company";
     description: string;
     location: string;
@@ -89,11 +85,11 @@ const authConfig: NextAuthConfig = {
       if (user) {
         token.id = user.id;
         token.email = user.email;
-        token.picture = user.image; // Add the image
+        token.picture = user.image; 
         token.name = user.name;
-        token.role = user.role; // Add the role
-        token.description = user.description; // Add the description
-        token.location = user.location; // Add the location
+        token.role = user.role; 
+        token.description = user.description; 
+        token.location = user.location;
       }
       return token;
     },
@@ -102,11 +98,11 @@ const authConfig: NextAuthConfig = {
         session.user = {
           id: token.id as string,
           email: token.email as string,
-          image: token.picture as string, // Add the image to the session
+          image: token.picture as string, 
           name: token.name as string,
-          role: token.role as "individual" | "company", // Add the role to the session
-          description: token.description as string, // Add the description to the session
-          location: token.location as string, // Add the location to the session
+          role: token.role as "individual" | "company",
+          description: token.description as string,  
+          location: token.location as string,
           emailVerified: null
         };
       }
