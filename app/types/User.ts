@@ -4,7 +4,7 @@ export type UserType = {
     email: string;
     image?: string;
     type: "individual" | "company";
-    
+    password: string;
     // Individual specific fields
     eventsAttending?: EventType[];
     

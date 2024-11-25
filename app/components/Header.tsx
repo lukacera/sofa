@@ -62,7 +62,7 @@ export default function Header() {
             {session ? (
               <div className='hidden md:flex items-center gap-3'>
                 <Image
-                  src={session.user?.image ?? "/default-avatar.png"}
+                  src={session.user?.image ?? "https://res.cloudinary.com/dluypaeie/image/upload/v1732538732/Avatars_Circles_Glyph_Style_nrein3.jpg"}
                   alt='User Image'
                   width={35}
                   height={35}
@@ -106,7 +106,7 @@ export default function Header() {
               <div className='p-4 border-b'>
                 <div className='flex items-center gap-3'>
                   <Image
-                    src={session.user?.image ?? "/default-avatar.png"}
+                    src={"https://res.cloudinary.com/dluypaeie/image/upload/v1732538732/Avatars_Circles_Glyph_Style_nrein3.jpg"}
                     alt='User Image'
                     width={40}
                     height={40}

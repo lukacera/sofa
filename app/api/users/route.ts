@@ -2,6 +2,7 @@ import User from "@/app/schemas/User";
 import { connectToDB } from "@/app/utils/connectWithDB";
 import { NextResponse } from "next/server";
 import { UserType } from "@/app/types/User";
+import bcrypt from "bcryptjs";
 
 export async function GET() {
     try {
@@ -35,7 +36,7 @@ function validateUserData(data: Partial<UserType>) {
     } else if (!isValidEmail(data.email)) {
         errors.email = "Invalid email format";
     }
-    
+
     if (!data.password?.trim()) {
         errors.password = "Password is required";
     } else if (data.password.length < 6) {
@@ -61,12 +62,15 @@ export async function POST(request: Request) {
         const { isValid, errors } = validateUserData(body);
         
         if (!isValid) {
+            console.log(errors)
+            console.log("Creating user...");
             return NextResponse.json(
                 { message: "Validation error", errors },
                 { status: 400 }
             );
         }
 
+        console.log("Creating user:", body);
         const existingUser = await User.findOne({ email: body.email });
         if (existingUser) {
             return NextResponse.json(
@@ -78,16 +82,16 @@ export async function POST(request: Request) {
             );
         }
 
+        const hashedPassword = await bcrypt.hash(body.password, 12);
+
         const newUser = await User.create({
             name: body.name,
             email: body.email?.toLowerCase(),
-            eventsAttending: [],
-            createdAt: new Date(),
-            description: "",
-            location: "",
-            events: [],
             image: body.image,
-            type: body.type
+            type: body.type,
+            password: hashedPassword,
+            description: body.description || null,
+            location: body.location || null
         });
 
         const userWithoutPassword = {

@@ -1,83 +1,119 @@
-import NextAuth, { 
-  NextAuthConfig,
-  DefaultSession,
-} from "next-auth"
-import Google from "next-auth/providers/google"
-import { connectToDB } from "./app/utils/connectWithDB"
-import User from "./app/schemas/User"
-import { Profile } from "@auth/core/types"
+import NextAuth, { NextAuthConfig } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcryptjs";
+import { connectToDB } from "./app/utils/connectWithDB";
+import User from "./app/schemas/User";
 
 declare module "next-auth" {
   interface Session {
     user: {
-      id: string | null,
-      image: string | null,
-    } & DefaultSession["user"]
+      id: string;
+      email: string;
+      image: string;
+      name: string;
+      role: "individual" | "company";
+      description: string;
+      location: string;
+    }; 
+  }
+
+  
+  interface JWT {
+    id: string;
+    email: string;
+    picture: string; 
+    name: string;
+    role: "individual" | "company";
+    description: string;
+    location: string;
+  }
+
+  interface User {
+    id: string;
+    email: string;
+    image: string;
+    name: string;
+    role: "individual" | "company";
+    description: string;
+    location: string;
   }
 }
 
-declare module "next-auth" {
-  interface SignInCallbackParams {
-    query?: { 
-      signInPage?: string,
-      userType?: "individual" | "company"
-    }
-  }
-}
-
-
-export const authConfig: NextAuthConfig = {
-  secret: process.env.AUTH_SECRET!,
+const authConfig: NextAuthConfig = {
   providers: [
-    Google({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    CredentialsProvider({
+      name: "credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          return null;
+        }
+
+        try {
+          await connectToDB();
+          const user = await User.findOne({ email: credentials.email });
+
+          if (!user) {
+            return null;
+          }
+
+          const isPasswordValid = await bcrypt.compare(
+            credentials.password.toString(),
+            user.password
+          );
+
+          if (!isPasswordValid) {
+            return null;
+          }
+
+          return {
+            id: user._id.toString(),
+            email: user.email,
+            image: user.image,
+            description: user.description || "",
+            location: user.location || "",
+            role: user.type as "individual" | "company",
+          };
+        } catch (error) {
+          console.error("Auth error:", error);
+          return null;
+        }
+      },
     }),
   ],
   callbacks: {
-    async signIn({ 
-      profile
-    }: {
-      profile?: Profile | undefined,
-    }) {
-      if (!profile?.email) return false;
-      try {
-        console.log("Google Profile:", profile);
-        await connectToDB();
-        const user = await User.findOne({ email: profile.email }).exec();
-       
-        return true;
-      } catch (error) {
-        console.error("Sign in error:", error);
-        return false;
-      }
-    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.email = user.email;
+        token.picture = user.image; // Add the image
+        token.name = user.name;
+        token.role = user.role; // Add the role
+        token.description = user.description; // Add the description
+        token.location = user.location; // Add the location
       }
       return token;
     },
     async session({ session, token }) {
-      try {
-        if (session.user) {
-          await connectToDB();
-          const user = await User.findOne({email: session.user.email}).exec();
-        
-          if (user) {
-            session.user.id = token.id as string;
-            session.user.name = user.name;
-            session.user.email = user.email;
-            session.user.image = user.image as string;
-          }
-        }
-        return session;
-      } catch (error) {
-        console.error("Session error:", error);
-        return session;
+      if (token) {
+        session.user = {
+          id: token.id as string,
+          email: token.email as string,
+          image: token.picture as string, // Add the image to the session
+          name: token.name as string,
+          role: token.role as "individual" | "company", // Add the role to the session
+          description: token.description as string, // Add the description to the session
+          location: token.location as string, // Add the location to the session
+          emailVerified: null
+        };
       }
-    }
-  }
+      return session;
+    },
+  },
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 export const { handlers, signIn, signOut, auth } = NextAuth(authConfig);

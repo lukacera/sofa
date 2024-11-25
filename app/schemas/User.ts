@@ -22,7 +22,7 @@ const userSchema = new Schema<UserType>({
   image: { 
     type: String, 
     required: false,
-    default: null 
+    default: "https://res.cloudinary.com/dluypaeie/image/upload/v1732538732/Avatars_Circles_Glyph_Style_nrein3.jpg" 
   },
   eventsAttending: {
     type: [{
@@ -47,6 +47,10 @@ const userSchema = new Schema<UserType>({
     type: String,
     required: false,
     default: null
+  },
+  password: {
+    type: String,
+    required: true
   }
 
 }, {
