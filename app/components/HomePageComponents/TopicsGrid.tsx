@@ -16,38 +16,36 @@ const TopicPreview: React.FC<TopicPreviewProps> = ({
   imageUrl, 
   followers,
 }) => {
-  // Construct a stable Cloudinary URL
   const cloudinaryUrl = `https://res.cloudinary.com/dluypaeie/image/upload/c_fill,g_auto,w_250,h_250/${imageUrl}`;
 
   return (
-    <div className="group relative cursor-pointer">
-      <div className="relative aspect-square w-full overflow-hidden 
-      rounded-lg bg-white shadow-xl text-black">
-        <div className='overflow-hidden'>
+    <div className="group cursor-pointer">
+      <div className="grid grid-rows-[1fr,auto] h-full 
+      rounded-lg bg-white shadow-xl text-black overflow-hidden">
+        {/* Image section - takes up most of the space */}
+        <div className="relative w-full overflow-hidden">
           <Image
             src={cloudinaryUrl}
             alt={title}
-            width={250}
-            height={250}
-            className="object-cover group-hover:opacity-100 
-            group-hover:scale-110 transition-all duration-300"
+            width={150}
+            height={150}
+            className="object-cover w-full h-full group-hover:scale-110 transition-all duration-300"
           />
         </div>
         
-        {/* Content Container */}
-        <div className="absolute inset-0 flex flex-col justify-end p-5">
+        {/* Content section - fixed height at bottom */}
+        <div className="p-4 bg-white border-t">
           <div className="flex items-center justify-between">
-            <h3 className="font-bold group-hover:text-primary-100">
+            <h3 className="font-bold text-gray-900 group-hover:text-primary-100">
               {title}
             </h3>
             <ArrowUpRight 
               className="h-4 w-4 text-gray-400 opacity-0 transition-all duration-300 
-              group-hover:text-white group-hover:opacity-100" 
+              group-hover:text-gray-900 group-hover:opacity-100" 
             />
           </div>
           
-          {/* Followers count */}
-          <div className="mt-2 flex items-center gap-1 text-xs">
+          <div className="mt-1 flex items-center gap-1 text-xs text-gray-600">
             <Users size={12} />
             <span>{followers.toLocaleString()} followers</span>
           </div>
