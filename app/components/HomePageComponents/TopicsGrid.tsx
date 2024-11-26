@@ -1,14 +1,14 @@
 "use client"
 
 import React from 'react';
-import { CldImage } from 'next-cloudinary';
+import Image from 'next/image';
 import { ArrowUpRight, Users } from 'lucide-react';
 
 interface TopicPreviewProps {
   title: string;
   imageUrl: string;
-  followers: number;  // Made followers required
-  color: string;      // Made color required
+  followers: number;
+  color: string;
 }
 
 const TopicPreview: React.FC<TopicPreviewProps> = ({ 
@@ -16,16 +16,19 @@ const TopicPreview: React.FC<TopicPreviewProps> = ({
   imageUrl, 
   followers,
 }) => {
+  // Construct a stable Cloudinary URL
+  const cloudinaryUrl = `https://res.cloudinary.com/dluypaeie/image/upload/c_fill,g_auto,w_250,h_250/${imageUrl}`;
+
   return (
     <div className="group relative cursor-pointer">
       <div className="relative aspect-square w-full overflow-hidden 
       rounded-lg bg-white shadow-xl text-black">
         <div className='overflow-hidden'>
-          <CldImage
-            src={imageUrl}
+          <Image
+            src={cloudinaryUrl}
             alt={title}
-            width="250"
-            height="250"
+            width={250}
+            height={250}
             className="object-cover group-hover:opacity-100 
             group-hover:scale-110 transition-all duration-300"
           />
@@ -54,7 +57,6 @@ const TopicPreview: React.FC<TopicPreviewProps> = ({
   );
 };
 
-// Define static topics data with fixed follower counts
 const TOPICS_DATA: TopicPreviewProps[] = [
   { 
     title: "Technology", 

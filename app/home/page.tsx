@@ -1,4 +1,5 @@
 "use client"
+
 import React from 'react'
 import Header from '../components/Header'
 import { CldImage } from 'next-cloudinary'
@@ -6,12 +7,11 @@ import { Calendar, MapPin, Users } from 'lucide-react'
 import Link from 'next/link'
 import { TopicsGrid } from '../components/HomePageComponents/TopicsGrid'
 
-const SingleEvent = () => {
-  const sampleImages = ["cld-sample", "cld-sample-2", "cld-sample-3", "cld-sample-4", "cld-sample-5"];
-  
-  // Get a random image from the array
-  const randomImage = sampleImages[Math.floor(Math.random() * sampleImages.length)];
+interface SingleEventProps {
+  imageUrl: string;
+}
 
+const SingleEvent: React.FC<SingleEventProps> = ({ imageUrl }) => {
   return (
     <Link 
       href={`/event`}
@@ -21,31 +21,27 @@ const SingleEvent = () => {
       <div className="relative">
         {/* Image container with overlay */}
         <div className="relative aspect-square overflow-hidden">
-        <CldImage
-          alt="Sample image"
-          src={randomImage} // Use this sample image or upload your own via the Media Explorer
-          width="300" // Transform the image: auto-crop to square aspect_ratio
-          height="300"
-          crop={{
-            type: 'auto',
-            source: true
-          }}
-        />
+          <CldImage
+            alt="Sample image"
+            src={imageUrl}
+            width={300}
+            height={300}
+            crop="fill"
+            gravity="auto"
+          />
           {/* Gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/40" />
         </div>
         
         {/* Content section */}
         <div className="space-y-3 p-5">
-          
-          {/* Title */}
           <h3 className="text-xl text-left 
           font-bold text-gray-900 group-hover:text-blue-600">
             Hackaton, Barcelona
           </h3>
           <div className="flex items-center gap-1 text-gray-500 text-xs">
-              <MapPin size={16} className="flex-shrink-0" />
-              <span>Barcelona, Spain</span>
+            <MapPin size={16} className="flex-shrink-0" />
+            <span>Barcelona, Spain</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1 text-gray-600">
@@ -68,95 +64,93 @@ const SingleEvent = () => {
 };
 
 export default function Page() {
-  
   return (
     <div className='max-w-screen bg-mainWhite'>
-        <Header />
-        <main className='text-center p-20'>
-          <section className='p-10 bg-gradient-to-r from-primaryDarker/30 
-          to-secondary rounded-lg flex justify-between'>
-              <div className='flex flex-col items-start gap-2'>
-                <h2 className='font-bold text-2xl'>
-                  Welcome back, Luka!
-                </h2>
-                <span>
-                  You have <span className='font-bold'>3</span> events to attend this month! 🎉
-                </span>
-              </div>
-              <button className='border p-2 border-transparent rounded-lg 
-              font-bold text-black flex items-center gap-2 bg-white'>
-                <Calendar size={24} />
-                <span>My Calendar</span>
-              </button>
-          </section>
-          <section className='mt-20'>
-            <div className='flex flex-col items-center gap-5'>
-              <h2 className='font-bold text-2xl mb-5'>
-                Your upcoming events
-              </h2>
-              <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'>
-                <SingleEvent />
-                <SingleEvent />
-                <SingleEvent />
-              </div>
-            </div>
-          </section>
-          <section className='flex flex-col gap-10 mt-20'>
-            <div className='flex flex-col items-center gap-5'>
-              <h2 className='font-bold text-2xl mb-5'>
-                Topics you might like
-              </h2>
-              <TopicsGrid />
-            </div>
-            <div className='flex flex-col items-center'>
-              <h2 className='font-bold text-2xl mb-5'>
-                You might like
-              </h2>
-              <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'>
-                <SingleEvent />
-                <SingleEvent />
-                <SingleEvent />
-              </div>
-            </div>
-          </section>
-          
-          <Link 
-  href="/events"
-  className="group relative mt-12 mx-auto block w-fit overflow-hidden"
->
-  
-  {/* Button content */}
-  <div className="relative flex items-center justify-center gap-2 rounded-xl 
-    bg-secondaryDarker px-8 py-3.5 transition-all duration-300 
-    group-hover:bg-opacity-90">
-    <span className="font-bold text-xl text-white">
-      Discover More Events
-    </span>
-    {/* Animated arrow */}
-    <svg 
-      xmlns="http://www.w3.org/2000/svg" 
-      className="h-5 w-5 text-white transition-transform duration-300 
-        group-hover:translate-x-1" 
-      fill="none" 
-      viewBox="0 0 24 24" 
-      stroke="currentColor"
-    >
-      <path 
-        strokeLinecap="round" 
-        strokeLinejoin="round" 
-        strokeWidth={2} 
-        d="M13 7l5 5m0 0l-5 5m5-5H6" 
-      />
-    </svg>
-  </div>
-</Link>
-
-          <section className='mt-20'>
-            <h2 className='font-bold text-2xl mb-5'>
-              Near you
+      <Header />
+      <main className='text-center p-20'>
+        <section className='p-10 bg-gradient-to-r from-primaryDarker/30 
+        to-secondary rounded-lg flex justify-between'>
+          <div className='flex flex-col items-start gap-2'>
+            <h2 className='font-bold text-2xl'>
+              Welcome back, Luka!
             </h2>
-          </section>
-        </main>
+            <span>
+              You have <span className='font-bold'>3</span> events to attend this month! 🎉
+            </span>
+          </div>
+          <button className='border p-2 border-transparent rounded-lg 
+          font-bold text-black flex items-center gap-2 bg-white'>
+            <Calendar size={24} />
+            <span>My Calendar</span>
+          </button>
+        </section>
+
+        <section className='mt-20'>
+          <div className='flex flex-col items-center gap-5'>
+            <h2 className='font-bold text-2xl mb-5'>
+              Your upcoming events
+            </h2>
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'>
+              <SingleEvent imageUrl="cld-sample" />
+              <SingleEvent imageUrl="cld-sample-2" />
+              <SingleEvent imageUrl="cld-sample-3" />
+            </div>
+          </div>
+        </section>
+
+        <section className='flex flex-col gap-10 mt-20'>
+          <div className='flex flex-col items-center gap-5'>
+            <h2 className='font-bold text-2xl mb-5'>
+              Topics you might like
+            </h2>
+            <TopicsGrid />
+          </div>
+          <div className='flex flex-col items-center'>
+            <h2 className='font-bold text-2xl mb-5'>
+              You might like
+            </h2>
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'>
+              <SingleEvent imageUrl="cld-sample-3" />
+              <SingleEvent imageUrl="cld-sample-4" />
+              <SingleEvent imageUrl="cld-sample-5" />
+            </div>
+          </div>
+        </section>
+        
+        <Link 
+          href="/events"
+          className="group relative mt-12 mx-auto block w-fit overflow-hidden"
+        >
+          <div className="relative flex items-center justify-center gap-2 rounded-xl 
+            bg-secondaryDarker px-8 py-3.5 transition-all duration-300 
+            group-hover:bg-opacity-90">
+            <span className="font-bold text-xl text-white">
+              Discover More Events
+            </span>
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              className="h-5 w-5 text-white transition-transform duration-300 
+                group-hover:translate-x-1" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M13 7l5 5m0 0l-5 5m5-5H6" 
+              />
+            </svg>
+          </div>
+        </Link>
+
+        <section className='mt-20'>
+          <h2 className='font-bold text-2xl mb-5'>
+            Near you
+          </h2>
+        </section>
+      </main>
     </div>
   )
 }
