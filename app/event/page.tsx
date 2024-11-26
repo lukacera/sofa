@@ -1,7 +1,7 @@
 "use client"
 import React from 'react'
 import Header from '../components/Header'
-import { Clock, MapPin, TagIcon } from 'lucide-react'
+import { BookmarkPlus, Clock, Heart, MapPin, TagIcon } from 'lucide-react'
 import { CldImage } from 'next-cloudinary'
 import TicketSection from '../components/SingleEventComponents/TicketSection'
 import { AIAnalysis } from '../components/SingleEventComponents/AiAnalysis'
@@ -50,9 +50,22 @@ export default function page() {
                 ))}
               </div>
               <AIAnalysis />
+              <div className='flex items-center gap-4'>
+                <button className='flex items-center gap-2 bg-mainWhite
+                px-4 py-2 rounded-lg border-2 border-gray-200 hover:border-[#e63946] transition-colors'>
+                  <Heart className='w-5 h-5' fill='#e63946' color='#e63946'/>
+                  <span>Like</span>
+                </button>
+                <button className='flex items-center gap-2 px-4 
+                py-2 rounded-lg bg-mainWhite border-2 border-gray-200 hover:border-[#a8dadc] transition-colors'>
+                  <BookmarkPlus className='w-5 h-5' fill='#a8dadc' color='#a8dadc'/>
+                  <span>Save</span>
+                </button>
+              </div>
             </div>
               <div>
-                <div className='w-full h-[300px] md:h-[400px] lg:h-[500px] relative rounded-2xl overflow-hidden shadow-lg'>
+                <div className='w-full h-[27rem]  relative rounded-2xl 
+                overflow-hidden shadow-lg'>
                   <CldImage
                     alt="Event cover image"
                     src="cld-sample-2"

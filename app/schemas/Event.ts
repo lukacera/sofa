@@ -11,7 +11,7 @@ const EventSchema = new Schema<EventType>({
     type: String,
     required: true
   },
-  aiAnalsis: {
+  aiAnalysis: {
     type: String,
     default: ''
   },

@@ -45,6 +45,7 @@ export const POST = async (request: NextRequest) => {
                 content: `Analyze this event:
                   Title: ${body.title}
                   Description: ${body.description}
+                  Location: ${body.location}
                   Target Audience: ${body.tags.join(', ')}
                   Price: ${body.tickets?.map(ticket => ticket.price)}
                 `
@@ -71,7 +72,7 @@ export const POST = async (request: NextRequest) => {
         const newEvent: EventType = {
             title: body.title,
             description: body.description,
-            aiAnalsis: completion.choices[0].message.content || '',
+            aiAnalysis: completion.choices[0].message.content || '',
             date: new Date(body.date),
             location: body.location,
             capacity: body.capacity,

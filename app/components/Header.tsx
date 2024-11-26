@@ -1,7 +1,7 @@
 import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import React, { useState, useRef, useEffect } from 'react'
-import { LogOut, Home, Calendar, Menu, User, X } from "lucide-react"
+import { LogOut, Home, Calendar, Menu, User, X, Plus } from "lucide-react"
 import { usePathname } from 'next/navigation'
 import { CldImage } from 'next-cloudinary'
 
@@ -31,14 +31,16 @@ export default function Header() {
 
   return (
     <div className='px-6 md:px-10 py-5 border-b bg-primaryDarker text-mainWhite'>
-      <div className='flex justify-between items-center'>
+      <div className='grid grid-cols-3 items-center'>
         {/* Logo */}
-        <Link href="/">
-          <h1 className='font-bold text-2xl'>Sofa AI</h1>
-        </Link>
+        <div>
+          <Link href="/">
+            <h1 className='font-bold text-2xl'>Sofa AI</h1>
+          </Link>
+        </div>
         
         {/* Desktop Navigation */}
-        <nav className='hidden md:flex items-center gap-8'>
+        <nav className='hidden md:flex items-center gap-8 w-full place-content-center'>
           {navLinks.map((link) => {
             const Icon = link.icon
             const isActive = pathname === link.href
@@ -58,7 +60,18 @@ export default function Header() {
 
         {/* Desktop User Menu - Only show when loading is complete */}
         {!isLoading && (
-          <>
+          <div className='flex items-center gap-10 place-content-end'>
+            {session?.user.role === 'company' && (
+              <Link 
+              href='/dashboard' 
+              className='flex items-center gap-2 px-4 py-2 bg-accent 
+              text-mainWhite rounded-full font-medium transition-all duration-200 hover:bg-opacity-90 
+                hover:scale-105 active:scale-95 shadow-md hover:shadow-lg'
+            >
+              <Plus size={20} />
+              Create Event
+            </Link>
+            )}
             {session ? (
               <div className='hidden md:flex items-center gap-3'>
                 <CldImage
@@ -79,7 +92,7 @@ export default function Header() {
                 Sign In
               </Link>
             )}
-          </>
+          </div>
         )}
 
         {/* Loading placeholder - Show while session is loading */}

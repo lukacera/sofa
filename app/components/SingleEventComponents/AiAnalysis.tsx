@@ -42,7 +42,7 @@ export const AIAnalysis = () => {
   return (
     <div className={`bg-gradient-to-r from-primary to-primaryDarker/30
       p-5 rounded-xl flex flex-col gap-4 transition-all duration-500 ease-out
-      ${isVisible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'}`}>
+      h-[11rem] ${isVisible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'}`}>
       <div className={`flex items-center gap-2 transition-opacity duration-300
         ${isHeaderVisible ? 'opacity-100' : 'opacity-0'}`}>
         <Pencil size={18}/>
