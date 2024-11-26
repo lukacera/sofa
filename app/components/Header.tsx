@@ -30,7 +30,7 @@ export default function Header() {
   ]
 
   return (
-    <div className='px-6 md:px-10 py-5 border-b bg-mainDarker'>
+    <div className='px-6 md:px-10 py-5 border-b bg-primaryDarker text-mainWhite'>
       <div className='flex justify-between items-center'>
         {/* Logo */}
         <Link href="/">
@@ -64,9 +64,10 @@ export default function Header() {
                 <CldImage
                   src={session.user?.image ?? "https://res.cloudinary.com/dluypaeie/image/upload/v1732538732/Avatars_Circles_Glyph_Style_nrein3.jpg"}
                   alt='User Image'
-                  width={35}
-                  height={35}
-                  className='rounded-full cursor-pointer hover:ring-2 hover:ring-white/50 transition-all'
+                  width={40}
+                  height={40}
+                  className='rounded-full cursor-pointer ring-gray-300/80
+                  ring-1 hover:ring-2 hover:ring-white/50 transition-all'
                   onClick={() => setMenuOpen(!menuOpen)}
                 />
               </div>
