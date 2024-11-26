@@ -105,9 +105,9 @@ export default function Page() {
             </h2>
             <TopicsGrid />
           </div>
-          <div className='flex flex-col items-center'>
+          <div className='flex flex-col items-center mt-20 gap-6'>
             <h2 className='font-bold text-2xl mb-5'>
-              You might like
+              Events near you
             </h2>
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'>
               <SingleEvent imageUrl="cld-sample-3" />
@@ -144,12 +144,6 @@ export default function Page() {
             </svg>
           </div>
         </Link>
-
-        <section className='mt-20'>
-          <h2 className='font-bold text-2xl mb-5'>
-            Near you
-          </h2>
-        </section>
       </main>
     </div>
   )

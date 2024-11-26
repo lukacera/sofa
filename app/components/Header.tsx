@@ -8,27 +8,16 @@ import { CldImage } from 'next-cloudinary'
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
   const { data: session, status } = useSession() // Add status from useSession
-  const menuRef = useRef<HTMLDivElement>(null)
   const pathname = usePathname()
   const isLoading = status === 'loading' // Check if session is loading
 
-  // Close menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setMenuOpen(false)
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
 
   const navLinks = [
     { name: 'Home', href: '/', icon: Home },
     { name: 'Events', href: '/events', icon: Calendar },
   ]
 
+  console.log(menuOpen)
   return (
     <div className='px-6 md:px-10 py-5 border-b bg-primaryDarker text-mainWhite'>
       <div className='grid grid-cols-3 items-center'>
@@ -81,7 +70,10 @@ export default function Header() {
                   height={40}
                   className='rounded-full cursor-pointer ring-gray-300/80
                   ring-1 hover:ring-2 hover:ring-white/50 transition-all'
-                  onClick={() => setMenuOpen(!menuOpen)}
+                  onClick={() => {
+                    console.log("clicked")
+                    setMenuOpen(prev => !prev)
+                  }}
                 />
               </div>
             ) : (
@@ -104,16 +96,17 @@ export default function Header() {
         {/* Mobile Menu Button */}
         <button 
           className='md:hidden text-white'
-          onClick={() => setMenuOpen((prev) => !prev)}
-        >
+          onClick={() => {
+            console.log("clicked")
+            setMenuOpen(prev => !prev)
+          }}        >
           {menuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
 
         {/* Mobile Menu & Desktop Dropdown */}
         {menuOpen && !isLoading && (
           <div 
-            ref={menuRef}
-            className='absolute top-0 right-0 mt-16 w-full md:w-64 bg-white rounded-b-lg md:rounded-lg shadow-xl z-50 
+            className='absolute top-0 right-0 mt-[4.5rem] w-full md:w-64 bg-white rounded-b-lg md:rounded-lg shadow-xl z-50 
               transform origin-top-right transition-all'
           >
             {session && (
@@ -158,7 +151,10 @@ export default function Header() {
                   <Link
                     href="/profile"
                     className='flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors'
-                    onClick={() => setMenuOpen(false)}
+                    onClick={() => {
+                      console.log("clicked")
+                      setMenuOpen(prev => !prev)
+                    }}
                   >
                     <User size={18} />
                     My Profile
