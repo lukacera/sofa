@@ -1,9 +1,10 @@
 "use client"
 import React from 'react'
 import Header from '../components/Header'
-import { Clock, Pencil, TagIcon } from 'lucide-react'
+import { Clock, MapPin, TagIcon } from 'lucide-react'
 import { CldImage } from 'next-cloudinary'
 import TicketSection from '../components/SingleEventComponents/TicketSection'
+import { AIAnalysis } from '../components/SingleEventComponents/AiAnalysis'
 
 export default function page() {
   return (
@@ -19,15 +20,23 @@ export default function page() {
                   Event name
                 </h1>
                 <div className='flex items-center gap-2'>
-                  <div className='w-4 aspect-square rounded-full bg-blue-300'></div>
+                  <div className='w-4 aspect-square rounded-full bg-primary'></div>
                   <h3>
                     Company name
                   </h3>
                 </div>
-                <div className='flex items-center gap-2 text-sm'>
-                  <Clock size={18}/>
-                  19th September 2025
+
+                <div className='flex items-center gap-2'>
+                  <div className='flex items-center gap-2 text-sm'>
+                    <Clock size={18}/>
+                    19th September 2025
+                  </div>
+                  <div className='flex items-center gap-2 text-sm'>
+                    <MapPin size={16} className="flex-shrink-0" />
+                    <span>Barcelona, Spain</span>
+                  </div>
                 </div>
+              
               </div>
               <div className='flex flex-wrap gap-2'>
                 {Array.from({length: 5}).map((_, i) => (
@@ -40,30 +49,19 @@ export default function page() {
                   </div>
                 ))}
               </div>
-              <div className='bg-gradient-to-r from-main to-mainDarker
-              p-5 rounded-xl flex flex-col gap-4'>
-                <div className='flex items-center gap-2'>
-                  <Pencil size={18}/>
-                  <span className='font-medium'>AI Analysis</span>
+              <AIAnalysis />
+            </div>
+              <div>
+                <div className='w-full h-[300px] md:h-[400px] lg:h-[500px] relative rounded-2xl overflow-hidden shadow-lg'>
+                  <CldImage
+                    alt="Event cover image"
+                    src="cld-sample-2"
+                    fill
+                    priority
+                  />
                 </div>
-                <p className='text-sm'>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae, voluptate.
-                  Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nostrum tempore voluptatem fugit blanditiis repellendus aspernatur, sunt quod, quia accusantium architecto aut consequatur dicta. Odio ab similique at, nihil sunt minus?
-                </p>
-              </div>
+              </div>          
             </div>
-            <div className='w-full h-[25rem] relative rounded-xl shadow-lg'>
-              <CldImage
-                alt="Sample image"
-                src="Avatars_Circles_Glyph_Style_nrein3"
-                fill
-                crop={{
-                  type: 'auto',
-                  source: true
-                }}
-              />
-            </div>
-          </div>
 
           {/* Bio Section */}
           <div className='mt-16 mb-20'>
