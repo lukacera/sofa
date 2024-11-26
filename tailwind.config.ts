@@ -13,7 +13,7 @@ export default {
         primaryDarker: "#1d3557",
         secondary: "#457b9d",
         accent: "#e63946",
-        mainWhite: "#f1faee",
+        mainWhite: "#F2F3F4",
       },
     },
   },
