@@ -37,7 +37,7 @@ export default function LoginPage(): JSX.Element {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-main/40">
+    <div className="min-h-screen flex items-center justify-center bg-primary/40">
       <div className="bg-mainWhite p-8 rounded-2xl shadow-xl w-full max-w-md space-y-6">
         <div className="text-center space-y-4">
           <h2 className="text-3xl font-bold text-secondary">Welcome back to Sofa AI</h2>
@@ -87,7 +87,7 @@ export default function LoginPage(): JSX.Element {
             type="submit"
             disabled={isLoading}
             className="w-full flex items-center justify-center gap-3 px-6 py-3 rounded-xl
-                     bg-mainDarker text-mainWhite hover:bg-secondary transition-colors
+                     bg-secondary text-mainWhite hover:bg-primaryDarker transition-colors
                      duration-200 shadow-md hover:shadow-lg disabled:opacity-50 
                      disabled:cursor-not-allowed"
           >

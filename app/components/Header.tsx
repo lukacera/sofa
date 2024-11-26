@@ -1,6 +1,7 @@
+"use client"
 import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState } from 'react'
 import { LogOut, Home, Calendar, Menu, User, X, Plus } from "lucide-react"
 import { usePathname } from 'next/navigation'
 import { CldImage } from 'next-cloudinary'

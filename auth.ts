@@ -71,6 +71,7 @@ const authConfig: NextAuthConfig = {
             image: user.image,
             description: user.description || "",
             location: user.location || "",
+            name: user.name,
             role: user.type as "individual" | "company",
           };
         } catch (error) {

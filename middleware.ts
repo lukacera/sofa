@@ -9,12 +9,6 @@ export default auth(async (req) => {
     
     const session = req.auth
     
-
-    if (req.nextUrl.pathname.startsWith('/api/auth/callback/google')) {
-        console.log('Google callback')
-        return NextResponse.redirect(new URL('/home', req.url))
-    }
-
     if (req.nextUrl.pathname === '/login' && session) {
         return NextResponse.redirect(new URL('/', req.url))
     }

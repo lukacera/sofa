@@ -1,5 +1,6 @@
 import { CompanyType } from './Company';
 export type EventType = {
+    id?: string;
     title: string;
     description: string;
     aiAnalysis: string;
