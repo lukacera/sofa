@@ -1,0 +1,184 @@
+import React from 'react'
+
+interface Ticket {
+    name: string;
+    price: number;
+    benefits: string[];
+    total: number;
+}
+
+interface EventFormData {
+    title: string;
+    description: string;
+    date: string;
+    time: string;
+    location: string;
+    capacity: number;
+    price: number;
+    imageUrl: string;
+    type: 'conference' | 'workshop' | 'meetup' | 'seminar' | 'other';
+    tickets: Ticket[];
+  }
+  
+export const TicketsForm: React.FC<{
+    formData: EventFormData;
+    setFormData: React.Dispatch<React.SetStateAction<EventFormData>>;
+    inputClasses: string;
+    RequiredStar: () => JSX.Element;
+}> = ({RequiredStar, formData, inputClasses, setFormData}) => {
+  return (
+    <div className="space-y-6">
+    <h2 className="text-xl font-semibold text-gray-900 pb-2">Ticket Types</h2>
+    
+    {formData.tickets.map((ticket, ticketIndex) => (
+      <div key={ticketIndex} className="p-4 border-2 rounded-lg space-y-4">
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-medium">Ticket Type {ticketIndex + 1}</h3>
+          {ticketIndex > 0 && (
+            <button
+              type="button"
+              onClick={() => {
+                const newTickets = formData.tickets.filter((_, index) => index !== ticketIndex);
+                setFormData({ ...formData, tickets: newTickets });
+              }}
+              className="text-red-500 hover:text-red-700"
+            >
+              Remove
+            </button>
+          )}
+        </div>
+  
+        {/* Ticket Name */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Ticket Name (e.g VIP)<RequiredStar />
+          </label>
+          <input
+            type="text"
+            value={ticket.name}
+            onChange={(e) => {
+              const newTickets = [...formData.tickets];
+              newTickets[ticketIndex].name = e.target.value;
+              setFormData({ ...formData, tickets: newTickets });
+            }}
+            className={inputClasses}
+            required
+          />
+        </div>
+  
+        {/* Ticket Price and Total */}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Price<RequiredStar />
+            </label>
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              value={ticket.price}
+              onChange={(e) => {
+                const newTickets = [...formData.tickets];
+                newTickets[ticketIndex].price = parseFloat(e.target.value);
+                setFormData({ ...formData, tickets: newTickets });
+              }}
+              className={inputClasses}
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Total Tickets<RequiredStar />
+            </label>
+            <input
+              type="number"
+              min="0"
+              value={ticket.total}
+              onChange={(e) => {
+                const newTickets = [...formData.tickets];
+                newTickets[ticketIndex].total = parseInt(e.target.value);
+                setFormData({ ...formData, tickets: newTickets });
+              }}
+              className={inputClasses}
+              required
+            />
+          </div>
+        </div>
+  
+        {/* Benefits */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Benefits
+          </label>
+          <div className="space-y-2">
+            {ticket.benefits.map((benefit, benefitIndex) => (
+              <div key={benefitIndex} className="flex gap-2">
+                <input
+                  type="text"
+                  value={benefit}
+                  onChange={(e) => {
+                    const newTickets = [...formData.tickets];
+                    newTickets[ticketIndex].benefits[benefitIndex] = e.target.value;
+                    setFormData({ ...formData, tickets: newTickets });
+                  }}
+                  className={inputClasses}
+                  placeholder="Enter benefit"
+                />
+                {benefitIndex > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newTickets = [...formData.tickets];
+                      newTickets[ticketIndex].benefits = ticket.benefits.filter(
+                        (_, index) => index !== benefitIndex
+                      );
+                      setFormData({ ...formData, tickets: newTickets });
+                    }}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={() => {
+                const newTickets = [...formData.tickets];
+                newTickets[ticketIndex].benefits.push('');
+                setFormData({ ...formData, tickets: newTickets });
+              }}
+              className="text-sm text-blue-600 hover:text-blue-800"
+            >
+              + Add Benefit
+            </button>
+          </div>
+        </div>
+      </div>
+    ))}
+  
+    {/* Add Ticket Type Button */}
+    <button
+      type="button"
+      onClick={() => {
+        setFormData({
+          ...formData,
+          tickets: [
+            ...formData.tickets,
+            {
+              name: '',
+              price: 0,
+              benefits: [''],
+              total: 0,
+            }
+          ]
+        });
+      }}
+      className="mt-4 w-full py-2 px-4 border border-dashed border-gray-300 rounded-md text-sm font-medium text-gray-600 hover:border-gray-400 hover:bg-gray-50"
+    >
+      + Add Another Ticket Type
+    </button>
+  </div>
+  
+  )
+}

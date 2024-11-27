@@ -1,4 +1,5 @@
-import { CompanyType } from './Company';
+import { UserType } from "./User";
+
 export type EventType = {
     _id?: string;
     title: string;
@@ -14,9 +15,10 @@ export type EventType = {
         total: number;
         sold: number;
     }[];
-    organizer: CompanyType;
+    type: 'conference' | 'workshop' | 'meetup' | 'seminar' | 'other'
+    organizer: UserType;
     tags: string[];
-    status: 'finished' | 'published' | 'ongoing';
+    status: 'draft' | 'published' | 'cancelled' | 'finished';
     createdAt: Date;
     updatedAt: Date;
 }

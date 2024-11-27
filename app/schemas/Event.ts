@@ -74,8 +74,13 @@ const EventSchema = new Schema<EventType>({
   },
   status: {
     type: String,
-    enum: ['draft', 'published', 'cancelled'],
+    enum: ['draft', 'published', 'cancelled', 'finished'],
     default: 'draft'
+  },
+  type: {
+    type: String,
+    enum: ['conference', 'workshop', 'meetup', 'seminar', 'other'],
+    default: 'other'
   }
 }, {
   timestamps: true 
