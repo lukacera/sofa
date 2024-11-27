@@ -66,7 +66,7 @@ const CreateEventForm = () => {
       <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Create New Event</h1>
+          <h1 className="text-3xl font-bold text-black">Create New Event</h1>
           <p className="mt-2 text-sm text-gray-600">
             Fill in the details below to create your event. Fields marked with <span className="text-accent">*</span> are required.
           </p>
@@ -75,7 +75,7 @@ const CreateEventForm = () => {
         <form onSubmit={handleSubmit} className="space-y-8 bg-white p-6 rounded-xl shadow-sm">
           {/* Basic Information */}
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-gray-900">Basic Information</h2>
+            <h2 className="text-xl font-semibold text-black text-center">Basic Information</h2>
             
             <div className="space-y-4">
               {/* Title */}
@@ -112,7 +112,9 @@ const CreateEventForm = () => {
 
             {/* Date, Time, and Event Type */}
             <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-gray-900 pb-2">Date, Time, and Type</h2>
+              <h2 className="text-xl text-center font-semibold text-black pb-2">
+                Date, Time, and Type
+              </h2>
               
               <div className="flex flex-col md:flex-row gap-4">
                 {/* Event Type */}
@@ -179,8 +181,11 @@ const CreateEventForm = () => {
 
           {/* Location */}
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-gray-900 pb-2">Location</h2>
-            <label htmlFor="venueName" className="block text-sm font-medium text-gray-700">
+            <h2 className="text-xl text-center font-semibold text-black pb-2">
+              Location
+            </h2>
+            <label htmlFor="venueName" className="block text-sm 
+            font-medium text-gray-700">
               Make it in this format please: CITY, COUNTRY<RequiredStar />
               <input type="text" className={`${inputClasses} w-full`} />
             </label>

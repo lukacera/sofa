@@ -47,7 +47,6 @@ export const POST = async (request: NextRequest) => {
                   Description: ${body.description}
                   Location: ${body.location}
                   Target Audience: ${body.tags.join(', ')}
-                  Price: ${body.tickets?.map(ticket => ticket.price)}
                 `
               }
             ],

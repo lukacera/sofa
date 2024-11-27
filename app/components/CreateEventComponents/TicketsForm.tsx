@@ -1,3 +1,4 @@
+import { Trash } from 'lucide-react';
 import React from 'react'
 
 interface Ticket {
@@ -28,7 +29,7 @@ export const TicketsForm: React.FC<{
 }> = ({RequiredStar, formData, inputClasses, setFormData}) => {
   return (
     <div className="space-y-6">
-    <h2 className="text-xl font-semibold text-gray-900 pb-2">Ticket Types</h2>
+    <h2 className="text-xl font-semibold text-black text-center">Ticket Types</h2>
     
     {formData.tickets.map((ticket, ticketIndex) => (
       <div key={ticketIndex} className="p-4 border-2 rounded-lg space-y-4">
@@ -112,7 +113,10 @@ export const TicketsForm: React.FC<{
           </label>
           <div className="space-y-2">
             {ticket.benefits.map((benefit, benefitIndex) => (
-              <div key={benefitIndex} className="flex gap-2">
+              <div key={benefitIndex} className="flex gap-2 w-full items-center">
+                <span className="text-gray-500 text-sm mt-2 font-semibold">
+                  {benefitIndex + 1}.
+                </span>
                 <input
                   type="text"
                   value={benefit}
@@ -121,8 +125,8 @@ export const TicketsForm: React.FC<{
                     newTickets[ticketIndex].benefits[benefitIndex] = e.target.value;
                     setFormData({ ...formData, tickets: newTickets });
                   }}
-                  className={inputClasses}
-                  placeholder="Enter benefit"
+                  className={`${inputClasses} w-full`}
+                  placeholder={`Benefit ${benefitIndex + 1}`}
                 />
                 {benefitIndex > 0 && (
                   <button
@@ -136,11 +140,11 @@ export const TicketsForm: React.FC<{
                     }}
                     className="text-red-500 hover:text-red-700"
                   >
-                    Remove
+                    <Trash size={16} className='mt-5'/>
                   </button>
                 )}
-              </div>
-            ))}
+              </div>            
+              ))}
             <button
               type="button"
               onClick={() => {
@@ -148,7 +152,7 @@ export const TicketsForm: React.FC<{
                 newTickets[ticketIndex].benefits.push('');
                 setFormData({ ...formData, tickets: newTickets });
               }}
-              className="text-sm text-blue-600 hover:text-blue-800"
+              className="text-sm mt-20 text-primaryDarker hover:text-primary"
             >
               + Add Benefit
             </button>
