@@ -9,18 +9,17 @@ interface Ticket {
 }
 
 interface EventFormData {
-    title: string;
-    description: string;
-    date: string;
-    time: string;
-    location: string;
-    capacity: number;
-    price: number;
-    imageUrl: string;
-    type: 'conference' | 'workshop' | 'meetup' | 'seminar' | 'other';
-    tickets: Ticket[];
-  }
-  
+  title: string;
+  description: string;
+  datetime: string;
+  location: string;
+  capacity: number;
+  price: number;
+  imageUrl: string;
+  type: 'conference' | 'workshop' | 'meetup' | 'seminar' | 'other';
+  tickets: Ticket[];
+}
+
 export const TicketsForm: React.FC<{
     formData: EventFormData;
     setFormData: React.Dispatch<React.SetStateAction<EventFormData>>;

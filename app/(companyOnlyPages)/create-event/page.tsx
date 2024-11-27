@@ -1,7 +1,8 @@
 "use client";
-import React, { useState, FormEvent, useRef } from 'react';
+import React, { useState, FormEvent, useRef, useEffect } from 'react';
 import Header from '@/app/components/Header';
 import { TicketsForm } from '@/app/components/CreateEventComponents/TicketsForm';
+import { TimePicker } from '@/app/components/CreateEventComponents/TimePicker';
 
 interface Ticket {
   name: string;
@@ -12,8 +13,7 @@ interface Ticket {
 interface EventFormData {
   title: string;
   description: string;
-  date: string;
-  time: string;
+  datetime: string;
   location: string;
   capacity: number;
   price: number;
@@ -26,8 +26,7 @@ const CreateEventForm = () => {
   const [formData, setFormData] = useState<EventFormData>({
     title: '',
     description: '',
-    date: '',
-    time: '',
+    datetime: '',
     location: '',
     capacity: 100,
     price: 0,
@@ -37,23 +36,77 @@ const CreateEventForm = () => {
       {
         name: '',
         price: 0,
-        benefits: [''],  // Start with one empty benefit
+        benefits: [''], 
         total: 0
       }
     ]
   });
+  const [dateValue, setDateValue] = useState(new Date().toISOString().split('T')[0])  
+  const [timeValue, setTimeValue] = useState('')
+  
+  useEffect(() => {
+    if (formData.datetime) {
+      const date = new Date(formData.datetime)
+      console.log(date)
+      setDateValue(date.toISOString().split('T')[0])
+      setTimeValue(date.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: false 
+      }))
+    }
+  }, [formData.datetime])
+
+  const handleDateTimeChange = (date: string, time: string) => {
+    const [hours, minutes] = time.split(':');
+    console.log(date)
+    const dateObj = new Date(date);
+    dateObj.setHours(parseInt(hours), parseInt(minutes));
+    console.log(dateObj)
+    setFormData({ ...formData, datetime: dateObj.toISOString() });
+  };
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  console.log(formData)
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      console.log(formData)
+      const response = await fetch('/api/events', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        console.log('Error creating event:', data);
+        throw new Error(`Error: ${response}`);
+      }
+
+      const data = await response.json();
+      console.log('Event created successfully:', data);
+  
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create event');
+      console.error('Failed to create event:', err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const RequiredStar = () => (
     <span className="text-accent ml-1">*</span>
   );
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log('Form submitted:', formData);
-  };
-
   const dateRef = useRef<HTMLInputElement>(null)
-  const timeRef = useRef<HTMLInputElement>(null)
 
   const inputClasses = `mt-1 block p-3 cursor-pointer
   border-b border-gray-200 focus:border-b-black focus:ring-0 focus:outline-none`
@@ -96,20 +149,26 @@ const CreateEventForm = () => {
             </div>
               {/* Description */}
               <div>
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-                  Description<RequiredStar />
-                </label>
-                <textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  rows={4}
-                  className={textareaClasses}
-                  placeholder="Describe your event"
-                  required
-                />
-              </div>
-
+              <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+                Description<RequiredStar />
+              </label>
+              <textarea
+                id="description"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                rows={4}
+                minLength={100}
+                maxLength={1000}
+                className={textareaClasses}
+                placeholder="Describe your event (minimum 100 characters and max 1000)"
+                required
+              />
+              <p className={`text-sm mt-1 
+                ${formData.description.length < 100 || formData.description.length === 1000 ? 
+                'text-red-500' : 'text-gray-500'}`}>
+                {formData.description.length} / 1000 characters {formData.description.length < 100 && `(${100 - formData.description.length} more needed)`}
+              </p>
+            </div>
             {/* Date, Time, and Event Type */}
             <div className="space-y-6">
               <h2 className="text-xl text-center font-semibold text-black pb-2">
@@ -148,33 +207,16 @@ const CreateEventForm = () => {
                       type="date"
                       id="date"
                       ref={dateRef}
-                      value={formData.date}
-                      onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                      value={dateValue}
+                      onChange={(e) => handleDateTimeChange(e.target.value, timeValue)}
                       className={`${inputClasses} w-full`}
                       required
                     />
                   </div>
                 </div>
 
-                {/* Time */}
-                <div className="flex-1">
-                  <label htmlFor="time" className="block text-sm font-medium text-gray-700">
-                    Time<RequiredStar />
-                  </label>
-                  <div 
-                  onClick={() => timeRef.current?.showPicker()}
-                  className="relative">
-                    <input
-                      type="time"
-                      id="time"
-                      ref={timeRef}
-                      value={formData.time}
-                      onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                      className={`${inputClasses} w-full pl-10`}
-                      required
-                    />
-                  </div>
-                </div>
+                <TimePicker dateValue={dateValue} handleDateTimeChange={handleDateTimeChange}
+                timeValue={timeValue}/>
               </div>
             </div>
           </div>
@@ -187,7 +229,9 @@ const CreateEventForm = () => {
             <label htmlFor="venueName" className="block text-sm 
             font-medium text-gray-700">
               Make it in this format please: CITY, COUNTRY<RequiredStar />
-              <input type="text" className={`${inputClasses} w-full`} />
+              <input type="text" 
+              placeholder='e.g. Lagos, Nigeria'
+              className={`${inputClasses} w-full`} />
             </label>
           </div>
 
@@ -200,12 +244,14 @@ const CreateEventForm = () => {
             <div className="flex justify-end space-x-4">
               <button
                 type="button"
+                disabled={isSubmitting}
                 className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
                 Save as Draft
               </button>
               <button
                 type="submit"
+                disabled={isSubmitting}
                 className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primaryDarker hover:bg-primaryDarker/70"
               >
                 Create Event

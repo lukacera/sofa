@@ -4,6 +4,50 @@ import { NextRequest, NextResponse } from "next/server";
 import { EventType } from '@/app/types/Event';
 import OpenAI from "openai"
 
+
+function validateEvent(event: EventType) {
+    const errors = [];
+    
+    if (!event.title?.trim()) {
+        errors.push({ field: 'title', message: 'Title is required' });
+    }
+    
+    if (!event.date) {
+        errors.push({ field: 'date', message: 'Date is required' });
+    }
+    
+    if (!event.description?.trim()) {
+        errors.push({ field: 'description', message: 'Description is required' });
+    }
+    
+    if (!event.location?.trim()) {
+        errors.push({ field: 'location', message: 'Location is required' });
+    }
+    
+    if (!event.capacity || event.capacity < 1) {
+        errors.push({ field: 'capacity', message: 'Capacity must be greater than 0' });
+    }
+
+    if (event.tickets?.length) {
+        event.tickets.forEach((ticket, index) => {
+        if (!ticket.name?.trim()) {
+            errors.push({ field: `tickets[${index}].name`, message: 'Ticket name is required' });
+        }
+        if (ticket.price === undefined || ticket.price < 0) {
+            errors.push({ field: `tickets[${index}].price`, message: 'Ticket price must be a non-negative number' });
+        }
+        if (!ticket.total || ticket.total < 1) {
+            errors.push({ field: `tickets[${index}].total`, message: 'Ticket total must be greater than 0' });
+        }
+        });
+    }
+
+    return {
+        isValid: Object.keys(errors).length === 0,
+        errors
+    };  
+}
+
 export const POST = async (request: NextRequest) => {
     try {
         await connectToDB();
@@ -12,18 +56,18 @@ export const POST = async (request: NextRequest) => {
         })
         const body: EventType = await request.json();
 
-        if (!body.title || 
-            !body.date || 
-            !body.description || 
-            !body.location || 
-            !body.capacity
-        ) {
+        const { isValid, errors } = validateEvent(body);
+
+        if (!isValid) {
+            console.log(errors)
             return NextResponse.json(
-                { message: 'Missing required fields' },
+                { 
+                    message: "Validation error", 
+                    errors:  errors 
+                },
                 { status: 400 }
             );
         }
-
         const completion = await openai.chat.completions.create({
             model: "gpt-3.5-turbo",
             messages: [
@@ -86,7 +130,8 @@ export const POST = async (request: NextRequest) => {
             tags: body.tags || [],
             status: body.status || 'draft',
             createdAt: new Date(),
-            updatedAt: new Date()
+            updatedAt: new Date(),
+            type: body.type || 'conference',
         };
 
         // Save to database
