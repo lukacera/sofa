@@ -90,7 +90,7 @@ export const POST = async (request: NextRequest) => {
                   Title: ${body.title}
                   Description: ${body.description}
                   Location: ${body.location}
-                  Target Audience: ${body.tags.join(', ')}
+                  Target Audience: ${body.tags?.join(', ')}
                 `
               }
             ],

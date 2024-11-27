@@ -17,7 +17,7 @@ export type EventType = {
     }[];
     type: 'conference' | 'workshop' | 'meetup' | 'seminar' | 'other'
     organizer: UserType;
-    tags: string[];
+    tags?: string[] | null;
     status: 'draft' | 'published' | 'cancelled' | 'finished';
     createdAt: Date;
     updatedAt: Date;

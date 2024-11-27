@@ -11,13 +11,13 @@ interface Ticket {
 interface EventFormData {
   title: string;
   description: string;
-  datetime: string;
+  date: string;
   location: string;
   capacity: number;
-  price: number;
   imageUrl: string;
   type: 'conference' | 'workshop' | 'meetup' | 'seminar' | 'other';
   tickets: Ticket[];
+  organizer: string;
 }
 
 export const TicketsForm: React.FC<{
@@ -28,10 +28,10 @@ export const TicketsForm: React.FC<{
 }> = ({RequiredStar, formData, inputClasses, setFormData}) => {
   return (
     <div className="space-y-6">
-    <h2 className="text-xl font-semibold text-black text-center">Ticket Types</h2>
+    <h2 className="text-xl font-semibold text-black text-center">Tickets avaliable</h2>
     
     {formData.tickets.map((ticket, ticketIndex) => (
-      <div key={ticketIndex} className="p-4 border-2 rounded-lg space-y-4">
+      <div key={ticketIndex} className="p-4 border-2 rounded-lg space-y-4 shadow-md">
         <div className="flex justify-between items-center">
           <h3 className="text-lg font-medium">Ticket Type {ticketIndex + 1}</h3>
           {ticketIndex > 0 && (
@@ -75,6 +75,7 @@ export const TicketsForm: React.FC<{
             <input
               type="number"
               min="0"
+              step="0.01"
               value={ticket.price}
               onChange={(e) => {
                 const newTickets = [...formData.tickets];

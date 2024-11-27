@@ -3,6 +3,7 @@ import React, { useState, FormEvent, useRef, useEffect } from 'react';
 import Header from '@/app/components/Header';
 import { TicketsForm } from '@/app/components/CreateEventComponents/TicketsForm';
 import { TimePicker } from '@/app/components/CreateEventComponents/TimePicker';
+import { useSession } from 'next-auth/react';
 
 interface Ticket {
   name: string;
@@ -13,23 +14,25 @@ interface Ticket {
 interface EventFormData {
   title: string;
   description: string;
-  datetime: string;
+  date: string;
   location: string;
   capacity: number;
-  price: number;
   imageUrl: string;
   type: 'conference' | 'workshop' | 'meetup' | 'seminar' | 'other';
   tickets: Ticket[];
+  organizer: string;
 }
 
 const CreateEventForm = () => {
+
+  const {data: session} = useSession()
+
   const [formData, setFormData] = useState<EventFormData>({
     title: '',
     description: '',
-    datetime: '',
+    date: '',
     location: '',
     capacity: 100,
-    price: 0,
     imageUrl: '',
     type: 'conference',
     tickets: [   // Initialize with one empty ticket
@@ -39,14 +42,16 @@ const CreateEventForm = () => {
         benefits: [''], 
         total: 0
       }
-    ]
+    ],
+    organizer: session?.user?.id || ''
   });
+
   const [dateValue, setDateValue] = useState(new Date().toISOString().split('T')[0])  
   const [timeValue, setTimeValue] = useState('13:00')
   
   useEffect(() => {
-    if (formData.datetime) {
-      const date = new Date(formData.datetime)
+    if (formData.date) {
+      const date = new Date(formData.date)
       console.log(date)
       setDateValue(date.toISOString().split('T')[0])
       setTimeValue(date.toLocaleTimeString('en-US', { 
@@ -55,20 +60,21 @@ const CreateEventForm = () => {
         hour12: false 
       }))
     }
-  }, [formData.datetime])
+  }, [formData.date])
 
-  const handleDateTimeChange = (date: string, time: string) => {
+  const handleDateChange = (date: string, time: string) => {
     const [hours, minutes] = time.split(':');
     const [year, month, day] = date.split('-');
-    const dateObj = new Date(Date.UTC(
+    console.log("Date should be: ", year, month, day)
+    const dateObj = new Date(
       parseInt(year),
       parseInt(month) - 1,
       parseInt(day),
       parseInt(hours),
       parseInt(minutes)
-    ));
-    setFormData({ ...formData, datetime: dateObj.toISOString() });
-};
+    );
+    setFormData({ ...formData, date: dateObj.toISOString() });
+  };
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -113,7 +119,7 @@ const CreateEventForm = () => {
   const dateRef = useRef<HTMLInputElement>(null)
 
   const inputClasses = `mt-1 block p-3 cursor-pointer
-  border-b border-gray-200 focus:border-b-black focus:ring-0 focus:outline-none`
+  border-b border-gray-200 focus:border-black focus:ring-0 focus:outline-none`
   const textareaClasses = `mt-2 w-full rounded-md border-gray-300 border
   shadow-sm focus:border-blue-500 focus:ring-blue-500 p-4`;
 
@@ -212,14 +218,14 @@ const CreateEventForm = () => {
                       id="date"
                       ref={dateRef}
                       value={dateValue}
-                      onChange={(e) => handleDateTimeChange(e.target.value, timeValue)}
+                      onChange={(e) => handleDateChange(e.target.value, timeValue)}
                       className={`${inputClasses} w-full`}
                       required
                     />
                   </div>
                 </div>
 
-                <TimePicker dateValue={dateValue} handleDateTimeChange={handleDateTimeChange}
+                <TimePicker dateValue={dateValue} handleDateChange={handleDateChange}
                 timeValue={timeValue}/>
               </div>
             </div>
@@ -234,6 +240,8 @@ const CreateEventForm = () => {
             font-medium text-gray-700">
               Make it in this format please: CITY, COUNTRY<RequiredStar />
               <input type="text" 
+              value={formData.location}
+              onChange={(e) => setFormData({ ...formData, location: e.target.value })}
               placeholder='e.g. Lagos, Nigeria'
               className={`${inputClasses} w-full`} />
             </label>

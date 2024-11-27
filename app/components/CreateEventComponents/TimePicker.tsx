@@ -3,9 +3,9 @@ import { X } from 'lucide-react';
 
 export const TimePicker: React.FC<{
   timeValue: string;
-  handleDateTimeChange: (date: string, time: string) => void;
+  handleDateChange: (date: string, time: string) => void;
   dateValue: string;
-}> = ({dateValue, handleDateTimeChange, timeValue}) => {
+}> = ({dateValue, handleDateChange, timeValue}) => {
 
   const [selectedTime, setSelectedTime] = useState('12:30');
   const [isOpen, setIsOpen] = useState(false);
@@ -35,7 +35,7 @@ export const TimePicker: React.FC<{
   const handleTimeSelect = (time: string) => {
     setSelectedTime(time);
     console.log(dateValue)
-    handleDateTimeChange(dateValue, time);
+    handleDateChange(dateValue, time);
     setIsOpen(false);
   };
  
