@@ -42,7 +42,7 @@ const CreateEventForm = () => {
     ]
   });
   const [dateValue, setDateValue] = useState(new Date().toISOString().split('T')[0])  
-  const [timeValue, setTimeValue] = useState('')
+  const [timeValue, setTimeValue] = useState('13:00')
   
   useEffect(() => {
     if (formData.datetime) {
@@ -59,12 +59,16 @@ const CreateEventForm = () => {
 
   const handleDateTimeChange = (date: string, time: string) => {
     const [hours, minutes] = time.split(':');
-    console.log(date)
-    const dateObj = new Date(date);
-    dateObj.setHours(parseInt(hours), parseInt(minutes));
-    console.log(dateObj)
+    const [year, month, day] = date.split('-');
+    const dateObj = new Date(Date.UTC(
+      parseInt(year),
+      parseInt(month) - 1,
+      parseInt(day),
+      parseInt(hours),
+      parseInt(minutes)
+    ));
     setFormData({ ...formData, datetime: dateObj.toISOString() });
-  };
+};
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);

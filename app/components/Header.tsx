@@ -10,7 +10,7 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
   const { data: session, status } = useSession() // Add status from useSession
   const pathname = usePathname()
-  const isLoading = status === 'loading' // Check if session is loading
+  const isLoading = status === "loading" // Check if session is loading
 
 
   const navLinks = [
@@ -90,8 +90,10 @@ export default function Header() {
 
         {/* Loading placeholder - Show while session is loading */}
         {isLoading && (
-          <div className='hidden md:block w-10 h-10 rounded-full 
-          bg-gray-600/20 animate-pulse'></div>
+          <div className='w-full flex justify-end'>
+            <div className='hidden md:block w-10 h-10 rounded-full
+            bg-gray-300 animate-pulse'></div>
+          </div>
         )}
 
         {/* Mobile Menu Button */}
@@ -107,7 +109,7 @@ export default function Header() {
         {/* Mobile Menu & Desktop Dropdown */}
         {menuOpen && !isLoading && (
           <div 
-            className='absolute top-0 right-0 mt-[4.5rem] w-full md:w-64 bg-white rounded-b-lg md:rounded-lg shadow-xl z-50 
+            className='absolute top-0 right-2 mt-[4.5rem] w-full md:w-64 bg-white rounded-b-lg md:rounded-lg shadow-xl z-50 
               transform origin-top-right transition-all'
           >
             {session && (
@@ -120,9 +122,9 @@ export default function Header() {
                     height={40}
                     className='rounded-full'
                   />
-                  <div className='flex flex-col'>
+                  <div className='flex flex-col text-black'>
                     <span className='font-medium'>{session.user?.name}</span>
-                    <span className='text-sm text-gray-500'>{session.user?.email}</span>
+                    <span className='text-sm text-gray-600'>{session.user?.email}</span>
                   </div>
                 </div>
               </div>
