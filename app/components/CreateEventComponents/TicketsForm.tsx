@@ -1,4 +1,4 @@
-import { Trash } from 'lucide-react';
+import { PlusCircle, Trash } from 'lucide-react';
 import React from 'react'
 
 interface Ticket {
@@ -61,7 +61,7 @@ export const TicketsForm: React.FC<{
               newTickets[ticketIndex].name = e.target.value;
               setFormData({ ...formData, tickets: newTickets });
             }}
-            className={inputClasses}
+            className={`${inputClasses} !important border w-full rounded-lg`}
             required
           />
         </div>
@@ -75,14 +75,13 @@ export const TicketsForm: React.FC<{
             <input
               type="number"
               min="0"
-              step="0.01"
               value={ticket.price}
               onChange={(e) => {
                 const newTickets = [...formData.tickets];
                 newTickets[ticketIndex].price = parseFloat(e.target.value);
                 setFormData({ ...formData, tickets: newTickets });
               }}
-              className={inputClasses}
+              className={`${inputClasses} !important border w-full rounded-lg`}
               required
             />
           </div>
@@ -99,7 +98,7 @@ export const TicketsForm: React.FC<{
                 newTickets[ticketIndex].total = parseInt(e.target.value);
                 setFormData({ ...formData, tickets: newTickets });
               }}
-              className={inputClasses}
+              className={`${inputClasses} !important border w-full rounded-lg`}
               required
             />
           </div>
@@ -151,9 +150,10 @@ export const TicketsForm: React.FC<{
                 newTickets[ticketIndex].benefits.push('');
                 setFormData({ ...formData, tickets: newTickets });
               }}
-              className="text-sm mt-20 text-primaryDarker hover:text-primary"
+              className="text-sm text-primaryDarker hover:text-primary
+              flex items-center gap-2 pt-5"
             >
-              + Add Benefit
+              <PlusCircle /> Add Benefit
             </button>
           </div>
         </div>
@@ -177,9 +177,11 @@ export const TicketsForm: React.FC<{
           ]
         });
       }}
-      className="mt-4 w-full py-2 px-4 border border-dashed border-gray-300 rounded-md text-sm font-medium text-gray-600 hover:border-gray-400 hover:bg-gray-50"
+      className="mt-4 w-full p-4 border flex justify-center items-center gap-4 
+      rounded-md text-sm font-medium text-gray-600 hover:border-gray-400 
+      border-dashed border-gray-300 hover:bg-gray-50"
     >
-      + Add Another Ticket Type
+      <PlusCircle /> Add Another Ticket Type
     </button>
   </div>
   
