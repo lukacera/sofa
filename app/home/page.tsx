@@ -1,6 +1,6 @@
 import React from "react";
 import Header from "../components/Header";
-import { Calendar } from "lucide-react";
+import { ArrowRight, Calendar } from "lucide-react";
 import { TopicsGrid } from "../components/HomePageComponents/TopicsGrid";
 import { EventsNearYou } from "../components/HomePageComponents/EventsNearYou";
 import { auth } from "@/auth";
@@ -89,9 +89,18 @@ export default async function Page() {
         <section className="mt-20">
           <div className="flex flex-col items-center gap-5">
             <h2 className="font-bold text-2xl mb-5">Your upcoming events</h2>
-            <EventsNearYou/>
+            <span className="flex items-center gap-3">
+              You have no upcoming events. 
+              <a href="/events" className="px-3 py-2 rounded-lg bg-accent
+              text-mainWhite flex">
+                <span>Explore events</span>
+                <ArrowRight size={24} />
+              </a>
+            </span>
           </div>
         </section>
+
+        <EventsNearYou />
 
         <section className="flex flex-col gap-10 mt-20">
           <div className="flex flex-col items-center gap-5">
@@ -99,7 +108,6 @@ export default async function Page() {
             <TopicsGrid />
           </div>
           <div className="flex flex-col items-center mt-20 gap-6">
-            <h2 className="font-bold text-2xl mb-5">Events near you</h2>
             <EventsNearYou />
           </div>
         </section>

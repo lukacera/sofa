@@ -53,7 +53,7 @@ export default function Header() {
           <div className='flex items-center gap-10 place-content-end'>
             {session?.user.role === 'company' && (
               <Link 
-              href='/dashboard' 
+              href='/create-event' 
               className='flex items-center gap-2 px-4 py-2 bg-accent 
               text-mainWhite rounded-full font-medium transition-all duration-200 hover:bg-opacity-90 
                 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg'
