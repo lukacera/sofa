@@ -2,23 +2,23 @@ import { PlusCircle, Trash } from 'lucide-react';
 import React from 'react'
 
 interface Ticket {
-    name: string;
-    price: number;
-    benefits: string[];
-    total: number;
+  name: string;
+  price: number;
+  benefits: string[];
+  total: number;
 }
-
 interface EventFormData {
   title: string;
   description: string;
   date: string;
   location: string;
   capacity: number;
-  imageUrl: string;
+  image: File | null;
   type: 'conference' | 'workshop' | 'meetup' | 'seminar' | 'other';
   tickets: Ticket[];
   organizer: string;
 }
+
 
 export const TicketsForm: React.FC<{
     formData: EventFormData;

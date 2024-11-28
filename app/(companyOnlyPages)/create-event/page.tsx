@@ -18,10 +18,11 @@ interface EventFormData {
   date: string;
   location: string;
   capacity: number;
-  image: string;
+  image: File | null;
   type: 'conference' | 'workshop' | 'meetup' | 'seminar' | 'other';
   tickets: Ticket[];
   organizer: string;
+  stauts: 'draft' | 'published';
 }
 
 const CreateEventForm = () => {
@@ -34,9 +35,9 @@ const CreateEventForm = () => {
     date: '',
     location: '',
     capacity: 100,
-    image: '',
+    image: new File([], 'image'),
     type: 'conference',
-    tickets: [   // Initialize with one empty ticket
+    tickets: [
       {
         name: '',
         price: 0,
@@ -45,6 +46,7 @@ const CreateEventForm = () => {
       }
     ],
     organizer: session?.user?.id || '',
+    stauts: 'published'
   });
 
   const [dateValue, setDateValue] = useState(new Date().toISOString().split('T')[0])  
