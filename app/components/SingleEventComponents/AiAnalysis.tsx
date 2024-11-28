@@ -1,7 +1,7 @@
 import { Pencil } from 'lucide-react'
 import React, { useState, useEffect } from 'react'
 
-const TypewriterText = ({ text, delay = 20 }) => {
+const TypewriterText: React.FC<{ text: string; delay?: number }> = ({ text, delay = 20 }) => {
   const [displayedText, setDisplayedText] = useState('')
   const [currentIndex, setCurrentIndex] = useState(0)
 
@@ -19,16 +19,13 @@ const TypewriterText = ({ text, delay = 20 }) => {
   return <span>{displayedText}</span>
 }
 
-export const AIAnalysis = () => {
+export const AIAnalysis: React.FC<{
+  text: string
+}> = ({text}) => {
   const [isVisible, setIsVisible] = useState(false)
   const [isHeaderVisible, setHeaderVisible] = useState(false)
   const [startTyping, setStartTyping] = useState(false)
   
-  const analysisText = `Lorem ipsum dolor sit amet 
-  consectetur adipisicing elit. Quae, voluptate. Lorem ipsum, 
-  dolor sit amet consectetur adipisicing elit. Nostrum tempore voluptatem 
-  fugit blanditiis repellendus aspernatur, sunt quod, quia accusantium 
-  architecto aut consequatur dicta.`
 
   useEffect(() => {
     // Start container fade in
@@ -42,7 +39,7 @@ export const AIAnalysis = () => {
   return (
     <div className={`bg-gradient-to-r from-primary to-primaryDarker/30
       p-5 rounded-xl flex flex-col gap-4 transition-all duration-500 ease-out
-      h-[11rem] ${isVisible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'}`}>
+      h-[16.5rem] ${isVisible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'}`}>
       <div className={`flex items-center gap-2 transition-opacity duration-300
         ${isHeaderVisible ? 'opacity-100' : 'opacity-0'}`}>
         <Pencil size={18}/>
@@ -51,7 +48,7 @@ export const AIAnalysis = () => {
       <p className='text-sm min-h-[4rem]'>
         {startTyping ? (
           <TypewriterText 
-            text={analysisText} 
+            text={text} 
             delay={15}
           />
         ) : (

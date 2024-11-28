@@ -4,26 +4,16 @@
 import { useParams } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import Header from '@/app/components/Header'
-import { BookmarkPlus, Clock, Heart, MapPin, TagIcon } from 'lucide-react'
+import { Clock, MapPin, TagIcon } from 'lucide-react'
 import { CldImage } from 'next-cloudinary'
 import TicketSection from '@/app/components/SingleEventComponents/TicketSection'
 import { AIAnalysis } from '@/app/components/SingleEventComponents/AiAnalysis'
 import { baseURL } from '@/app/constants/apiURL'
-
-interface Event {
-  id: string
-  title: string
-  companyName: string
-  date: string
-  location: string
-  tags: string[]
-  imageUrl: string
-  description: string
-}
+import { EventType } from '@/app/types/Event'
 
 export default function EventPage() {
   const params = useParams()
-  const [event, setEvent] = useState<Event | null>(null)
+  const [event, setEvent] = useState<EventType | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -62,13 +52,13 @@ export default function EventPage() {
                 </h1>
                 <div className='flex items-center gap-2'>
                   <div className='w-4 aspect-square rounded-full bg-primary'></div>
-                  <h3>{event.companyName}</h3>
+                  <h3>{event.organizer.name}</h3>
                 </div>
 
                 <div className='flex items-center gap-2'>
                   <div className='flex items-center gap-2 text-sm'>
                     <Clock size={18}/>
-                    {event.date}
+                    {new Date(event.date).toDateString()}
                   </div>
                   <div className='flex items-center gap-2 text-sm'>
                     <MapPin size={16} className="flex-shrink-0" />
@@ -78,7 +68,7 @@ export default function EventPage() {
               </div>
 
               <div className='flex flex-wrap gap-2'>
-                {event.tags.map((tag, i) => (
+                {event.tags?.map((tag, i) => (
                   <div key={i} className='flex items-center gap-2 text-white px-3 py-1 rounded-lg bg-secondary'>
                     <TagIcon size={15}/>
                     <h3 className='text-sm'>{tag}</h3>
@@ -86,7 +76,7 @@ export default function EventPage() {
                 ))}
               </div>
 
-              <AIAnalysis />
+              <AIAnalysis text={event.aiAnalysis}/>
 
               <div className='flex items-center gap-4'>
                 {/* Like and Save buttons remain unchanged */}
@@ -97,7 +87,7 @@ export default function EventPage() {
               <div className='w-full h-[27rem] relative rounded-2xl overflow-hidden shadow-lg'>
                 <CldImage
                   alt={`${event.title} cover image`}
-                  src={event.imageUrl}
+                  src={"https://res.cloudinary.com/dluypaeie/image/upload/v1732538732/Avatars_Circles_Glyph_Style_nrein3.jpg"}
                   fill
                   priority
                 />

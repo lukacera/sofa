@@ -8,7 +8,7 @@ export const EventCard: React.FC<{ event: EventType }> = ({ event }) => {
   console.log(typeof event.date)  
   return (
       <Link 
-        href={`/event/${event._id}`}
+        href={`/events/${event._id}`}
         className="group rounded-lg shadow-xl border w-[19rem]"
       >
         <div className="relative">

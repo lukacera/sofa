@@ -1,9 +1,10 @@
+import { baseURL } from '@/app/constants/apiURL';
 import { EventCard } from './EventCard';
 import { EventType } from "@/app/types/Event"
 
 async function getEventsNearby() {
   try {
-    const response = await fetch('http://localhost:3000/api/events');
+    const response = await fetch(`${baseURL}/events`);
     
     if (!response.ok) {
       throw new Error('Failed to fetch events');
