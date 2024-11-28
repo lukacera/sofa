@@ -81,6 +81,10 @@ const EventSchema = new Schema<EventType>({
     type: String,
     enum: ['conference', 'workshop', 'meetup', 'seminar', 'other'],
     default: 'other'
+  },
+  image: {
+    type: String,
+    default: 'https://res.cloudinary.com/dluypaeie/image/upload/v1732538732/Avatars_Circles_Glyph_Style_nrein3.jpg'
   }
 }, {
   timestamps: true 

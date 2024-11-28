@@ -28,7 +28,7 @@ export const TicketsForm: React.FC<{
 }> = ({RequiredStar, formData, inputClasses, setFormData}) => {
   return (
     <div className="space-y-6">
-    <h2 className="text-xl font-semibold text-black text-center">Tickets avaliable</h2>
+    <h2 className="text-xl font-semibold text-black text-center">Tickets</h2>
     
     {formData.tickets.map((ticket, ticketIndex) => (
       <div key={ticketIndex} className="p-4 border-2 rounded-lg space-y-4 shadow-md">
@@ -51,7 +51,7 @@ export const TicketsForm: React.FC<{
         {/* Ticket Name */}
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            Ticket Name (e.g VIP)<RequiredStar />
+            Ticket Name (e.g VIP or Free)<RequiredStar />
           </label>
           <input
             type="text"
@@ -70,7 +70,7 @@ export const TicketsForm: React.FC<{
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Price<RequiredStar />
+              Ticket price in $<RequiredStar />
             </label>
             <input
               type="number"
@@ -79,7 +79,8 @@ export const TicketsForm: React.FC<{
               value={ticket.price}
               onChange={(e) => {
                 const newTickets = [...formData.tickets];
-                newTickets[ticketIndex].price = parseFloat(e.target.value);
+                const value = e.target.value === '' ? 0 : parseFloat(e.target.value);
+                newTickets[ticketIndex].price = isNaN(value) ? 0 : value;
                 setFormData({ ...formData, tickets: newTickets });
               }}
               className={`${inputClasses} !important border w-full rounded-lg`}
@@ -88,7 +89,7 @@ export const TicketsForm: React.FC<{
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Total Tickets<RequiredStar />
+              Number of tickets<RequiredStar />
             </label>
             <input
               type="number"
@@ -96,7 +97,8 @@ export const TicketsForm: React.FC<{
               value={ticket.total}
               onChange={(e) => {
                 const newTickets = [...formData.tickets];
-                newTickets[ticketIndex].total = parseInt(e.target.value);
+                const value = e.target.value === '' ? 0 : parseInt(e.target.value);
+                newTickets[ticketIndex].total = isNaN(value) ? 0 : value;
                 setFormData({ ...formData, tickets: newTickets });
               }}
               className={`${inputClasses} !important border w-full rounded-lg`}

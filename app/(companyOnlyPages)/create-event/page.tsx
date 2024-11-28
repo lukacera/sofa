@@ -4,6 +4,7 @@ import Header from '@/app/components/Header';
 import { TicketsForm } from '@/app/components/CreateEventComponents/TicketsForm';
 import { TimePicker } from '@/app/components/CreateEventComponents/TimePicker';
 import { useSession } from 'next-auth/react';
+import ImageUpload from '@/app/components/CreateEventComponents/ImageUpload';
 
 interface Ticket {
   name: string;
@@ -17,7 +18,7 @@ interface EventFormData {
   date: string;
   location: string;
   capacity: number;
-  imageUrl: string;
+  image: string;
   type: 'conference' | 'workshop' | 'meetup' | 'seminar' | 'other';
   tickets: Ticket[];
   organizer: string;
@@ -33,7 +34,7 @@ const CreateEventForm = () => {
     date: '',
     location: '',
     capacity: 100,
-    imageUrl: '',
+    image: '',
     type: 'conference',
     tickets: [   // Initialize with one empty ticket
       {
@@ -43,7 +44,7 @@ const CreateEventForm = () => {
         total: 0
       }
     ],
-    organizer: session?.user?.id || ''
+    organizer: session?.user?.id || '',
   });
 
   const [dateValue, setDateValue] = useState(new Date().toISOString().split('T')[0])  
@@ -179,6 +180,8 @@ const CreateEventForm = () => {
                 {formData.description.length} / 1000 characters {formData.description.length < 100 && `(${100 - formData.description.length} more needed)`}
               </p>
             </div>
+            <ImageUpload formData={formData} inputClasses={inputClasses}
+            setFormData={setFormData}/>
             {/* Date, Time, and Event Type */}
             <div className="space-y-6">
               <h2 className="text-xl text-center font-semibold text-black pb-2">

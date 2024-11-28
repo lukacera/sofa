@@ -19,6 +19,7 @@ export type EventType = {
     organizer: UserType;
     tags?: string[] | null;
     status: 'draft' | 'published' | 'cancelled' | 'finished';
+    image: string;
     createdAt: Date;
     updatedAt: Date;
 }
