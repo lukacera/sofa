@@ -19,7 +19,7 @@ export async function GET(
       );
     }
 
-    const event = await Event.findById(params._id);
+    const event = await Event.findById(params._id).populate("organizer");
     
     console.log(event);
     if (!event) {
