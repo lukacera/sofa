@@ -9,7 +9,7 @@ export type EventType = {
     location: string;
     capacity: number;
     tickets: {
-        name: string;
+        type: "free" | "paid";
         price: number;
         benefits: string[];
         total: number;

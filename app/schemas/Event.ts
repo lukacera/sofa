@@ -35,7 +35,8 @@ const EventSchema = new Schema<EventType>({
       name: {
         type: String,
         required: true,
-        trim: true
+        enum: ['free', 'paid'],
+        default: 'free'
       },
       price: {
         type: Number,

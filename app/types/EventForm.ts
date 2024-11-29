@@ -16,5 +16,6 @@ export interface EventFormData {
     tickets: Ticket[];
     organizer: string;
     status: 'draft' | 'published';
+    tags: string[];
 }
   

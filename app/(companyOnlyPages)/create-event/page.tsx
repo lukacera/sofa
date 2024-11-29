@@ -9,13 +9,19 @@ import { EventFormData } from '@/app/types/EventForm';
 
 const CreateEventForm = () => {
 
-  const {data: session} = useSession()
+  const {data: session, status} = useSession()
+  const now = new Date();
+  const minutes = now.getMinutes();
+  const roundedMinutes = Math.ceil(minutes / 30) * 30;
+  now.setMinutes(roundedMinutes);
+  now.setSeconds(0);
+  now.setMilliseconds(0);
 
   const [formData, setFormData] = useState<EventFormData>({
     title: '',
     description: '',
-    date: new Date().toISOString(),
     location: '',
+    date: now.toISOString(),
     capacity: 100,
     image: new File([], 'image'),
     type: 'conference',
@@ -27,12 +33,22 @@ const CreateEventForm = () => {
         total: 1
       }
     ],
-    organizer: session?.user?.id || '',
-    status: 'published'
-  });
+    organizer: '',
+    status: 'published',
+    tags: []
+  })
 
   const [dateValue, setDateValue] = useState(new Date().toISOString().split('T')[0])  
   const [timeValue, setTimeValue] = useState('13:00')
+  
+  useEffect(() => {
+    if (status === 'authenticated' && session?.user?.id) {
+      setFormData(prev => ({
+        ...prev,
+        organizer: session.user.id
+      }));
+    }
+  }, [status, session?.user?.id]);
   
   useEffect(() => {
     if (formData.date) {
@@ -47,6 +63,11 @@ const CreateEventForm = () => {
     }
   }, [formData.date])
 
+  const getTodayString = () => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  };
+  
   const handleDateChange = (date: string, time: string) => {
     const [hours, minutes] = time.split(':');
     const [year, month, day] = date.split('-');
@@ -69,23 +90,30 @@ const CreateEventForm = () => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
-
+  
     try {
-      console.log(formData)
+      const formDataToSend = new FormData();
+      
+      // Append the file separately
+      formDataToSend.append('image', formData.image as Blob);
+      
+      const restOfData = {
+        ...formData,
+        image: undefined // Remove image from the rest of the data
+      };
+      formDataToSend.append('data', JSON.stringify(restOfData));
+  
       const response = await fetch('/api/events', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+        body: formDataToSend
       });
-
+  
       if (!response.ok) {
         const data = await response.json();
         console.log('Error creating event:', data);
         throw new Error(`Error: ${response}`);
       }
-
+  
       const data = await response.json();
       console.log('Event created successfully:', data);
   
@@ -205,7 +233,21 @@ const CreateEventForm = () => {
                       id="date"
                       ref={dateRef}
                       value={dateValue}
-                      onChange={(e) => handleDateChange(e.target.value, timeValue)}
+                      min={getTodayString()}
+                      onChange={(e) => {
+                        // Add validation before handling the date change
+                        const selectedDate = new Date(e.target.value);
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0); // Reset time part for accurate date comparison
+                        
+                        if (selectedDate < today) {
+                          alert("Please select a future date.");
+                          handleDateChange(getTodayString(), timeValue);
+                          return;
+                        }
+                        
+                        handleDateChange(e.target.value, timeValue);
+                      }}
                       className={`${inputClasses} w-full`}
                       required
                     />

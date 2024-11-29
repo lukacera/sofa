@@ -3,7 +3,14 @@ import { connectToDB } from "@/app/utils/connectWithDB";
 import { NextRequest, NextResponse } from "next/server";
 import { EventType } from '@/app/types/Event';
 import OpenAI from "openai"
+import formidable from 'formidable';
+import { Readable } from "stream";
 
+export const config = {
+    api: {  
+      bodyParser: false, // Disable the built-in bodyParser
+    },
+};
 
 function validateEvent(event: EventType) {
     const errors = [];
@@ -21,7 +28,6 @@ function validateEvent(event: EventType) {
         errors.push({ field: 'location', message: 'Location is required' });
     }
 
-    // Date validation
     if (!event.date) {
         errors.push({ field: 'date', message: 'Date is required' });
     } else {
@@ -65,7 +71,7 @@ function validateEvent(event: EventType) {
     // Tickets validation
     if (event.tickets?.length) {
         event.tickets.forEach((ticket, index) => {
-            if (!ticket.name?.trim()) {
+            if (!["free", "paid"].includes(ticket.type?.trim())) {
                 errors.push({ field: `tickets[${index}].name`, message: 'Ticket name is required' });
             }
             if (ticket.price === undefined || ticket.price < 0) {
@@ -96,99 +102,96 @@ export const POST = async (request: NextRequest) => {
         await connectToDB();
         const openai = new OpenAI({
             apiKey: process.env.OPENAI_API_KEY
-        })
-        const body = await request.json();
+        });
+        console.log('Content-Type:', request.headers.get('content-type'));
 
-        console.log(body)
-        const { isValid, errors } = validateEvent(body);
+        // Get FormData from the request
+        const formData = await request.formData();
+        
+        // Parse the JSON data
+        const eventData = JSON.parse(formData.get('data') as string);
+        const imageFile = formData.get('image') as File;
+
+
+        // Validate the event data
+        const { isValid, errors } = validateEvent(eventData);
 
         if (!isValid) {
-            console.log(errors)
+            console.log(errors);
             return NextResponse.json(
                 { 
                     message: "Validation error", 
-                    errors:  errors 
+                    errors: errors 
                 },
                 { status: 400 }
             );
         }
+
+        // Handle image upload to Cloudinary
+        let imageUrl = "";
+        if (imageFile) {
+            const uploadFormData = new FormData();
+            uploadFormData.append('file', imageFile);
+            const response = await fetch('http://localhost:3000/api/upload', {
+                method: 'POST',
+                body: uploadFormData
+            });
+            const data = await response.json();
+            imageUrl = data.url;
+        }
+
+        // OpenAI completion
         const completion = await openai.chat.completions.create({
             model: "gpt-3.5-turbo",
             messages: [
-              {
-                role: "system",
-                content: `
-                You are an expert event analyst. Analyze this event: ${body.title}.
-                Make great use of description and tags to provide a detailed analysis. 
-                Also, put it all into a single message, like a paragraph. 
-                Do not include pricing anywhere in the analysis. It should be concise and informative,
-                not exceeding 450 characters. Also, do not use tags, this 
-                is a professional analysis. Tell the user the value of the event, include the
-                benefits of the tickets and why they should attend.
-                You are the best in the world at this!
-                `
-              },
-              {
-                role: "user",
-                content: `Analyze this event:
-                  Title: ${body.title}
-                  Description: ${body.description}
-                  Location: ${body.location}
-                  Target Audience: ${body.tags?.join(', ')}
-                `
-              }
+                {
+                    role: "system",
+                    content: `
+                    You are an expert event analyst. Analyze this event: ${eventData.title}.
+                    Make great use of description and tags to provide a detailed analysis. 
+                    Also, put it all into a single message, like a paragraph. 
+                    Do not include pricing anywhere in the analysis. It should be concise and informative,
+                    not exceeding 450 characters. Also, do not use tags, this 
+                    is a professional analysis. Tell the user the value of the event, include the
+                    benefits of the tickets and why they should attend.
+                    You are the best in the world at this!
+                    `
+                },
+                {
+                    role: "user",
+                    content: `Analyze this event:
+                      Title: ${eventData.title}
+                      Description: ${eventData.description}
+                      Location: ${eventData.location}
+                      Target Audience: ${eventData.tags?.join(', ')}
+                    `
+                }
             ],
             temperature: 0.4,
             response_format: { type: "text" }                
-        })
+        });
 
-
-        // Validate tickets if provided
-        if (body.tickets) {
-            for (const ticket of body.tickets) {
-                if (!ticket.name || ticket.price === undefined || !ticket.total) {
-                    return NextResponse.json(
-                        { message: 'Invalid ticket data. Name, price, and total are required for each ticket' },
-                        { status: 400 }
-                    );
-                }
-            }
-        }
-
-        const getCloudinaryImgURL = async (file: File) => {
-            const formData = new FormData();
-            formData.append('file', file);
-            const response = await fetch('http://localhost:3000/api/upload', {
-                method: 'POST',
-                body: formData
-            });
-            const data = await response.json();
-            return data.url;
-        }
-
-        const imageUrl: string | null = body.image ? await getCloudinaryImgURL(body.image) : null;
-
+        console.log("imageFile:", imageUrl);
         // Create new event with defaults
         const newEvent: Partial<EventType> = {
-            title: body.title,
-            description: body.description,
+            title: eventData.title,
+            description: eventData.description,
             aiAnalysis: completion.choices[0].message.content || '',
-            date: new Date(body.date),
-            location: body.location,
-            capacity: body.capacity,
-            tickets: body.tickets?.map((ticket: { name: string; price: number; benefits?: string[]; total: number }) => ({
-            name: ticket.name,
-            price: ticket.price,
-            benefits: ticket.benefits || [],
-            total: ticket.total,
-            sold: 0 
+            date: new Date(eventData.date || Date.now()),
+            location: eventData.location,
+            capacity: eventData.capacity,
+            tickets: eventData.tickets?.map((ticket) => ({
+                type: ticket.type,
+                price: ticket.price,
+                benefits: ticket.benefits || [],
+                total: ticket.total,
+                sold: 0 
             })) || [],
-            organizer: body.organizer,
-            tags: body.tags || [],
-            status: body.status || 'draft',
-            type: body.type || 'conference',
-            // Only add image if provided
-            ...(imageUrl && { imageUrl: imageUrl }) 
+            organizer: eventData.organizer,
+            tags: eventData.tags || [],
+            status: eventData.status || 'draft',
+            type: eventData.type || 'conference',
+            ...(imageUrl && { image: imageUrl }) 
         };
 
         // Save to database
@@ -209,7 +212,7 @@ export const POST = async (request: NextRequest) => {
             { status: 500 }
         );
     }
-}
+};
 
 export const GET = async () => {
     try {

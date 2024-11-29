@@ -3,7 +3,6 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { EventFormData } from '@/app/types/EventForm';
 
-
 interface ImageUploadProps {
   formData: EventFormData;
   setFormData: React.Dispatch<React.SetStateAction<EventFormData>>;
