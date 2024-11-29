@@ -1,4 +1,3 @@
-// app/events/[id]/page.tsx
 "use client"
 
 import { useParams } from 'next/navigation'
@@ -10,12 +9,14 @@ import TicketSection from '@/app/components/SingleEventComponents/TicketSection'
 import { AIAnalysis } from '@/app/components/SingleEventComponents/AiAnalysis'
 import { baseURL } from '@/app/constants/apiURL'
 import { EventType } from '@/app/types/Event'
+import ConfirmationModal from '@/app/components/SingleEventComponents/EventRegistrationConfirmation'
 
 export default function EventPage() {
   const params = useParams()
   const [event, setEvent] = useState<EventType | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [showModal, setShowModal] = useState(false)
 
   useEffect(() => {
     async function fetchEvent() {
@@ -37,6 +38,13 @@ export default function EventPage() {
     }
   }, [params.id])
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    )
+  }
   if (!event) return <div className="min-h-screen flex items-center justify-center">Event not found</div>
 
   return (
@@ -106,7 +114,17 @@ export default function EventPage() {
             </div>
           </div>
         </section>
-        <TicketSection />
+        <TicketSection 
+        tickets={event.tickets}
+        handleClick={() => setShowModal(true)}/>
+        {event && (
+          <ConfirmationModal
+            event={event}
+            isOpen={showModal}
+            onClose={() => setShowModal(false)}
+            ticket={event.tickets[0]}
+          />
+        )}
       </main>
     </div>
   )

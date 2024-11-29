@@ -3,6 +3,7 @@ export interface Ticket {
     price: number;
     benefits: string[];
     total: number;
+    _id: string;
 }
 
 export interface EventFormData {

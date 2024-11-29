@@ -63,7 +63,6 @@ export async function POST(request: Request) {
         
         if (!isValid) {
             console.log(errors)
-            console.log("Creating user...");
             return NextResponse.json(
                 { message: "Validation error", errors },
                 { status: 400 }

@@ -14,6 +14,7 @@ export type EventType = {
         benefits: string[];
         total: number;
         sold: number;
+        _id: string;
     }[];
     type: 'conference' | 'workshop' | 'meetup' | 'seminar' | 'other'
     organizer: UserType;
@@ -22,4 +23,5 @@ export type EventType = {
     image: string;
     createdAt: Date;
     updatedAt: Date;
+    attendees: UserType[];
 }

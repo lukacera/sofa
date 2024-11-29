@@ -86,6 +86,13 @@ const EventSchema = new Schema<EventType>({
   image: {
     type: String,
     default: 'https://res.cloudinary.com/dluypaeie/image/upload/v1732538732/Avatars_Circles_Glyph_Style_nrein3.jpg'
+  },
+  attendees: {
+    type: [{
+      type: Schema.Types.ObjectId,
+      ref: 'User'
+    }],
+    default: []
   }
 }, {
   timestamps: true 
