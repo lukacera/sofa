@@ -1,7 +1,6 @@
 "use client"
 import { useState, FormEvent } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { Building2, User, ArrowLeft } from 'lucide-react'
 import { UserType } from "../types/User"
 import { signIn } from "next-auth/react"
@@ -14,7 +13,6 @@ export default function RegisterPage(): JSX.Element {
   const [name, setName] = useState("")
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -221,29 +219,18 @@ export default function RegisterPage(): JSX.Element {
             type="submit"
             disabled={isLoading}
             className="w-full flex items-center justify-center gap-3 px-6 py-3 rounded-xl
-                     bg-mainDarker text-mainWhite hover:bg-secondary transition-colors
+                     bg-primaryDarker text-mainWhite hover:bg-secondary transition-colors
                      duration-200 shadow-md hover:shadow-lg disabled:opacity-50 
                      disabled:cursor-not-allowed"
           >
             {isLoading ? (
               <div className="w-6 h-6 border-2 border-white border-t-transparent 
-                            rounded-full animate-spin"/>
+              rounded-full animate-spin"/>
             ) : (
               "Create Account"
             )}
           </button>
         </form>
-
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300"></div>
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-mainWhite text-gray-500">
-              Or continue with
-            </span>
-          </div>
-        </div>
 
         <div className="text-center text-sm text-gray-600">
           <p>Already have an account?{" "}
