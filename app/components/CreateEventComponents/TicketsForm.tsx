@@ -87,24 +87,29 @@ export const TicketsForm: React.FC<{
               required
             />
           </div>
-          <div>
+            <div>
             <label className="block text-sm font-medium text-gray-700">
               Number of tickets<RequiredStar />
             </label>
             <input
               type="number"
-              min="0"
+              min="1"
               value={ticket.total}
               onChange={(e) => {
-                const newTickets = [...formData.tickets];
-                const value = e.target.value === '' ? 0 : parseInt(e.target.value);
-                newTickets[ticketIndex].total = isNaN(value) ? 0 : value;
-                setFormData({ ...formData, tickets: newTickets });
+              const newTickets = [...formData.tickets];
+              const value = parseInt(e.target.value);
+              newTickets[ticketIndex].total = value < 1 ? 1 : value;
+              setFormData({ ...formData, tickets: newTickets });
+              }}
+              onKeyDown={(e) => {
+              if (e.key === 'Backspace' && e.currentTarget.value.length === 1) {
+                e.preventDefault();
+              }
               }}
               className={`${inputClasses} !important border w-full rounded-lg`}
               required
             />
-          </div>
+            </div>
         </div>
   
         {/* Benefits */}
