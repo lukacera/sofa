@@ -5,25 +5,7 @@ import { TicketsForm } from '@/app/components/CreateEventComponents/TicketsForm'
 import { TimePicker } from '@/app/components/CreateEventComponents/TimePicker';
 import { useSession } from 'next-auth/react';
 import ImageUpload from '@/app/components/CreateEventComponents/ImageUpload';
-
-interface Ticket {
-  name: string;
-  price: number;
-  benefits: string[];
-  total: number;
-}
-interface EventFormData {
-  title: string;
-  description: string;
-  date: string;
-  location: string;
-  capacity: number;
-  image: File | null;
-  type: 'conference' | 'workshop' | 'meetup' | 'seminar' | 'other';
-  tickets: Ticket[];
-  organizer: string;
-  stauts: 'draft' | 'published';
-}
+import { EventFormData } from '@/app/types/EventForm';
 
 const CreateEventForm = () => {
 
@@ -32,21 +14,21 @@ const CreateEventForm = () => {
   const [formData, setFormData] = useState<EventFormData>({
     title: '',
     description: '',
-    date: '',
+    date: new Date().toISOString(),
     location: '',
     capacity: 100,
     image: new File([], 'image'),
     type: 'conference',
     tickets: [
       {
-        name: '',
+        type: 'free',
         price: 0,
-        benefits: [''], 
-        total: 0
+        benefits: [],
+        total: 1
       }
     ],
     organizer: session?.user?.id || '',
-    stauts: 'published'
+    status: 'published'
   });
 
   const [dateValue, setDateValue] = useState(new Date().toISOString().split('T')[0])  

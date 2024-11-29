@@ -1,24 +1,7 @@
 import { ImagePlus, X } from 'lucide-react';
 import { useState } from 'react';
 import Image from 'next/image';
-
-interface Ticket {
-  name: string;
-  price: number;
-  benefits: string[];
-  total: number;
-}
-interface EventFormData {
-  title: string;
-  description: string;
-  date: string;
-  location: string;
-  capacity: number;
-  image: File | null;
-  type: 'conference' | 'workshop' | 'meetup' | 'seminar' | 'other';
-  tickets: Ticket[];
-  organizer: string;
-}
+import { EventFormData } from '@/app/types/EventForm';
 
 
 interface ImageUploadProps {

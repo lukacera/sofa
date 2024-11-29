@@ -99,6 +99,7 @@ export const POST = async (request: NextRequest) => {
         })
         const body = await request.json();
 
+        console.log(body)
         const { isValid, errors } = validateEvent(body);
 
         if (!isValid) {
