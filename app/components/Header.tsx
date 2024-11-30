@@ -2,197 +2,165 @@
 import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import React, { useState } from 'react'
-import { LogOut, Home, Calendar, Menu, User, X, Plus } from "lucide-react"
+import { LogOut, Home, Calendar, Menu, User, X, Plus, ChevronDown } from "lucide-react"
 import { usePathname } from 'next/navigation'
 import { CldImage } from 'next-cloudinary'
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
-  const { data: session, status } = useSession() // Add status from useSession
+  const [calendarOpen, setCalendarOpen] = useState(false)
+  const { data: session, status } = useSession()
   const pathname = usePathname()
-  const isLoading = status === "loading" // Check if session is loading
-
+  const isLoading = status === "loading"
 
   const navLinks = [
     { name: 'Home', href: '/', icon: Home },
     { name: 'Events', href: '/events', icon: Calendar },
+    { name: 'Calendar', href: '/my-calendar', icon: Calendar }
   ]
 
-  console.log(menuOpen)
   return (
-    <div className='px-6 md:px-10 py-5 border-b bg-primaryDarker text-mainWhite'>
-      <div className='grid grid-cols-3 items-center'>
-        {/* Logo */}
-        <div>
-          <Link href="/">
-            <h1 className='font-bold text-2xl'>Sofa AI</h1>
+    <header className="fixed w-full z-50 bg-secondary shadow-lg">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <Link href="/" className="flex items-center space-x-2">
+            <span className="text-2xl font-bold bg-gradient-to-r from-white to-gray-100 text-transparent bg-clip-text 
+              hover:opacity-80 transition-opacity">
+              Sofa AI
+            </span>
           </Link>
-        </div>
-        
-        {/* Desktop Navigation */}
-        <nav className='hidden md:flex items-center gap-8 w-full place-content-center'>
-          {navLinks.map((link) => {
-            const Icon = link.icon
-            const isActive = pathname === link.href
-            return (
-              <Link
-                key={link.name}
-                href={link.href}
-                className={`flex items-center gap-2 text-lg 
-                  ${isActive && 'border-b border-black'}`}
-              >
-                <Icon size={24} />
-                {link.name}
-              </Link>
-            )
-          })}
-        </nav>
 
-        {/* Desktop User Menu - Only show when loading is complete */}
-        {!isLoading && (
-          <div className='flex items-center gap-10 place-content-end'>
-            {session?.user.role === 'company' && (
-              <Link 
-              href='/create-event' 
-              className='flex items-center gap-2 px-4 py-2 bg-accent 
-              text-mainWhite rounded-full font-medium transition-all duration-200 hover:bg-opacity-90 
-                hover:scale-105 active:scale-95 shadow-md hover:shadow-lg'
-            >
-              <Plus size={20} />
-              Create Event
-            </Link>
-            )}
-            {session ? (
-              <div className='hidden md:flex items-center gap-3'>
-                <CldImage
-                  src={session.user?.image ?? "https://res.cloudinary.com/dluypaeie/image/upload/v1732538732/Avatars_Circles_Glyph_Style_nrein3.jpg"}
-                  alt='User Image'
-                  width={40}
-                  height={40}
-                  className='rounded-full cursor-pointer ring-gray-300/80
-                  ring-1 hover:ring-2 hover:ring-white/50 transition-all'
-                  onClick={() => {
-                    console.log("clicked")
-                    setMenuOpen(prev => !prev)
-                  }}
-                />
-              </div>
-            ) : (
-              <Link 
-                href='/login' 
-                className='text-white hover:text-gray-200 transition-colors'
-              >
-                Sign In
-              </Link>
-            )}
-          </div>
-        )}
-
-        {/* Loading placeholder - Show while session is loading */}
-        {isLoading && (
-          <div className='w-full flex justify-end'>
-            <div className='hidden md:block w-10 h-10 rounded-full
-            bg-gray-300 animate-pulse'></div>
-          </div>
-        )}
-
-        {/* Mobile Menu Button */}
-        <button 
-          className='md:hidden text-white'
-          onClick={() => {
-            console.log("clicked")
-            setMenuOpen(prev => !prev)
-          }}        >
-          {menuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-
-        {/* Mobile Menu & Desktop Dropdown */}
-        {menuOpen && !isLoading && (
-          <div 
-            className='absolute top-0 right-2 mt-[4.5rem] w-full md:w-64 bg-white rounded-b-lg md:rounded-lg shadow-xl z-50 
-              transform origin-top-right transition-all'
-          >
-            {session && (
-              <div className='p-4 border-b'>
-                <div className='flex items-center gap-3'>
-                  <CldImage
-                    src={session.user.image ?? "https://res.cloudinary.com/dluypaeie/image/upload/v1732538732/Avatars_Circles_Glyph_Style_nrein3.jpg"}
-                    alt='User Image'
-                    width={40}
-                    height={40}
-                    className='rounded-full'
-                  />
-                  <div className='flex flex-col text-black'>
-                    <span className='font-medium'>{session.user?.name}</span>
-                    <span className='text-sm text-gray-600'>{session.user?.email}</span>
-                  </div>
-                </div>
-              </div>
-            )}
-            
-            <div className='py-2'>
-              <div className='flex md:hidden flex-col'>
-                {navLinks.map((link) => {
-                  const Icon = link.icon
-                  return (
-                    <div key={link.name}>
-                      <Link
-                        href={link.href}
-                        className='flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors'
-                      >
-                        <Icon size={18} />
-                        {link.name}
-                      </Link>
-                      <div className='my-1 border-t border-gray-100' />
-                    </div>
-                  )
-                })}
-              </div>
-              {/* Profile Link */}
-              {session && (
-                <>
-                  <Link
-                    href="/profile"
-                    className='flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors'
-                    onClick={() => {
-                      console.log("clicked")
-                      setMenuOpen(prev => !prev)
-                    }}
-                  >
-                    <User size={18} />
-                    My Profile
-                  </Link>
-                  
-                  {/* Divider */}
-                  <div className='my-1 border-t border-gray-100' />
-                  
-                  {/* Sign Out Button */}
-                  <button 
-                    onClick={() => signOut({callbackUrl: "/login"})}
-                    className='flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-700 
-                      hover:bg-gray-100 transition-colors'
-                  >
-                    <LogOut size={18} />
-                    Sign Out
-                  </button>
-                </>
-              )}
-
-              {/* Sign In Link for Mobile */}
-              {!session && (
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-8">
+            {navLinks.map((link) => {
+              const Icon = link.icon
+              const isActive = pathname === link.href
+              return (
                 <Link
-                  href='/login'
-                  className='flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
+                  key={link.name}
+                  href={link.href}
+                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium
+                    ${isActive 
+                      ? 'text-white bg-primary/40' 
+                      : 'text-gray-200 hover:text-white hover:bg-primary/20'
+                    } transition-all duration-200`}
+                >
+                  <Icon size={18} />
+                  <span>{link.name}</span>
+                </Link>
+              )
+            })}
+          </nav>
+
+          {/* Right Side Actions */}
+          <div className="flex items-center space-x-4">
+            {!isLoading && (
+              <>
+                {session?.user.role === 'company' && (
+                  <Link 
+                    href='/create-event'
+                    className="flex items-center space-x-2 px-4 py-2 bg-accent rounded-full text-sm font-medium
+                      text-white hover:bg-accent/90 transition-all duration-200 transform hover:scale-105
+                      active:scale-95 shadow-md hover:shadow-lg"
+                  >
+                    <Plus size={16} />
+                    <span>Create Event</span>
+                  </Link>
+                )}
+
+                {session ? (
+                  <div className="relative">
+                    <button
+                      onClick={() => setMenuOpen(!menuOpen)}
+                      className="flex items-center space-x-2 focus:outline-none"
+                    >
+                      <CldImage
+                        src={session.user?.image ?? "https://res.cloudinary.com/dluypaeie/image/upload/v1732538732/Avatars_Circles_Glyph_Style_nrein3.jpg"}
+                        alt="Profile"
+                        width={40}
+                        height={40}
+                        className="rounded-full ring-2 ring-white/30 hover:ring-white/50 transition-all"
+                      />
+                      <ChevronDown className={`w-4 h-4 text-white transition-transform duration-200 
+                        ${menuOpen ? 'rotate-180' : ''}`} />
+                    </button>
+
+                    {/* Dropdown Menu */}
+                    {menuOpen && (
+                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-50
+                        ring-1 ring-black ring-opacity-5">
+                        <div className="px-4 py-2 border-b">
+                          <p className="text-sm font-medium text-gray-900">{session.user?.name}</p>
+                          <p className="text-xs text-gray-500">{session.user?.email}</p>
+                        </div>
+                        
+                        <Link
+                          href="/profile"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          onClick={() => setMenuOpen(false)}
+                        >
+                          Profile
+                        </Link>
+                        
+                        <button
+                          onClick={() => signOut({ callbackUrl: "/login" })}
+                          className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                        >
+                          Sign out
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <Link
+                    href="/login"
+                    className="text-white hover:text-gray-200 transition-colors text-sm font-medium"
+                  >
+                    Sign In
+                  </Link>
+                )}
+              </>
+            )}
+
+            {/* Mobile Menu Button */}
+            <button
+              className="md:hidden p-2 rounded-md text-gray-200 hover:text-white hover:bg-primary/20
+                focus:outline-none"
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              {menuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      {menuOpen && (
+        <div className="md:hidden">
+          <div className="px-2 pt-2 pb-3 space-y-1">
+            {navLinks.map((link) => {
+              const Icon = link.icon
+              const isActive = pathname === link.href
+              return (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium
+                    ${isActive 
+                      ? 'text-white bg-primary/40' 
+                      : 'text-gray-200 hover:text-white hover:bg-primary/20'
+                    } transition-all duration-200`}
                   onClick={() => setMenuOpen(false)}
                 >
-                  <User size={18} />
-                  Sign In
+                  <Icon size={20} />
+                  <span>{link.name}</span>
                 </Link>
-              )}
-            </div>
+              )
+            })}
           </div>
-        )}
-      </div>
-    </div>
+        </div>
+      )}
+    </header>
   )
 }
