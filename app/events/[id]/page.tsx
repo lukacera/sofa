@@ -95,7 +95,7 @@ export default function EventPage() {
               <div className='w-full h-[27rem] relative rounded-2xl overflow-hidden shadow-lg'>
                 <CldImage
                   alt={`${event.title} cover image`}
-                  src={"https://res.cloudinary.com/dluypaeie/image/upload/v1732538732/Avatars_Circles_Glyph_Style_nrein3.jpg"}
+                  src={event.image}
                   fill
                   priority
                 />
