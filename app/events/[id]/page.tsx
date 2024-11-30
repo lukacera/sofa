@@ -1,122 +1,191 @@
 "use client"
-
-import { useParams } from 'next/navigation'
-import { useState, useEffect } from 'react'
-import Header from '@/app/components/Header'
-import { Clock, MapPin, TagIcon } from 'lucide-react'
-import { CldImage } from 'next-cloudinary'
-import TicketSection from '@/app/components/SingleEventComponents/TicketSection'
-import { AIAnalysis } from '@/app/components/SingleEventComponents/AiAnalysis'
-import { baseURL } from '@/app/constants/apiURL'
-import { EventType } from '@/app/types/Event'
-import ConfirmationModal from '@/app/components/SingleEventComponents/EventRegistrationConfirmation'
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';
+import { Clock, Heart, Bookmark, MapPin, TagIcon } from 'lucide-react';
+import { CldImage } from 'next-cloudinary';
+import Header from '@/app/components/Header';
+import TicketSection from '@/app/components/SingleEventComponents/TicketSection';
+import { AIAnalysis } from '@/app/components/SingleEventComponents/AiAnalysis';
+import ConfirmationModal from '@/app/components/SingleEventComponents/EventRegistrationConfirmation';
+import { baseURL } from '@/app/constants/apiURL';
+import { EventType } from '@/app/types/Event';
 
 export default function EventPage() {
-  const params = useParams()
-  const [event, setEvent] = useState<EventType | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [showModal, setShowModal] = useState(false)
+  const params = useParams();
+  const [event, setEvent] = useState<EventType | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
   useEffect(() => {
     async function fetchEvent() {
       try {
-        const response = await fetch(`${baseURL}/events/${params.id}`)
-        const data = await response.json()
-        console.log(data)
-        if (!response.ok) throw new Error('Failed to fetch event')
-        setEvent(data)
+        const response = await fetch(`${baseURL}/events/${params.id}`);
+        const data = await response.json();
+        if (!response.ok) throw new Error('Failed to fetch event');
+        setEvent(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Error fetching event')
+        setError(err instanceof Error ? err.message : 'Error fetching event');
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
     if (params.id) {
-      fetchEvent()
+      fetchEvent();
     }
-  }, [params.id])
+  }, [params.id]);
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"></div>
       </div>
-    )
+    );
   }
-  if (!event) return <div className="min-h-screen flex items-center justify-center">Event not found</div>
+
+  if (!event) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-2">
+        <div className="text-2xl font-semibold text-gray-700">Event not found</div>
+        <p className="text-gray-500">The event you're looking for doesn't exist or has been removed.</p>
+      </div>
+    );
+  }
 
   return (
-    <div className='min-h-screen max-w-screen'>
+    <div className="min-h-screen">
       <Header />
-      <main className='px-40 w-full h-full'>
-        <section className='w-full h-full mt-20'>
-          <div className='w-full grid grid-cols-[35%_65%] gap-20'>
-            <div className='flex flex-col gap-7'>
-              <div className='flex flex-col gap-3'>
-                <h1 className='text-4xl font-bold'>
-                  {event.title}
-                </h1>
-                <div className='flex items-center gap-2'>
-                  <div className='w-4 aspect-square rounded-full bg-primary'></div>
-                  <h3>{event.organizer.name}</h3>
+      <main className="w-[75%] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <section>
+          <div className="grid lg:grid-cols-[40%_50%] gap-6">
+            {/* Left Column */}
+            <div className="flex flex-col">
+              {/* Title and Actions */}
+              <div className="space-y-4">
+                <div className="flex justify-between items-start gap-3">
+                  <h1 className="text-3xl font-bold text-gray-900 leading-tight">
+                    {event.title.slice(0, 49)}{event.title.length > 49 ? '...' : ''}
+                  </h1>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <button
+                      onClick={() => setIsLiked(!isLiked)}
+                      className={`flex items-center justify-center p-2 rounded-full transition-all duration-300 hover:scale-105 ${
+                        isLiked 
+                          ? 'bg-rose-100 text-rose-500 shadow-rose-100/50 shadow-sm' 
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      <Heart size={18} className={`${isLiked ? 'fill-current' : ''} transition-all duration-300`} />
+                    </button>
+                    <button
+                      onClick={() => setIsSaved(!isSaved)}
+                      className={`flex items-center justify-center p-2 rounded-full transition-all duration-300 hover:scale-105 ${
+                        isSaved 
+                          ? 'bg-blue-100 text-blue-500 shadow-blue-100/50 shadow-sm' 
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      <Bookmark size={18} className={`${isSaved ? 'fill-current' : ''} transition-all duration-300`} />
+                    </button>
+                  </div>
                 </div>
 
-                <div className='flex items-center gap-2'>
-                  <div className='flex items-center gap-2 text-sm'>
-                    <Clock size={18}/>
-                    {new Date(event.date).toDateString()}
+                {/* Organizer */}
+                <div className="flex items-center gap-3 p-2">
+                  <div className="relative w-10 aspect-square rounded-full overflow-hidden ring-1 ring-gray-200">
+                    <CldImage
+                      alt={`${event.organizer.name} profile`}
+                      src={event.organizer.image || event.image}
+                      fill
+                      priority
+                      className="object-cover"
+                    />
                   </div>
-                  <div className='flex items-center gap-2 text-sm'>
-                    <MapPin size={16} className="flex-shrink-0" />
-                    <span>{event.location}</span>
+                  <div>
+                    <p className="text-xs text-gray-500">Organized by</p>
+                    <h3 className="font-medium text-gray-900">{event.organizer.name}</h3>
+                  </div>
+                </div>
+
+                {/* Date and Location */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 p-2">
+                    <Clock size={18} className="text-gray-500" />
+                    <div>
+                      <p className="text-xs text-gray-500">Date and time</p>
+                      <time className="font-medium text-gray-900 text-sm">
+                        {new Date(event.date).toLocaleDateString('en-US', {
+                          weekday: 'long',
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: 'numeric',
+                          minute: 'numeric',
+                        })}
+                      </time>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 p-2">
+                    <MapPin size={18} className="text-gray-500" />
+                    <div>
+                      <p className="text-xs text-gray-500">Location</p>
+                      <p className="font-medium text-gray-900 text-sm">{event.location}</p>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div className='flex flex-wrap gap-2'>
+              {/* Tags */}
+              <div className="flex flex-wrap gap-1.5">
                 {event.tags?.map((tag, i) => (
-                  <div key={i} className='flex items-center gap-2 text-white px-3 py-1 rounded-lg bg-secondary'>
-                    <TagIcon size={15}/>
-                    <h3 className='text-sm'>{tag}</h3>
+                  <div
+                    key={i}
+                    className="flex items-center gap-1.5 bg-secondary/10 text-secondary px-3 py-1 rounded-lg
+                    transition-all duration-300 hover:bg-secondary hover:text-white cursor-pointer"
+                  >
+                    <TagIcon size={12} />
+                    <span className="text-xs font-medium">{tag}</span>
                   </div>
                 ))}
               </div>
 
-              <AIAnalysis text={event.aiAnalysis}/>
-
-              <div className='flex items-center gap-4'>
-                {/* Like and Save buttons remain unchanged */}
-              </div>
+              {/* AI Analysis */}
+              <AIAnalysis text={event.aiAnalysis} />
             </div>
 
-            <div>
-              <div className='w-full h-[27rem] relative rounded-2xl overflow-hidden shadow-lg'>
+            {/* Right Column - Event Image */}
+            <div className="relative group flex justify-end">
+              <div className="w-[90%] h-full relative rounded-xl 
+              overflow-hidden shadow-md">
                 <CldImage
                   alt={`${event.title} cover image`}
                   src={event.image}
                   fill
                   priority
+                  className="object-cover transition-transform 
+                  duration-700 group-hover:scale-105"
                 />
               </div>
             </div>
           </div>
 
-          <div className='mt-16 mb-20'>
-            <h2 className='text-2xl font-semibold mb-6 text-center'>
-              About This Event
-            </h2>
-            <div className='space-y-4'>
-              <p className='text-gray-700 leading-relaxed'>
-                {event.description}
-              </p>
-            </div>
-          </div>
+          {/* About Section */}
+          <p className="text-gray-600 leading-relaxed text-lg mt-10">
+            {event.description}
+          </p>
         </section>
+
+        {/* Ticket Section */}
         <TicketSection 
-        tickets={event.tickets}
-        handleClick={() => setShowModal(true)}/>
+          tickets={event.tickets}
+          handleClick={() => setShowModal(true)}
+        />
+
+        {/* Modal */}
         {event && (
           <ConfirmationModal
             event={event}
@@ -127,5 +196,5 @@ export default function EventPage() {
         )}
       </main>
     </div>
-  )
+  );
 }

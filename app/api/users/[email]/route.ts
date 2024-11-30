@@ -14,9 +14,10 @@ export async function GET(
         const { email } = await params;
         console.log("Email:", email);
         const user = await User.findOne({
-            email: email
-        })
+            email: email.split("/").pop()
+        }).populate("eventsAttending").populate("events");
         
+        console.log("User:", user);
         if (!user) {
             return NextResponse.json(
                 { 

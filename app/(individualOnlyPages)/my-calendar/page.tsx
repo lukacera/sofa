@@ -53,6 +53,7 @@ const EventsCalendar = () => {
 
         setEvents(calendarEvents);
       } catch (err) {
+        console.log(err);
         setError(err instanceof Error ? err.message : 'Failed to load events');
       } finally {
         setLoading(false);

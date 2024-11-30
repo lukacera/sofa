@@ -11,10 +11,15 @@ export async function GET(
         await connectToDB();
 
         const { email } = await params;
-        console.log("Email:", email);
+
+        const currentDateTime = new Date();
         const user = await User.findOne({
             email: email
-        }).populate("eventsAttending")
+        }).populate({
+            path: "eventsAttending",
+            match: { date: { $gte: currentDateTime } },
+            options: { sort: { date: 1 } }
+        })
         
         if (!user) {
             return NextResponse.json(

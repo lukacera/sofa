@@ -8,7 +8,7 @@ const TicketSection: React.FC<{
 }> = ({handleClick, tickets}) => {
   return (
     <section className='text-center my-20 flex flex-col gap-10'>
-      <h2 className='text-2xl font-bold'>Tickets</h2>
+      <h2 className='text-3xl font-bold'>Tickets</h2>
       <div className="flex justify-center flex-wrap gap-5 w-full">
         {tickets.map((ticket, index) => (
           <div
