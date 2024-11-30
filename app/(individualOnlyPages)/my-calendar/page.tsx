@@ -38,6 +38,7 @@ const EventsCalendar = () => {
     content: '',
     position: { x: 0, y: 0 }
   });
+  const [currentView, setCurrentView] = useState<string>('dayGridMonth');
 
   const { data: session, status } = useSession();
   
@@ -274,19 +275,24 @@ const EventsCalendar = () => {
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
               }}
+              viewDidMount={(info) => {
+                setCurrentView(info.view.type);
+              }}
               events={events}
               eventMouseEnter={(info) => {
+                if (currentView !== 'dayGridMonth') return 
                 const rect = info.el.getBoundingClientRect();
                 setTooltip({
                   isVisible: true,
                   content: info.event.title,
                   position: {
                     x: rect.left - 100,
-                    y: rect.top + 90
+                    y: rect.top + 70
                   }
                 });
               }}
               eventMouseLeave={() => {
+                if (currentView !== 'dayGridMonth') return 
                 setTooltip(prev => ({ ...prev, isVisible: false }));
               }}
               eventClick={(info) => {
