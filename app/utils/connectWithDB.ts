@@ -5,6 +5,7 @@ const mongoDB: string = process.env.MONGO_URL || "mongodb://localhost:27017/myda
 let isConnected = false;
 
 export const connectToDB = async (): Promise<void> => {
+    console.log("Schemas: ", mongoose.modelNames());
     if (isConnected) {
         console.log('Using existing database connection');
         return;

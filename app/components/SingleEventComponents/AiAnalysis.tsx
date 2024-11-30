@@ -46,7 +46,7 @@ export const AIAnalysis: React.FC<{
         <Pencil size={18}/>
         <span className='font-medium'>AI Analysis</span>
       </div>
-      <p className='text-sm min-h-[4rem]'>
+      <p className='text-sm min-h-[4rem] break-words'>
         {startTyping ? (
           <TypewriterText 
             text={text} 

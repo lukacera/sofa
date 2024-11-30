@@ -92,7 +92,7 @@ const EventsCalendar = () => {
   return (
     <div className="min-h-screen bg-mainWhite">
       <Header />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 pb-12">
         {/* Calendar Header */}
         <div className="mb-8 space-y-2">
           <h1 className="text-3xl font-bold text-primaryDarker">Your Event Calendar</h1>

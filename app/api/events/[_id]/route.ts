@@ -11,15 +11,17 @@ export async function GET(
   try {
     await connectToDB();
 
+    const { _id } = await params;
+
     // Validate if id is a valid MongoDB ObjectId
-    if (!mongoose.Types.ObjectId.isValid(params._id)) {
+    if (!mongoose.Types.ObjectId.isValid(_id)) {
       return NextResponse.json(
         { error: "Invalid event ID format" },
         { status: 400 }
       );
     }
 
-    const event = await Event.findById(params._id).populate("organizer");
+    const event = await Event.findById(_id).populate("organizer");
     
     console.log(event);
     if (!event) {

@@ -1,6 +1,5 @@
 import Event from "@/app/schemas/Event";
 import User from "@/app/schemas/User";
-
 import { connectToDB } from "@/app/utils/connectWithDB";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -15,7 +14,7 @@ export async function GET(
         console.log("Email:", email);
         const user = await User.findOne({
             email: email
-        })
+        }).populate("eventsAttending")
         
         if (!user) {
             return NextResponse.json(
@@ -29,7 +28,7 @@ export async function GET(
         return NextResponse.json(
             {
                 message: "User found",
-                user: user
+                events: user.eventsAttending
             }, 
             { status: 200 });
     } catch (error) {
