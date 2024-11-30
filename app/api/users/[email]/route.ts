@@ -2,14 +2,18 @@ import User from "@/app/schemas/User";
 import { connectToDB } from "@/app/utils/connectWithDB";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest, { params }: { params: { email: string } }) {
+export async function GET(
+    req: NextRequest, 
+    { params }: { params: { email: string } }
+) {
     try {
-        const { email } = await params;
         await connectToDB();
-        console.log('Email:', email)
+
+        const { email } = await params;
+        console.log("Email:", email);
         const user = await User.findOne({
             email: email
-        })
+        }).populate("events").populate("eventsAttending")
         
         if (!user) {
             return NextResponse.json(
