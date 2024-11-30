@@ -62,7 +62,7 @@ export default function EventPage() {
         <section>
           <div className="grid lg:grid-cols-[40%_50%] gap-6">
             {/* Left Column */}
-            <div className="flex flex-col">
+            <div className="flex flex-col h-full">
               {/* Title and Actions */}
               <div className="space-y-4">
                 <div className="flex justify-between items-start gap-3">
@@ -155,32 +155,30 @@ export default function EventPage() {
               </div>
 
               {/* AI Analysis */}
-              <AIAnalysis text={event.aiAnalysis} />
+              <div className="flex-grow">
+                <AIAnalysis text={event.aiAnalysis} />
+              </div>
             </div>
 
             {/* Right Column */}
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col h-full gap-10">
               {/* Image Container */}
-              <div className="relative group flex justify-end">
-                <div className="w-[90%] h-[20rem] relative rounded-xl overflow-hidden shadow-md">
-                  <CldImage
-                    alt={`${event.title} cover image`}
-                    src={event.image}
-                    fill
-                    priority
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
+              <div className="relative flex-grow">
+                <div className="absolute inset-0 w-[95%] ml-auto">
+                  <div className="relative h-full w-full rounded-xl overflow-hidden shadow-md">
+                    <CldImage
+                      alt={`${event.title} cover image`}
+                      src={event.image}
+                      fill
+                      priority
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  </div>
                 </div>
               </div>
 
               {/* Attendees Section */}
-              <div className="flex flex-col gap-2 w-[90%] ml-auto">
-                <div className="flex items-center gap-2 text-gray-600">
-                  <Users size={16} />
-                  <span className="text-sm font-medium">
-                    {event.attendees?.length || 0} people attending
-                  </span>
-                </div>
+              <div className="flex justify-center gap-2 mt-4">
                 <div className="flex -space-x-2 overflow-hidden">
                   {event.attendees?.slice(0, 5).map((attendee, i) => (
                     <div
@@ -195,17 +193,24 @@ export default function EventPage() {
                       />
                     </div>
                   ))}
-                  {event.attendees?.length > 5 && (
-                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 ring-2 ring-white">
-                      <span className="text-xs font-medium text-gray-600">
-                        +{event.attendees.length - 5}
-                      </span>
-                    </div>
-                  )}
+                </div>
+                {event.attendees?.length > 5 && (
+                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 ring-2 ring-white">
+                    <span className="text-xs font-medium text-gray-600">
+                      +{event.attendees.length - 5}
+                    </span>
+                  </div>
+                )}
+                <div className="flex items-center gap-2 text-gray-600">
+                  <Users size={16} />
+                  <span className="text-sm font-medium">
+                    {event.attendees?.length || 0} people attending
+                  </span>
                 </div>
               </div>
-              </div>          
-            </div>
+              
+            </div>          
+          </div>
 
           {/* About Section */}
           <p className="text-gray-600 leading-relaxed text-lg mt-10 break-words">

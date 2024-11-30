@@ -15,7 +15,7 @@ export async function GET(
         console.log("Email:", email);
         const user = await User.findOne({
             email: email.split("/").pop()
-        })
+        }).populate("eventsAttending");
         
         console.log("User:", user);
         if (!user) {

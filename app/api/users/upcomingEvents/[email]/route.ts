@@ -19,8 +19,6 @@ export async function GET(
             mongoose.model('Event', EventSchema);
         }
 
-        console.log("Available models:", Object.keys(mongoose.models));
-
         const { email } = params;
         const currentDateTime = new Date();
         
