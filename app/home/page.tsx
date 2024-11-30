@@ -75,7 +75,7 @@ export default async function Page() {
           <div className="flex flex-col items-center gap-5">
             <h2 className="font-bold text-2xl mb-5">Your upcoming events</h2>
             {nextEvents.length > 0 ? (
-              <div className="flex flex-wrap justify-center gap-5 gap-10">
+              <div className="flex flex-wrap justify-center gap-5">
                 {nextEvents.map((event) => (
                   <EventCard key={event._id!} event={event} />
                 ))}

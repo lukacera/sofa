@@ -112,7 +112,7 @@ export default function EventPage() {
                 </div>
 
                 {/* Date and Location */}
-                <div className="space-y-2">
+                <div>
                   <div className="flex items-center gap-2 p-2">
                     <Clock size={18} className="text-gray-500" />
                     <div>
