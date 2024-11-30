@@ -3,8 +3,7 @@ import { connectToDB } from "@/app/utils/connectWithDB";
 import { NextRequest, NextResponse } from "next/server";
 import { EventType } from '@/app/types/Event';
 import OpenAI from "openai"
-import formidable from 'formidable';
-import { Readable } from "stream";
+import mongoose from "mongoose";
 
 export const config = {
     api: {  
@@ -103,7 +102,6 @@ export const POST = async (request: NextRequest) => {
         const openai = new OpenAI({
             apiKey: process.env.OPENAI_API_KEY
         });
-        console.log('Content-Type:', request.headers.get('content-type'));
 
         // Get FormData from the request
         const formData = await request.formData();
@@ -112,6 +110,7 @@ export const POST = async (request: NextRequest) => {
         const eventData = JSON.parse(formData.get('data') as string);
         const imageFile = formData.get('image') as File;
 
+        console.log("Mongo schemas:", mongoose.models);
 
         // Validate the event data
         const { isValid, errors } = validateEvent(eventData);

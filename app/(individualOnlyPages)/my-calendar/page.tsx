@@ -5,7 +5,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { EventType } from '@/app/types/Event';
-import { AlertCircle, Calendar, Loader2 } from 'lucide-react';
+import { AlertCircle, Loader2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Header from '@/app/components/Header';
 
@@ -19,11 +19,25 @@ interface CalendarEvent {
   borderColor?: string;
 }
 
+interface TooltipState {
+  isVisible: boolean;
+  content: string;
+  position: {
+    x: number;
+    y: number;
+  };
+}
+
 const EventsCalendar = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
+  const [tooltip, setTooltip] = useState<TooltipState>({
+    isVisible: false,
+    content: '',
+    position: { x: 0, y: 0 }
+  });
 
   const { data: session, status } = useSession();
   
@@ -94,15 +108,13 @@ const EventsCalendar = () => {
     <div className="min-h-screen bg-mainWhite">
       <Header />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 pb-12">
-        {/* Calendar Header */}
         <div className="mb-8 space-y-2">
           <h1 className="text-3xl font-bold text-primaryDarker">Your Event Calendar</h1>
           <p className="text-gray-600">Track and manage your upcoming events in one place</p>
         </div>
         
-        {/* Calendar Container */}
         <div className="bg-white rounded-xl shadow-sm border border-primary/20 overflow-hidden backdrop-blur-sm">
-            <div className="p-6">
+          <div className="p-6 relative">
             <style>
               {`
               .fc {
@@ -135,87 +147,125 @@ const EventsCalendar = () => {
               
               .fc .fc-button:hover {
                 background-color: #f8fafc;
-                border-
-                  color: #1d3557;
-                }
-                
-                .fc .fc-button-primary:not(:disabled).fc-button-active,
-                .fc .fc-button-primary:not(:disabled):active {
-                  background-color: #457b9d;
-                  border-color: #457b9d;
-                  color: white;
-                }
-                
-                .fc .fc-col-header-cell {
-                  padding: 1rem 0;
-                  background-color: #a8dadc10;
-                  font-weight: 600;
-                  color: #1d3557;
-                }
-                
-                .fc .fc-daygrid-day-number {
-                  color: #457b9d;
-                  padding: 0.75rem;
-                  font-size: 0.875rem;
-                  font-weight: 500;
-                }
-                
-                .fc .fc-daygrid-day.fc-day-today {
-                  background-color: #a8dadc15;
-                }
-                
-                .fc-event {
-                  border-radius: 6px;
-                  padding: 3px 6px;
-                  font-size: 0.875rem;
-                  border: none;
-                  transition: all 0.2s ease;
-                  cursor: pointer;
-                }
-                
-                .fc-event:hover {
-                  transform: translateY(-1px) scale(1.02);
-                  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-                }
-                
-                .fc-v-event {
-                  border: none;
-                  background-color: #457b9d;
-                }
-                
-                .fc .fc-toolbar-chunk {
-                  display: flex;
-                  gap: 0.5rem;
-                  align-items: center;
-                }
-                
-                .fc .fc-day-other .fc-daygrid-day-number {
-                  color: #64748b;
-                }
-                
-                .fc-theme-standard td, 
-                .fc-theme-standard th {
-                  border-color: #a8dadc20;
-                }
+                border-color: #1d3557;
+              }
+              
+              .fc .fc-button-primary:not(:disabled).fc-button-active,
+              .fc .fc-button-primary:not(:disabled):active {
+                background-color: #457b9d;
+                border-color: #457b9d;
+                color: white;
+              }
+              
+              .fc .fc-col-header-cell {
+                padding: 1rem 0;
+                background-color: #a8dadc10;
+                font-weight: 600;
+                color: #1d3557;
+              }
+              
+              .fc .fc-daygrid-day-number {
+                color: #457b9d;
+                padding: 0.75rem;
+                font-size: 0.875rem;
+                font-weight: 500;
+              }
+              
+              .fc .fc-daygrid-day.fc-day-today {
+                background-color: #a8dadc15;
+              }
+              
+              .fc-event {
+                border-radius: 6px;
+                padding: 3px 6px;
+                font-size: 0.875rem;
+                border: none;
+                transition: all 0.2s ease;
+                cursor: pointer;
+              }
+              
+              .fc-event:hover {
+                transform: translateY(-1px) scale(1.02);
+                box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+              }
+              
+              .fc-v-event {
+                border: none;
+                background-color: #457b9d;
+              }
+              
+              .fc .fc-toolbar-chunk {
+                display: flex;
+                gap: 0.5rem;
+                align-items: center;
+              }
+              
+              .fc .fc-day-other .fc-daygrid-day-number {
+                color: #64748b;
+              }
+              
+              .fc-theme-standard td, 
+              .fc-theme-standard th {
+                border-color: #a8dadc20;
+              }
 
-                @media (max-width: 640px) {
-                  .fc .fc-toolbar {
-                    flex-direction: column;
-                    gap: 1rem;
-                    padding: 0;
-                  }
-                  
-                  .fc .fc-toolbar-title {
-                    font-size: 1.125rem;
-                  }
-                  
-                  .fc .fc-button {
-                    padding: 0.5rem 0.75rem;
-                    font-size: 0.875rem;
-                  }
+              .event-tooltip {
+                position: fixed;
+                z-index: 50;
+                padding: 0.5rem 1rem;
+                background-color: #1d3557;
+                color: white;
+                border-radius: 0.5rem;
+                font-size: 0.875rem;
+                pointer-events: none;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+                           0 2px 4px -1px rgba(0, 0, 0, 0.06);
+                transform: translate(-50%, -100%);
+                margin-top: -8px;
+              }
+              
+              .event-tooltip::after {
+                content: '';
+                position: absolute;
+                bottom: -4px;
+                left: 50%;
+                transform: translateX(-50%);
+                border-width: 4px;
+                border-style: solid;
+                border-color: #1d3557 transparent transparent transparent;
+              }
+
+              @media (max-width: 640px) {
+                .fc .fc-toolbar {
+                  flex-direction: column;
+                  gap: 1rem;
+                  padding: 0;
                 }
+                
+                .fc .fc-toolbar-title {
+                  font-size: 1.125rem;
+                }
+                
+                .fc .fc-button {
+                  padding: 0.5rem 0.75rem;
+                  font-size: 0.875rem;
+                }
+              }
               `}
             </style>
+
+            {tooltip.isVisible && (
+              <div 
+                className="event-tooltip"
+                style={{
+                  left: tooltip.position.x,
+                  top: tooltip.position.y
+                }}
+              >
+                {tooltip.content}
+              </div>
+            )}
+            
             <FullCalendar
               plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
               initialView="dayGridMonth"
@@ -225,6 +275,20 @@ const EventsCalendar = () => {
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
               }}
               events={events}
+              eventMouseEnter={(info) => {
+                const rect = info.el.getBoundingClientRect();
+                setTooltip({
+                  isVisible: true,
+                  content: info.event.title,
+                  position: {
+                    x: rect.left - 100,
+                    y: rect.top + 90
+                  }
+                });
+              }}
+              eventMouseLeave={() => {
+                setTooltip(prev => ({ ...prev, isVisible: false }));
+              }}
               eventClick={(info) => {
                 info.jsEvent.preventDefault();
                 if (info.event.url) {

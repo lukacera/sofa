@@ -1,7 +1,7 @@
 import mongoose, { model, Schema } from 'mongoose';
 import { EventType } from '../types/Event';
 
-const EventSchema = new Schema<EventType>({
+export const EventSchema = new Schema<EventType>({
   title: {
     type: String,
     required: true,

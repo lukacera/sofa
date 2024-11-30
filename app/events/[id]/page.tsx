@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { Clock, Heart, Bookmark, MapPin, TagIcon } from 'lucide-react';
+import { Clock, Heart, Bookmark, MapPin, TagIcon, Users } from 'lucide-react';
 import { CldImage } from 'next-cloudinary';
 import Header from '@/app/components/Header';
 import TicketSection from '@/app/components/SingleEventComponents/TicketSection';
@@ -66,8 +66,9 @@ export default function EventPage() {
               {/* Title and Actions */}
               <div className="space-y-4">
                 <div className="flex justify-between items-start gap-3">
-                  <h1 className="text-3xl font-bold text-gray-900 leading-tight">
-                    {event.title.slice(0, 49)}{event.title.length > 49 ? '...' : ''}
+                  <h1 className="text-3xl font-bold text-gray-900 
+                  leading-tight max-w-[80%] break-words">
+                    {event.title}
                   </h1>
                   <div className="flex items-center gap-2 flex-shrink-0">
                     <button
@@ -157,24 +158,57 @@ export default function EventPage() {
               <AIAnalysis text={event.aiAnalysis} />
             </div>
 
-            {/* Right Column - Event Image */}
-            <div className="relative group flex justify-end">
-              <div className="w-[90%] h-full relative rounded-xl 
-              overflow-hidden shadow-md">
-                <CldImage
-                  alt={`${event.title} cover image`}
-                  src={event.image}
-                  fill
-                  priority
-                  className="object-cover transition-transform 
-                  duration-700 group-hover:scale-105"
-                />
+            {/* Right Column */}
+            <div className="flex flex-col gap-4">
+              {/* Image Container */}
+              <div className="relative group flex justify-end">
+                <div className="w-[90%] h-[20rem] relative rounded-xl overflow-hidden shadow-md">
+                  <CldImage
+                    alt={`${event.title} cover image`}
+                    src={event.image}
+                    fill
+                    priority
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                </div>
               </div>
+
+              {/* Attendees Section */}
+              <div className="flex flex-col gap-2 w-[90%] ml-auto">
+                <div className="flex items-center gap-2 text-gray-600">
+                  <Users size={16} />
+                  <span className="text-sm font-medium">
+                    {event.attendees?.length || 0} people attending
+                  </span>
+                </div>
+                <div className="flex -space-x-2 overflow-hidden">
+                  {event.attendees?.slice(0, 5).map((attendee, i) => (
+                    <div
+                      key={i}
+                      className="relative w-8 h-8 rounded-full ring-2 ring-white"
+                    >
+                      <CldImage
+                        alt={`${attendee.name} profile`}
+                        src={attendee.image || event.image}
+                        fill
+                        className="rounded-full object-cover"
+                      />
+                    </div>
+                  ))}
+                  {event.attendees?.length > 5 && (
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 ring-2 ring-white">
+                      <span className="text-xs font-medium text-gray-600">
+                        +{event.attendees.length - 5}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+              </div>          
             </div>
-          </div>
 
           {/* About Section */}
-          <p className="text-gray-600 leading-relaxed text-lg mt-10">
+          <p className="text-gray-600 leading-relaxed text-lg mt-10 break-words">
             {event.description}
           </p>
         </section>

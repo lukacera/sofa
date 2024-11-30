@@ -1,6 +1,6 @@
 import mongoose, { Model, Schema } from 'mongoose';
 import { UserType } from '../types/User';
-const userSchema = new Schema<UserType>({
+export const userSchema = new Schema<UserType>({
   type: {
     type: String,
     required: true,
