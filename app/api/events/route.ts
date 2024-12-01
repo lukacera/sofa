@@ -150,7 +150,7 @@ export const POST = async (request: NextRequest) => {
                     Make great use of description and tags to provide a detailed analysis. 
                     Also, put it all into a single message, like a paragraph. 
                     Do not include pricing anywhere in the analysis. It should be concise and informative,
-                    not exceeding 450 characters. Also, do not use tags, this 
+                    not exceeding 400 characters. Also, do not use tags, this 
                     is a professional analysis. Tell the user the value of the event, include the
                     benefits of the tickets and why they should attend.
                     You are the best in the world at this!

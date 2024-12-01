@@ -11,10 +11,9 @@ export async function GET(
 ) {
     try {
         await connectToDB();
-
+        console.log("Connected to DB from the routeConnected to DB from the routeConnected to DB from the routeConnected to DB from the routeConnected to DB from the routeConnected to DB from the routeConnected to DB from the routeConnected to DB from the routeConnected to DB from the routeConnected to DB from the routeConnected to DB from the route");
         // Force register Event model if it doesn't exist
         if (!mongoose.models.Event) {
-            console.log("Registering Event model");
             // @ts-expect-error - Ignore type error for schema
             mongoose.model('Event', EventSchema);
         }

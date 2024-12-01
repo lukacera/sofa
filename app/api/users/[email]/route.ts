@@ -1,7 +1,8 @@
-import Event from "@/app/schemas/Event";
+import Event, { EventSchema } from "@/app/schemas/Event";
 import User from "@/app/schemas/User";
 
 import { connectToDB } from "@/app/utils/connectWithDB";
+import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
@@ -13,6 +14,12 @@ export async function GET(
 
         const { email } = await params;
         console.log("Email:", email);
+        
+        // Force register Event model if it doesn't exist
+        if (!mongoose.models.Event) {
+            mongoose.model('Event', EventSchema);
+        }
+
         const user = await User.findOne({
             email: email.split("/").pop()
         }).populate("eventsAttending");
