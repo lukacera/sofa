@@ -222,6 +222,38 @@ export default function EventPage() {
           </p>
         </section>
         
+        {/* Register CTA Section */}
+        <div className="mt-16 flex flex-col items-center justify-center">
+          <h3 className="text-2xl font-bold text-gray-900 mb-2">Ready to join this event?</h3>
+          <p className="text-gray-600 mb-6 text-center max-w-lg">
+            Secure your spot now and be part of this amazing experience. Join {event.attendees?.length || 0} other attendees!
+          </p>
+          
+          <button
+            onClick={() => setShowModal(true)}
+            className="flex items-center gap-2 bg-secondary hover:bg-secondary/90 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+          >
+            Register Now
+            <svg
+              className="w-5 h-5 animate-bounce"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 14l-7 7m0 0l-7-7m7 7V3"
+              />
+            </svg>
+          </button>
+          
+          <p className="mt-4 text-sm text-gray-500">
+            {event.capacity - (event.attendees?.length || 0)} spots remaining
+          </p>
+        </div>
+                
         {/* Modal */}
         {event && (
           <ConfirmationModal

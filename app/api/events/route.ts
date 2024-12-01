@@ -4,12 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { EventType } from '@/app/types/Event';
 import OpenAI from "openai"
 import mongoose from "mongoose";
-
-export const config = {
-    api: {  
-      bodyParser: false, // Disable the built-in bodyParser
-    },
-};
+import User from "@/app/schemas/User";
 
 function validateEvent(event: EventType) {
     const errors = [];
@@ -139,6 +134,15 @@ export const POST = async (request: NextRequest) => {
             imageUrl = data.url;
         }
 
+        const organizer = await User.findById(eventData.organizer);
+
+        if (!organizer) {
+            return NextResponse.json(
+                { message: 'Organizer not found' },
+                { status: 404 }
+            );
+        }
+
         // OpenAI completion
         const completion = await openai.chat.completions.create({
             model: "gpt-3.5-turbo",
@@ -189,6 +193,9 @@ export const POST = async (request: NextRequest) => {
 
         // Save to database
         const createdEvent = await Event.create(newEvent);
+
+
+        await organizer.updateOne({ $push: { events: createdEvent._id } });
 
         return NextResponse.json(
             { 

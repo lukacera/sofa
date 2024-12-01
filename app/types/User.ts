@@ -3,13 +3,13 @@ export type UserType = {
     name: string;
     email: string;
     image?: string;
-    type: "individual" | "company";
+    role: "individual" | "company";
     password: string;
     // Individual specific fields
     eventsAttending?: EventType[];
     
     // Company specific fields
-    events?: EventType[] | null;
+    eventsCreated?: EventType[] | null;
     location?: string | null;
     description?: string | null;
 

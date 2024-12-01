@@ -25,7 +25,7 @@ export async function EventsNearYou() {
       <h2 className='font-bold text-2xl mb-5'>
         Events near you
       </h2>
-      <div className='flex flex-wrap justify-center gap-5'>
+      <div className='grid grid-cols-3 gap-10 w-full'>
         {events.events.map((event) => (
           <EventCard key={event._id!} event={event} />
         ))}

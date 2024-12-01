@@ -170,45 +170,8 @@ const CreateEventForm = () => {
               </div>
             </div>
 
-            {/* Description */}
-            <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-                Description<RequiredStar />
-              </label>
-              <textarea
-                id="description"
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                rows={4}
-                minLength={100}
-                maxLength={1000}
-                className={textareaClasses}
-                placeholder="Describe your event (minimum 100 characters and max 1000)"
-                required
-              />
-              <p className={`text-sm mt-1 
-                ${formData.description.length < 100 || formData.description.length === 1000 ? 
-                'text-red-500' : 'text-gray-500'}`}>
-                {formData.description.length} / 1000 characters {formData.description.length < 100 && `(${100 - formData.description.length} more needed)`}
-              </p>
-            </div>
-
-            {/* Tags */}
-            <div className='flex flex-col gap-4'>
-              <h2 className="block text-sm font-medium text-gray-700">
-                Tags<RequiredStar />
-              </h2>
-              <TagInput setFormData={setFormData} tags={formData.tags}/>
-            </div>
-            <ImageUpload formData={formData} inputClasses={inputClasses}
-            setFormData={setFormData}/>
-
             {/* Date, Time, and Event Type */}
             <div className='flex flex-col gap-4'>
-              <h2 className="text-xl text-center font-semibold text-black pb-2">
-                Date, Time, and Type
-              </h2>
-              
               <div className="flex flex-col md:flex-row gap-4">
                 {/* Event Type */}
                 <div className="flex-1">
@@ -269,6 +232,15 @@ const CreateEventForm = () => {
             </div>
           </div>
 
+            {/* Tags */}
+            <div className='flex flex-col gap-4'>
+              <h2 className="block text-sm font-medium text-gray-700">
+                Tags<RequiredStar />
+              </h2>
+              <TagInput setFormData={setFormData} tags={formData.tags}/>
+            </div>
+
+
           {/* Location */}
           <div className="space-y-6">
             <h2 className="text-xl text-center font-semibold text-black pb-2">
@@ -284,6 +256,32 @@ const CreateEventForm = () => {
               className={`${inputClasses} w-full`} />
             </label>
           </div>
+
+          {/* Description */}
+          <div>
+            <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+              Description<RequiredStar />
+            </label>
+            <textarea
+              id="description"
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              rows={4}
+              minLength={100}
+              maxLength={1000}
+              className={textareaClasses}
+              placeholder="Describe your event (minimum 100 characters and max 1000)"
+              required
+            />
+            <p className={`text-sm mt-1 
+              ${formData.description.length < 100 || formData.description.length === 1000 ? 
+              'text-red-500' : 'text-gray-500'}`}>
+              {formData.description.length} / 1000 characters {formData.description.length < 100 && `(${100 - formData.description.length} more needed)`}
+            </p>
+          </div>
+
+          <ImageUpload formData={formData} inputClasses={inputClasses}
+          setFormData={setFormData}/>
 
           {/* Submit Button */}
           <div className="pt-6">

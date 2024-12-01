@@ -1,7 +1,7 @@
 import mongoose, { Model, Schema } from 'mongoose';
 import { UserType } from '../types/User';
 export const userSchema = new Schema<UserType>({
-  type: {
+  role: {
     type: String,
     required: true,
     enum: ['individual', 'company'],
@@ -31,7 +31,7 @@ export const userSchema = new Schema<UserType>({
     }],
     default: []
   },
-  events: {
+  eventsCreated: {
     type: [{
       type: Schema.Types.ObjectId,
       ref: 'Event'
