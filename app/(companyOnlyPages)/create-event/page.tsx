@@ -52,6 +52,10 @@ const CreateEventForm = () => {
   }, [status, session?.user?.id]);
   
   useEffect(() => {
+    console.log(formData)
+  }, [formData]);
+
+  useEffect(() => {
     if (formData.date) {
       const date = new Date(formData.date)
       console.log(date)

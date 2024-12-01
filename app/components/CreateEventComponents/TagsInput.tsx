@@ -38,20 +38,26 @@ export const TagInput = ({ tags, setFormData }: TagInputProps) => {
       removeTag(tags[tags.length - 1]);
     }
   };
-
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value.length <= 30) {
+      setInputValue(value);
+    }
+  };
   return (
     <div className="space-y-2">
       <div className="flex flex-wrap gap-2 min-h-[2.5rem] p-2 border border-gray-200 rounded-md">
         {tags.map((tag, index) => (
           <span
             key={index}
-            className="flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary rounded-full text-sm"
+            className="flex items-center gap-1 px-3 py-1 bg-secondary
+            text-white rounded-full text-sm"
           >
             {tag}
             <button
               type="button"
               onClick={() => removeTag(tag)}
-              className="hover:bg-primary/20 rounded-full p-0.5"
+              className="hover:bg-primary rounded-full p-0.5"
             >
               <X size={14} />
             </button>
@@ -60,13 +66,13 @@ export const TagInput = ({ tags, setFormData }: TagInputProps) => {
         <input
           type="text"
           value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+          onChange={handleChange}
           onKeyDown={handleKeyDown}
           onBlur={() => {
             if (inputValue) addTag(inputValue);
           }}
           placeholder={tags.length === 0 ? "Add up to 5 tags..." : ""}
-          className="flex-1 min-w-[120px] outline-none border-none focus:ring-0"
+          className="flex-1 outline-none border-none focus:ring-0"
         />
       </div>
       <p className="text-sm text-gray-500">
