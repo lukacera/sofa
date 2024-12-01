@@ -1,4 +1,4 @@
-import Event, { EventSchema } from "@/app/schemas/Event";
+import { EventSchema } from "@/app/schemas/Event";
 import User from "@/app/schemas/User";
 
 import { connectToDB } from "@/app/utils/connectWithDB";

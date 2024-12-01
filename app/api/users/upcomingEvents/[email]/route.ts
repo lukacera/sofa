@@ -18,7 +18,7 @@ export async function GET(
             mongoose.model('Event', EventSchema);
         }
 
-        const { email } = params;
+        const { email } = await params;
         const currentDateTime = new Date();
         
         const user = await User.findOne({
