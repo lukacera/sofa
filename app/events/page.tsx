@@ -129,7 +129,7 @@ export default function EventsPage() {
       
       <main className="container mx-auto px-4 py-24 max-w-7xl">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-center mb-8">Upcoming Events</h1>
+          <h1 className="text-4xl font-bold text-center mb-8">Events</h1>
           
           {/* Search and Filter Controls */}
           <div className="space-y-4">
