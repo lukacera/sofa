@@ -103,6 +103,11 @@ export default function Header() {
                         <div className="px-4 py-2 border-b">
                           <p className="text-sm font-medium text-gray-900">{session.user?.name}</p>
                           <p className="text-xs text-gray-500">{session.user?.email}</p>
+                          <p className="text-xs text-gray-500 mt-2 text-center
+                          font-semibold">
+                            {session.user?.role.charAt(0).toUpperCase() 
+                            + session.user.role.slice(1)} profile
+                          </p>
                         </div>
 
                         <Link

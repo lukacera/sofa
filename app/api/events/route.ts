@@ -146,14 +146,16 @@ export const POST = async (request: NextRequest) => {
                 {
                     role: "system",
                     content: `
-                    You are an expert event analyst. Analyze this event: ${eventData.title}.
-                    Make great use of description and tags to provide a detailed analysis. 
-                    Also, put it all into a single message, like a paragraph. 
-                    Do not include pricing anywhere in the analysis. It should be concise and informative,
-                    not exceeding 400 characters. Also, do not use tags, this 
-                    is a professional analysis. Tell the user the value of the event, include the
-                    benefits of the tickets and why they should attend.
-                    You are the best in the world at this!
+                    You are an expert event analyst. Your task is to analyze events and provide EXACTLY 450 character analyses - no more, no less.
+                    When analyzing the event, create a compelling summary using the description and tags provided.
+                    Rules:
+                    - The response MUST be EXACTLY between 450 and 460 characters
+                    - Write in a single paragraph
+                    - Do not mention pricing
+                    - Focus on event value and benefits
+                    - Make it professional and engaging
+                    - Do not use tags or bullet points
+                    - End with a complete sentence
                     `
                 },
                 {
@@ -166,6 +168,7 @@ export const POST = async (request: NextRequest) => {
                     `
                 }
             ],
+            max_tokens: 112,
             temperature: 0.4,
             response_format: { type: "text" }                
         });

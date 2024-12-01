@@ -5,12 +5,21 @@ import Link from "next/link";
 import { EventType } from "@/app/types/Event"
 
 export const EventCard: React.FC<{ event: EventType }> = ({ event }) => {
+
+  const isFinished = new Date(event.date) < new Date();
+
   return (
     <Link 
       href={`/events/${event._id}`}
-      className="group rounded-lg shadow-xl border w-[20rem]"
+      className="group rounded-lg shadow-xl border w-full"
     >
       <div className="relative">
+      {isFinished && (
+          <div className="absolute top-2 right-2 z-10 bg-red-500 text-white px-2 py-1 rounded-md 
+          text-sm font-semibold">
+            Finished
+          </div>
+        )}
         <div className="relative aspect-square overflow-hidden">
           <CldImage
             alt={event.title}

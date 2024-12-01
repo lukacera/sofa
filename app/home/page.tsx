@@ -15,7 +15,7 @@ export default async function Page() {
   return (
     <div className="max-w-screen bg-mainWhite">
       <Header />
-      <main className="text-center p-20">
+      <main className="text-center py-20 w-[75%] mx-auto">
         <section
           className="p-10 bg-gradient-to-r from-primaryDarker/30 
         to-secondary rounded-lg flex justify-between"

@@ -207,7 +207,9 @@ export default function EventPage() {
                 <div className="flex items-center gap-2 text-gray-600">
                   <Users size={16} />
                   <span className="text-sm font-medium">
-                    {event.attendees?.length || 0} people attending
+                  {event.attendees?.length 
+                    ? `${event.attendees.length} people attending` 
+                    : 'No one has registered for this event yet'}
                   </span>
                 </div>
               </div>

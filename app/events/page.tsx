@@ -3,28 +3,14 @@
 import { useState, useEffect } from 'react'
 import Header from '@/app/components/Header'
 import { Clock, MapPin, Search, SlidersHorizontal } from 'lucide-react'
-import { CldImage } from 'next-cloudinary'
-import Link from 'next/link'
-
-interface Event {
-  _id: string
-  title: string
-  description: string
-  date: string
-  location: string
-  capacity: number
-  tags: string[]
-  status: 'draft' | 'published'
-  aiAnalysis: string
-  image: string
-  price: number
-}
+import { EventCard } from '../components/HomePageComponents/EventCard'
+import { EventType } from '../types/Event'
 
 type SortOption = 'date-asc' | 'date-desc' | 'capacity-asc' | 'capacity-desc'
 
 export default function EventsPage() {
-  const [events, setEvents] = useState<Event[]>([])
-  const [filteredEvents, setFilteredEvents] = useState<Event[]>([])
+  const [events, setEvents] = useState<EventType[]>([])
+  const [filteredEvents, setFilteredEvents] = useState<EventType[]>([])
   const [loading, setLoading] = useState(true)
   
   // Filter states
@@ -84,18 +70,6 @@ export default function EventsPage() {
       )
     }
 
-    // Apply price filters
-    if (isFreeOnly) {
-      filtered = filtered.filter(event => event.price === 0)
-    } else {
-      if (minPrice !== '') {
-        filtered = filtered.filter(event => event.price >= Number(minPrice))
-      }
-      if (maxPrice !== '') {
-        filtered = filtered.filter(event => event.price <= Number(maxPrice))
-      }
-    }
-
     // Apply sorting
     filtered.sort((a, b) => {
       switch (sortBy) {
@@ -127,7 +101,7 @@ export default function EventsPage() {
     <div className="min-h-screen">
       <Header />
       
-      <main className="container mx-auto px-4 py-24 max-w-7xl">
+      <main className="container mx-auto px-4 py-10 max-w-7xl">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-center mb-8">Events</h1>
           
@@ -260,54 +234,18 @@ export default function EventsPage() {
         </div>
 
         {/* Events Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-12">
           {filteredEvents.map((event) => (
-            <Link href={`/events/${event._id}`} key={event._id}>
-              <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                <div className="relative h-48 w-full">
-                  <CldImage
-                    src={event.image || "cld-sample-2"}
-                    alt={event.title}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                
-                <div className="p-6">
-                  <h2 className="text-xl font-semibold mb-2 line-clamp-1">
-                    {event.title}
-                  </h2>
-                  
-                  <div className="flex items-center gap-4 text-gray-600 mb-4">
-                    <div className="flex items-center gap-1">
-                      <Clock size={16} />
-                      <span className="text-sm">
-                        {new Date(event.date).toLocaleDateString()}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <MapPin size={16} />
-                      <span className="text-sm line-clamp-1">{event.location}</span>
-                    </div>
-                  </div>
-                  
-                  <p className="text-gray-600 mb-4 line-clamp-2">
-                    {event.description}
-                  </p>
-                  
-                  <div className="flex flex-wrap gap-2">
-                    {event.tags?.slice(0, 3).map((tag, index) => (
-                      <span
-                        key={index}
-                        className="px-3 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </Link>
+            <>
+            <EventCard key={event._id} event={event} />
+            <EventCard key={event._id} event={event} />
+            <EventCard key={event._id} event={event} />
+            <EventCard key={event._id} event={event} />
+            <EventCard key={event._id} event={event} />
+            <EventCard key={event._id} event={event} />
+            
+            <EventCard key={event._id} event={event} />
+            </>
           ))}
         </div>
 
