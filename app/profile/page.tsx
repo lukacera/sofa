@@ -5,6 +5,8 @@ import { Calendar, ShieldAlert, Settings } from 'lucide-react'
 import EditProfile from '../components/MyProfileComponents/EditProfile'
 import { useSession } from 'next-auth/react'
 import AttendedEvents from '../components/MyProfileComponents/AttendedEvents'
+import HostedEvents from '../components/MyProfileComponents/HostedEvents'
+import { EventList } from '../components/MyProfileComponents/ProfileEventList'
 
 type TabType = 'personal' | 'events' | 'security';
 
@@ -23,7 +25,8 @@ export default function Page() {
       id: 'events',
       label: session?.user.role === "company" ? "Hosted Events" : "Attended Events",
       icon: <Calendar size={20} />,
-      component: <AttendedEvents />
+      component: session?.user.role === "company" ? <EventList type='hosted' gridCols={3} /> : 
+      <AttendedEvents />,
     },
     {
       id: 'security',
@@ -34,7 +37,7 @@ export default function Page() {
   ];
 
   return (
-    <div>
+    <div className='mb-10'>
       <Header />
       <main className='w-[70%] mx-auto mt-20'>
         <h1 className='font-bold text-3xl'>Profile Settings</h1>

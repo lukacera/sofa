@@ -6,10 +6,13 @@ import { useSession } from 'next-auth/react';
 import ImageUpload from '@/app/components/CreateEventComponents/ImageUpload';
 import { EventFormData } from '@/app/types/EventForm';
 import { TagInput } from '@/app/components/CreateEventComponents/TagsInput';
+import { useRouter } from 'next/navigation';
 
 const CreateEventForm = () => {
 
   const {data: session, status} = useSession()
+  const router = useRouter();
+
   const now = new Date();
   const minutes = now.getMinutes();
   const roundedMinutes = Math.ceil(minutes / 30) * 30;
@@ -67,7 +70,6 @@ const CreateEventForm = () => {
   const handleDateChange = (date: string, time: string) => {
     const [hours, minutes] = time.split(':');
     const [year, month, day] = date.split('-');
-    console.log("Date should be: ", year, month, day)
     const dateObj = new Date(
       parseInt(year),
       parseInt(month) - 1,
@@ -81,7 +83,6 @@ const CreateEventForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  console.log(formData)
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -117,6 +118,7 @@ const CreateEventForm = () => {
       setError(err instanceof Error ? err.message : 'Failed to create event');
       console.error('Failed to create event:', err);
     } finally {
+      router.push('/profile');
       setIsSubmitting(false);
     }
   };

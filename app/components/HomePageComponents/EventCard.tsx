@@ -48,7 +48,9 @@ export const EventCard: React.FC<{ event: EventType }> = ({ event }) => {
             
             <div className="flex items-center gap-2 text-gray-600">
               <Users size={16} className="flex-shrink-0" />
-              <span className="text-sm truncate">55555/23241</span>
+              <span className="text-sm truncate">
+                {event.attendees.length} / {event.capacity}
+              </span>
             </div>
           </div>        
         </div>
