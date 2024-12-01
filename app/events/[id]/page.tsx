@@ -144,7 +144,7 @@ export default function EventPage() {
               </div>
 
               {/* Tags */}
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-1.5 my-2">
                 {event.tags?.map((tag, i) => (
                   <div
                     key={i}
