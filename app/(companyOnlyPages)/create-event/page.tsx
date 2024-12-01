@@ -6,6 +6,7 @@ import { TimePicker } from '@/app/components/CreateEventComponents/TimePicker';
 import { useSession } from 'next-auth/react';
 import ImageUpload from '@/app/components/CreateEventComponents/ImageUpload';
 import { EventFormData } from '@/app/types/EventForm';
+import { TagInput } from '@/app/components/CreateEventComponents/TagsInput';
 
 const CreateEventForm = () => {
 
@@ -131,7 +132,7 @@ const CreateEventForm = () => {
 
   const dateRef = useRef<HTMLInputElement>(null)
 
-  const inputClasses = `mt-1 block p-3 cursor-pointer
+  const inputClasses = `mt-1 block p-3
   border-b border-gray-200 focus:border-black focus:ring-0 focus:outline-none`
   const textareaClasses = `mt-2 w-full rounded-md border-gray-300 border
   shadow-sm focus:border-blue-500 focus:ring-blue-500 p-4`;
@@ -148,15 +149,18 @@ const CreateEventForm = () => {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-8 bg-white p-6 rounded-xl shadow-sm">
+        <form onSubmit={handleSubmit} 
+        className="bg-white p-6 rounded-xl shadow-sm space-y-10">
+          
           {/* Basic Information */}
-          <div className="space-y-6">
+          <div className='space-y-10'>
             <h2 className="text-xl font-semibold text-black text-center">Basic Information</h2>
             
             <div className="space-y-4">
               {/* Title */}
               <div>
-                <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="title" className="block text-sm 
+                font-medium text-gray-700 ">
                   Event Title<RequiredStar />
                 </label>
                 <input
@@ -170,8 +174,9 @@ const CreateEventForm = () => {
                 />
               </div>
             </div>
-              {/* Description */}
-              <div>
+
+            {/* Description */}
+            <div>
               <label htmlFor="description" className="block text-sm font-medium text-gray-700">
                 Description<RequiredStar />
               </label>
@@ -192,10 +197,19 @@ const CreateEventForm = () => {
                 {formData.description.length} / 1000 characters {formData.description.length < 100 && `(${100 - formData.description.length} more needed)`}
               </p>
             </div>
+
+            {/* Tags */}
+            <div className='flex flex-col gap-4'>
+              <h2 className="block text-sm font-medium text-gray-700">
+                Tags<RequiredStar />
+              </h2>
+              <TagInput setFormData={setFormData} tags={formData.tags}/>
+            </div>
             <ImageUpload formData={formData} inputClasses={inputClasses}
             setFormData={setFormData}/>
+
             {/* Date, Time, and Event Type */}
-            <div className="space-y-6">
+            <div className='flex flex-col gap-4'>
               <h2 className="text-xl text-center font-semibold text-black pb-2">
                 Date, Time, and Type
               </h2>
@@ -210,7 +224,7 @@ const CreateEventForm = () => {
                     id="type"
                     value={formData.type}
                     onChange={(e) => setFormData({ ...formData, type: e.target.value as EventFormData['type'] })}
-                    className={`${inputClasses} w-full pb-4`} // pb-4 to match the height of input
+                    className={`${inputClasses} w-full pb-4 cursor-pointer`} // pb-4 to match the height of input
                   >
                     <option value="conference">Conference</option>
                     <option value="workshop">Workshop</option>
@@ -248,7 +262,7 @@ const CreateEventForm = () => {
                         
                         handleDateChange(e.target.value, timeValue);
                       }}
-                      className={`${inputClasses} w-full`}
+                      className={`${inputClasses} w-full cursor-pointer`}
                       required
                     />
                   </div>

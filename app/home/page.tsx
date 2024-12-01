@@ -28,13 +28,15 @@ export default async function Page() {
               You have <span className="font-bold">3</span> events to attend this month! 🎉
             </span>
           </div>
-          <Link href={"/my-calendar"}
+            <Link href={"/my-calendar"}
             className="border p-2 border-transparent rounded-lg 
-          font-bold text-black flex items-center gap-2 bg-white"
-          >
+            font-bold text-black flex items-center gap-2 bg-white 
+            transition-colors duration-300 hover:bg-primary 
+            hover:text-white hover:border-secondary"
+            >
             <Calendar size={24} />
             <span>My Calendar</span>
-          </Link>
+            </Link>
         </section>
 
         <NextEventsUser />

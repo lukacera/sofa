@@ -125,21 +125,19 @@ export const TicketsForm: React.FC<{
                     className={`${inputClasses} w-full`}
                     placeholder={`Benefit ${benefitIndex + 1}`}
                   />
-                  {benefitIndex > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const newTickets = [...formData.tickets];
-                        newTickets[ticketIndex].benefits = ticket.benefits.filter(
-                          (_, index) => index !== benefitIndex
-                        );
-                        setFormData({ ...formData, tickets: newTickets });
-                      }}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <Trash size={16} className='mt-5'/>
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newTickets = [...formData.tickets];
+                      newTickets[ticketIndex].benefits = ticket.benefits.filter(
+                        (_, index) => index !== benefitIndex
+                      );
+                      setFormData({ ...formData, tickets: newTickets });
+                    }}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <Trash size={16} className='mt-5'/>
+                  </button>
                 </div>            
               ))}
               <button
