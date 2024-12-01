@@ -168,12 +168,10 @@ export const POST = async (request: NextRequest) => {
                     `
                 }
             ],
-            max_tokens: 112,
             temperature: 0.4,
             response_format: { type: "text" }                
         });
 
-        console.log("imageFile:", imageUrl);
         // Create new event with defaults
         const newEvent: Partial<EventType> = {
             title: eventData.title,
