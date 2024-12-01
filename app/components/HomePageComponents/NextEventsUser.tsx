@@ -11,7 +11,7 @@ async function getUpcomingEvents(email: string): Promise<EventType[]> {
     const host = (await headersList).get('host');
     const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
     
-    const url = `${protocol}://${host}/api/users/upcomingEvents/${encodeURIComponent(email)}`;
+    const url = `${protocol}://${host}/api/users/upcomingEvents/${email}`;
     
     const response = await fetch(url, {
       method: "GET",

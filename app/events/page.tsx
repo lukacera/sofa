@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Header from '@/app/components/Header'
-import { Clock, MapPin, Search, SlidersHorizontal } from 'lucide-react'
+import { Search, SlidersHorizontal } from 'lucide-react'
 import { EventCard } from '../components/HomePageComponents/EventCard'
 import { EventType } from '../types/Event'
 
@@ -236,16 +236,7 @@ export default function EventsPage() {
         {/* Events Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-12">
           {filteredEvents.map((event) => (
-            <>
             <EventCard key={event._id} event={event} />
-            <EventCard key={event._id} event={event} />
-            <EventCard key={event._id} event={event} />
-            <EventCard key={event._id} event={event} />
-            <EventCard key={event._id} event={event} />
-            <EventCard key={event._id} event={event} />
-            
-            <EventCard key={event._id} event={event} />
-            </>
           ))}
         </div>
 
