@@ -14,7 +14,6 @@ export interface EventFormData {
     capacity: number;
     image: File | null;
     type: 'conference' | 'workshop' | 'meetup' | 'seminar' | 'other';
-    tickets: Ticket[];
     organizer: string;
     status: 'draft' | 'published';
     tags: string[];

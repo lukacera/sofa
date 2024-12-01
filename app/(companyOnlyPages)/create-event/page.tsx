@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, FormEvent, useRef, useEffect } from 'react';
 import Header from '@/app/components/Header';
-import { TicketsForm } from '@/app/components/CreateEventComponents/TicketsForm';
 import { TimePicker } from '@/app/components/CreateEventComponents/TimePicker';
 import { useSession } from 'next-auth/react';
 import ImageUpload from '@/app/components/CreateEventComponents/ImageUpload';
@@ -26,14 +25,6 @@ const CreateEventForm = () => {
     capacity: 100,
     image: new File([], 'image'),
     type: 'conference',
-    tickets: [
-      {
-        type: 'free',
-        price: 0,
-        benefits: [],
-        total: 1
-      }
-    ],
     organizer: '',
     status: 'published',
     tags: []
@@ -294,10 +285,6 @@ const CreateEventForm = () => {
             </label>
           </div>
 
-          {/* Capacity and Price */}
-          <TicketsForm RequiredStar={RequiredStar}
-          formData={formData} inputClasses={inputClasses}
-          setFormData={setFormData}/>
           {/* Submit Button */}
           <div className="pt-6">
             <div className="flex justify-end space-x-4">

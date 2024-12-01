@@ -4,7 +4,6 @@ import { useParams } from 'next/navigation';
 import { Clock, Heart, Bookmark, MapPin, TagIcon, Users } from 'lucide-react';
 import { CldImage } from 'next-cloudinary';
 import Header from '@/app/components/Header';
-import TicketSection from '@/app/components/SingleEventComponents/TicketSection';
 import { AIAnalysis } from '@/app/components/SingleEventComponents/AiAnalysis';
 import ConfirmationModal from '@/app/components/SingleEventComponents/EventRegistrationConfirmation';
 import { baseURL } from '@/app/constants/apiURL';
@@ -222,20 +221,13 @@ export default function EventPage() {
             {event.description}
           </p>
         </section>
-
-        {/* Ticket Section */}
-        <TicketSection 
-          tickets={event.tickets}
-          handleClick={() => setShowModal(true)}
-        />
-
+        
         {/* Modal */}
         {event && (
           <ConfirmationModal
             event={event}
             isOpen={showModal}
             onClose={() => setShowModal(false)}
-            ticket={event.tickets[0]}
           />
         )}
       </main>

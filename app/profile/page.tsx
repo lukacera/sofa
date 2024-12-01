@@ -4,6 +4,7 @@ import Header from '../components/Header'
 import { Calendar, ShieldAlert, Settings } from 'lucide-react'
 import EditProfile from '../components/MyProfileComponents/EditProfile'
 import { useSession } from 'next-auth/react'
+import AttendedEvents from '../components/MyProfileComponents/AttendedEvents'
 
 type TabType = 'personal' | 'events' | 'security';
 
@@ -22,7 +23,7 @@ export default function Page() {
       id: 'events',
       label: session?.user.role === "company" ? "Hosted Events" : "Attended Events",
       icon: <Calendar size={20} />,
-      component: <div>Events Component</div> // Replace with your events component
+      component: <AttendedEvents />
     },
     {
       id: 'security',

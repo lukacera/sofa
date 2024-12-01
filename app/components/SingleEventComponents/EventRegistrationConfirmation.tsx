@@ -3,20 +3,17 @@ import { useRouter } from 'next/navigation';
 import { AlertCircle } from 'lucide-react';
 import { EventType } from '@/app/types/Event';
 import { useSession } from 'next-auth/react';
-import { Ticket } from '@/app/types/EventForm';
 
 interface ConfirmationModalProps {
   event: EventType;
   isOpen: boolean;
   onClose: () => void;
-  ticket: Ticket;  // Add ticket price prop
 }
 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ 
   event, 
   isOpen, 
   onClose,
-  ticket 
 }) => {
   
   const router = useRouter();
@@ -46,7 +43,6 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
         body: JSON.stringify({
           eventId: event._id,
           userId: userId, 
-          ticketId: ticket._id 
         }),
       });
 
@@ -77,11 +73,6 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
         <div className="space-y-4 mb-6">
           <p className="text-gray-600">
             Are you sure you want to register for &quot;{event.title}&quot;?
-          </p>
-          <p className="text-gray-600">
-            You have chosen a ticket that costs <span className="font-bold">
-              ${ticket.price}
-            </span>.
           </p>
           <p className="text-gray-600">
             After confirmation, you will be redirected to your calendar.

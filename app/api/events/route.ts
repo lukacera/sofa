@@ -68,27 +68,27 @@ function validateEvent(event: EventType) {
     }
 
     // Tickets validation
-    if (event.tickets?.length) {
-        event.tickets.forEach((ticket, index) => {
-            if (!["free", "paid"].includes(ticket.type?.trim())) {
-                errors.push({ field: `tickets[${index}].name`, message: 'Ticket name is required' });
-            }
-            if (ticket.price === undefined || ticket.price < 0) {
-                errors.push({ field: `tickets[${index}].price`, message: 'Ticket price must be a non-negative number' });
-            }
-            if (!ticket.total || ticket.total < 1) {
-                errors.push({ field: `tickets[${index}].total`, message: 'Ticket total must be greater than 0' });
-            }
-            if (ticket.sold !== undefined && (ticket.sold < 0 || ticket.sold > ticket.total)) {
-                errors.push({ field: `tickets[${index}].sold`, message: 'Sold tickets must be between 0 and total tickets' });
-            }
-            if (!Array.isArray(ticket.benefits)) {
-                errors.push({ field: `tickets[${index}].benefits`, message: 'Benefits must be an array' });
-            } else if (ticket.benefits.some(benefit => typeof benefit !== 'string' || !benefit.trim())) {
-                errors.push({ field: `tickets[${index}].benefits`, message: 'All benefits must be non-empty strings' });
-            }
-        });
-    }
+    // if (event.tickets?.length) {
+    //     event.tickets.forEach((ticket, index) => {
+    //         if (!["free", "paid"].includes(ticket.type?.trim())) {
+    //             errors.push({ field: `tickets[${index}].name`, message: 'Ticket name is required' });
+    //         }
+    //         if (ticket.price === undefined || ticket.price < 0) {
+    //             errors.push({ field: `tickets[${index}].price`, message: 'Ticket price must be a non-negative number' });
+    //         }
+    //         if (!ticket.total || ticket.total < 1) {
+    //             errors.push({ field: `tickets[${index}].total`, message: 'Ticket total must be greater than 0' });
+    //         }
+    //         if (ticket.sold !== undefined && (ticket.sold < 0 || ticket.sold > ticket.total)) {
+    //             errors.push({ field: `tickets[${index}].sold`, message: 'Sold tickets must be between 0 and total tickets' });
+    //         }
+    //         if (!Array.isArray(ticket.benefits)) {
+    //             errors.push({ field: `tickets[${index}].benefits`, message: 'Benefits must be an array' });
+    //         } else if (ticket.benefits.some(benefit => typeof benefit !== 'string' || !benefit.trim())) {
+    //             errors.push({ field: `tickets[${index}].benefits`, message: 'All benefits must be non-empty strings' });
+    //         }
+    //     });
+    // }
 
     return {
         isValid: errors.length === 0,
@@ -182,13 +182,6 @@ export const POST = async (request: NextRequest) => {
             date: new Date(eventData.date || Date.now()),
             location: eventData.location,
             capacity: eventData.capacity,
-            tickets: eventData.tickets?.map((ticket) => ({
-                type: ticket.type,
-                price: ticket.price,
-                benefits: ticket.benefits || [],
-                total: ticket.total,
-                sold: 0 
-            })) || [],
             organizer: eventData.organizer,
             tags: eventData.tags || [],
             status: eventData.status || 'draft',

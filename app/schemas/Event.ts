@@ -30,37 +30,6 @@ export const EventSchema = new Schema<EventType>({
     min: 1,
     default: 100
   },
-  tickets: {
-    type: [{
-      name: {
-        type: String,
-        required: true,
-        enum: ['free', 'paid'],
-        default: 'free'
-      },
-      price: {
-        type: Number,
-        required: true,
-        min: 0
-      },
-      benefits: [{
-        type: String,
-        required: true,
-        trim: true
-      }],
-      total: {
-        type: Number,
-        required: true,
-        min: 1
-      },
-      sold: {
-        type: Number,
-        required: true,
-        default: 0
-      },
-    }],
-    default: [] 
-  },
   tags: {
     type: [{
       type: String,

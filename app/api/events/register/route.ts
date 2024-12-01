@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from 'next/server';
 interface bodyType {
     userId: string;
     eventId: string;
-    ticketId: string;
+    // ticketId: string;
 }
 
 function validateBodyData(data: Partial<bodyType>) {
@@ -15,9 +15,9 @@ function validateBodyData(data: Partial<bodyType>) {
     if (!data.eventId?.trim()) {
         errors.name = "Event id is required";
     }
-    if (!data.ticketId?.trim()) {
-        errors.email = "Ticket id is required";
-    }
+    // if (!data.ticketId?.trim()) {
+    //     errors.email = "Ticket id is required";
+    // }
     if (!data.userId?.trim()) {
         errors.password = "User id is required";
     }
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
   
     try {
       const body: bodyType = await request.json();
-      const {eventId, ticketId, userId} = body;
+      const {eventId, userId} = body;
   
       const { isValid, errors } = validateBodyData(body);
   
@@ -48,7 +48,6 @@ export async function POST(request: NextRequest) {
       // First find the event and check if ticket is available
       const event = await Event.findOne({
         _id: eventId,
-        'tickets._id': ticketId,
         attendees: { $ne: userId }
       }).session(session);
   
@@ -60,35 +59,13 @@ export async function POST(request: NextRequest) {
         );
       }
   
-      // Find the specific ticket
-      const ticket = event.tickets.find(t => t._id.toString() === ticketId);
-      
-      if (!ticket) {
-        await session.abortTransaction();
-        return NextResponse.json(
-          { message: "Ticket not found" },
-          { status: 400 }
-        );
-      }
-  
-      // Check if ticket is available
-      if (ticket.sold >= ticket.total) {
-        await session.abortTransaction();
-        return NextResponse.json(
-          { message: "Ticket sold out" },
-          { status: 400 }
-        );
-      }
-  
       // Update event
       const updatedEvent = await Event.findByIdAndUpdate(
         eventId,
         {
-          $inc: { 'tickets.$[ticket].sold': 1 },
           $push: { attendees: userId }
         },
         {
-          arrayFilters: [{ 'ticket._id': ticketId }],
           new: true,
           runValidators: true,
           session
