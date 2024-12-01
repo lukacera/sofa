@@ -48,9 +48,12 @@ export default function EventPage() {
 
   if (!event) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-2">
-        <div className="text-2xl font-semibold text-gray-700">Event not found</div>
-        <p className="text-gray-500">The event you're looking for doesn't exist or has been removed.</p>
+      <div className="h-screen flex flex-col">
+        <Header />
+        <div className="flex-grow flex flex-col items-center justify-center gap-2">
+          <div className="text-2xl font-semibold text-gray-700">Event not found</div>
+          <p className="text-gray-500">The event you&apos;re looking for doesn&apos;t exist or has been removed.</p>
+        </div>
       </div>
     );
   }

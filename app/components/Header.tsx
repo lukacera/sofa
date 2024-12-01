@@ -2,13 +2,12 @@
 import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import React, { useState } from 'react'
-import { LogOut, Home, Calendar, Menu, User, X, Plus, ChevronDown } from "lucide-react"
+import { Home, Calendar, Menu, X, Plus, ChevronDown } from "lucide-react"
 import { usePathname } from 'next/navigation'
 import { CldImage } from 'next-cloudinary'
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
-  const [calendarOpen, setCalendarOpen] = useState(false)
   const { data: session, status } = useSession()
   const pathname = usePathname()
   const isLoading = status === "loading"
@@ -21,51 +20,54 @@ export default function Header() {
 
   return (
     <header className="bg-secondary shadow-lg w-full">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <span className="text-2xl font-bold bg-gradient-to-r from-white to-gray-100 text-transparent bg-clip-text 
-              hover:opacity-80 transition-opacity">
-              Sofa AI
-            </span>
-          </Link>
+      <div className="max-w-[90%] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center h-16">
+          {/* Logo - Fixed Width */}
+          <div className="w-[140px]">
+            <Link href="/" className="flex items-center space-x-2">
+              <span className="text-2xl font-bold bg-gradient-to-r from-white to-gray-100 text-transparent bg-clip-text 
+                hover:opacity-80 transition-opacity">
+                Sofa AI
+              </span>
+            </Link>
+          </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            {navLinks.map((link) => {
-              const Icon = link.icon
-              const isActive = pathname === link.href
-              return (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium
-                    ${isActive 
-                      ? 'text-white bg-primary/40' 
-                      : 'text-gray-200 hover:text-white hover:bg-primary/20'
-                    } transition-all duration-200`}
-                >
-                  <Icon size={18} />
-                  <span>{link.name}</span>
-                </Link>
-              )
-            })}
+          {/* Desktop Navigation - Centered */}
+          <nav className="hidden md:flex flex-1 items-center justify-center">
+            <div className="flex items-center space-x-8">
+              {navLinks.map((link) => {
+                const Icon = link.icon
+                const isActive = pathname === link.href
+                return (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium
+                      ${isActive 
+                        ? 'text-white bg-primary/40' 
+                        : 'text-gray-200 hover:text-white hover:bg-primary/20'
+                      } transition-all duration-200`}
+                  >
+                    <Icon size={18} />
+                    <span>{link.name}</span>
+                  </Link>
+                )
+              })}
+            </div>
           </nav>
 
-          {/* Right Side Actions */}
-          <div className="flex items-center space-x-4">
+          {/* Right Side Actions - Fixed Width */}
+          <div className="w-[140px] flex items-center justify-end space-x-4">
             {!isLoading && (
               <>
                 {session?.user.role === 'company' && (
                   <Link 
                     href='/create-event'
-                    className="flex items-center space-x-2 px-4 py-2 bg-accent rounded-full text-sm font-medium
-                      text-white hover:bg-accent/90 transition-all duration-200 transform hover:scale-105
-                      active:scale-95 shadow-md hover:shadow-lg"
+                    className="flex items-center gap-1 px-3 py-1.5 bg-accent rounded-lg text-sm font-medium
+                      text-white hover:bg-accent/90 transition-all duration-200"
                   >
-                    <Plus size={16} />
-                    <span>Create Event</span>
+                    <Plus size={14} />
+                    <span>Create</span>
                   </Link>
                 )}
 
@@ -78,8 +80,8 @@ export default function Header() {
                       <CldImage
                         src={session.user?.image ?? "https://res.cloudinary.com/dluypaeie/image/upload/v1732538732/Avatars_Circles_Glyph_Style_nrein3.jpg"}
                         alt="Profile"
-                        width={40}
-                        height={40}
+                        width={50}
+                        height={50}
                         className="rounded-full ring-2 ring-white/30 hover:ring-white/50 transition-all"
                       />
                       <ChevronDown className={`w-4 h-4 text-white transition-transform duration-200 
@@ -135,7 +137,7 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu - ostaje isto */}
       {menuOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1">
