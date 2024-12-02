@@ -1,11 +1,10 @@
 "use client"
 import React, { useState } from 'react'
 import Header from '../components/Header'
-import { Calendar, ShieldAlert, Settings } from 'lucide-react'
+import { Calendar, ShieldAlert, Settings, Pencil } from 'lucide-react'
 import EditProfile from '../components/MyProfileComponents/EditProfile'
 import { useSession } from 'next-auth/react'
 import AttendedEvents from '../components/MyProfileComponents/AttendedEvents'
-import HostedEvents from '../components/MyProfileComponents/HostedEvents'
 import { EventList } from '../components/MyProfileComponents/ProfileEventList'
 
 type TabType = 'personal' | 'events' | 'security';
@@ -14,6 +13,7 @@ export default function Page() {
   const { data: session } = useSession();
   const [activeTab, setActiveTab] = useState<TabType>('personal');
 
+  console.log(session?.user.id)
   const tabs = [
     {
       id: 'personal',
@@ -28,14 +28,24 @@ export default function Page() {
       component: session?.user.role === "company" ? <EventList type='hosted' gridCols={3} /> : 
       <AttendedEvents />,
     },
-    {
-      id: 'security',
-      label: 'Account Security',
-      icon: <ShieldAlert size={20} />,
-      component: <div>Security Component</div> // Replace with your security component
-    }
   ];
 
+  if (session?.user.role === "company") {
+    tabs.push({
+      id: 'drafts',
+      label: 'My drafts',
+      icon: <Pencil size={20} />,
+      component: <div>New Tab Component</div>
+    });
+  }
+  
+  tabs.push({
+    id: 'security',
+    label: 'Account Security',
+    icon: <ShieldAlert size={20} />,
+    component: <div>Security Component</div> // Replace with your security component
+  });
+  
   return (
     <div className='mb-10'>
       <Header />
