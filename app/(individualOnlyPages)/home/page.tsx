@@ -1,11 +1,11 @@
 import React from "react";
-import Header from "../components/Header";
-import { ArrowRight, Calendar } from "lucide-react";
-import { TopicsGrid } from "../components/HomePageComponents/TopicsGrid";
-import { EventsNearYou } from "../components/HomePageComponents/EventsNearYou";
+import Header from "../../components/Header";
+import { Calendar } from "lucide-react";
+import { TopicsGrid } from "../../components/HomePageComponents/TopicsGrid";
+import { EventsNearYou } from "../../components/HomePageComponents/EventsNearYou";
 import { auth } from "@/auth";
 import Link from "next/link";
-import NextEventsUser from "../components/HomePageComponents/NextEventsUser";
+import NextEventsUser from "../../components/HomePageComponents/NextEventsUser";
 
 export default async function Page() {
   

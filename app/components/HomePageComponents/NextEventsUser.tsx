@@ -44,11 +44,13 @@ export default async function NextEventsUser() {
         <div className="flex flex-col items-center gap-5">
         <h2 className="font-bold text-2xl mb-5">Your upcoming events</h2>
         {nextEvents.length > 0 ? (
-            <div className="flex flex-wrap justify-center gap-5">
+            <div className="grid grid-cols-3 gap-10 w-full">
+            {nextEvents.length === 1 && <div></div>}
             {nextEvents.map((event) => (
-                <EventCard key={event._id!} event={event} />
+              <EventCard key={event._id!} event={event} />
             ))}
-            </div>
+           </div>
+           
         ) :
         <span className="flex items-center gap-3">
             You have no upcoming events. 
