@@ -14,7 +14,7 @@ export default function Header() {
 
   console.log(session)
   const navLinks = [
-    { name: "Home", href: "/", icon: Home },
+    { name: "Home", href: "/home", icon: Home },
     { name: "Events", href: "/events", icon: Calendar },
     {
       name: session?.user.role === "individual" ? "Calendar" : "Analytics",

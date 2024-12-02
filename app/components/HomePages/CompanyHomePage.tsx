@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, Users, FileEdit, BarChart2, TrendingUp, AlertCircle } from 'lucide-react';
+import { Calendar, Users, FileEdit, TrendingUp, AlertCircle } from 'lucide-react';
 import Header from "../../components/Header";
 
 export default function CompanyDashboard() {
