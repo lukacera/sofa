@@ -8,16 +8,21 @@ import { AIAnalysis } from '@/app/components/SingleEventComponents/AiAnalysis';
 import ConfirmationModal from '@/app/components/SingleEventComponents/EventRegistrationConfirmation';
 import { baseURL } from '@/app/constants/apiURL';
 import { EventType } from '@/app/types/Event';
+import { useSession } from 'next-auth/react';
 
 export default function EventPage() {
+  
   const params = useParams();
+  const {data: session} = useSession();
   const [event, setEvent] = useState<EventType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const amIRegistered = event?.attendees?.some((attendee) => attendee._id === session?.user.id);
 
+  console.log(amIRegistered);
   useEffect(() => {
     async function fetchEvent() {
       try {
@@ -60,7 +65,7 @@ export default function EventPage() {
   return (
     <div className="min-h-screen">
       <Header />
-      <main className="w-[75%] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="w-[75%] mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <section>
           <div className="grid lg:grid-cols-[40%_50%] gap-6">
             {/* Left Column */}
@@ -222,45 +227,42 @@ export default function EventPage() {
           </p>
         </section>
         
-        {/* Register CTA Section */}
-        <div className="mt-16 flex flex-col items-center justify-center">
-          <h3 className="text-2xl font-bold text-gray-900 mb-2">Ready to join this event?</h3>
-          <p className="text-gray-600 mb-6 text-center max-w-lg">
-            Secure your spot now and be part of this amazing experience. Join {event.attendees?.length || 0} other attendees!
-          </p>
-          
-          <button
-            onClick={() => setShowModal(true)}
-            className="flex items-center gap-2 bg-secondary hover:bg-secondary/90 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-          >
-            Register Now
-            <svg
-              className="w-5 h-5 animate-bounce"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 14l-7 7m0 0l-7-7m7 7V3"
-              />
-            </svg>
-          </button>
-          
-          <p className="mt-4 text-sm text-gray-500">
-            {event.capacity - (event.attendees?.length || 0)} spots remaining
-          </p>
-        </div>
                 
         {/* Modal */}
-        {event && (
-          <ConfirmationModal
-            event={event}
-            isOpen={showModal}
-            onClose={() => setShowModal(false)}
-          />
+        {event && session && session.user.role === "individual" && (
+          <div className="mt-16 flex flex-col items-center justify-center">
+            {amIRegistered ? (
+              <div className="flex flex-col items-center gap-3">
+                <div className="text-2xl font-bold mb-2">You&apos;re registered for this event!</div>
+                <button
+                  onClick={() => setShowModal(true)}
+                  className="flex items-center gap-2 bg-secondary 
+                  hover:bg-secondary/90 text-white px-8 py-4 rounded-xl font-semibold 
+                  transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                >
+                  Unregister
+                </button>
+              </div>
+            ) : (
+              <>
+                <h3 className="text-2xl font-bold text-gray-900 mb-5">Ready to join this event?</h3>
+                <button
+                  onClick={() => setShowModal(true)}
+                  className="flex items-center gap-2 bg-secondary hover:bg-secondary/90 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                >
+                  Register Now
+                </button>
+                <p className="mt-4 text-sm text-gray-500">
+                  {event.capacity - (event.attendees?.length || 0)} spots remaining
+                </p>
+                <ConfirmationModal
+                  event={event}
+                  isOpen={showModal}
+                  onClose={() => setShowModal(false)}
+                />
+              </>
+            )}
+          </div>
         )}
       </main>
     </div>

@@ -72,7 +72,7 @@ const authConfig: NextAuthConfig = {
             description: user.description || "",
             location: user.location || "",
             name: user.name,
-            role: user.type as "individual" | "company",
+            role: user.role as "individual" | "company",
           };
         } catch (error) {
           console.error("Auth error:", error);

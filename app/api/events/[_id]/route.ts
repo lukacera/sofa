@@ -21,9 +21,11 @@ export async function GET(
       );
     }
 
-    const event = await Event.findById(_id).populate("organizer");
+    const event = await Event.findById(_id)
+    .populate("organizer")
+    .populate("attendees");
     
-    console.log(event);
+    console.log(event.attendees);
     if (!event) {
       return NextResponse.json(
         { error: "Event not found" },
