@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import User from "@/app/schemas/User";
 import mongoose from "mongoose";
 import { EventSchema } from "@/app/schemas/Event";
+import { EventType } from "@/app/types/Event";
 
 export async function GET(
     req: NextRequest,
@@ -11,7 +12,7 @@ export async function GET(
     try {
         await connectToDB();
 
-        const { email } = await params;
+        const { email } = params;
 
         // Force register Event model if it doesn't exist
         if (!mongoose.models.Event) {
@@ -23,36 +24,81 @@ export async function GET(
         }).populate({
             path: "eventsCreated",
             model: "Event",
-            options: { sort: { date: -1 },
-            strictPopulate: false
-        } // Sort by date descending
+            options: { 
+                sort: { date: -1 },
+                strictPopulate: false
+            }
         });
-
-        console.log(user?.eventsCreated)
 
         if (!user) {
             return NextResponse.json(
                 {
                     message: "User not found",
-                    events: []
+                    events: [],
+                    pastEvents: [],
+                    draftEvents: [],
+                    totalAttendees: 0,
+                    stats: {
+                        pastEventsCount: 0,
+                        draftEventsCount: 0,
+                        totalAttendees: 0
+                    }
                 },
                 { status: 404 }
             );
         }
 
+        const currentDate = new Date();
+        const events = user.eventsCreated || [];
+
+        // Separate events into categories
+        const pastEvents = events.filter((event: EventType) => 
+            new Date(event.date) < currentDate && event.status !== 'draft'
+        );
+
+        const draftEvents = events.filter((event: EventType) => 
+            event.status === 'draft'
+        );
+
+        const upcomingEvents = events.filter((event: EventType) => 
+            new Date(event.date) >= currentDate && event.status !== 'draft'
+        );
+
+        // Calculate total attendees across all events
+        const totalAttendees = events.reduce((sum: number, event: EventType) => 
+            sum + (event.attendees?.length || 0), 0
+        );
+
+        const stats = {
+            pastEventsCount: pastEvents.length,
+            draftEventsCount: draftEvents.length,
+            totalAttendees: totalAttendees
+        };
+
         return NextResponse.json(
             {
-                message: "Events found",
-                events: user.eventsCreated
+                upcomingEvents: upcomingEvents, // Current and future events
+                pastEvents,
+                draftEvents,
+                totalAttendees,
+                stats
             },
             { status: 200 }
         );
     } catch (error) {
-        console.error("Error fetching attended events:", error);
+        console.error("Error fetching hosted events:", error);
         return NextResponse.json(
             {
                 message: "Error fetching events",
-                events: []
+                events: [],
+                pastEvents: [],
+                draftEvents: [],
+                totalAttendees: 0,
+                stats: {
+                    pastEventsCount: 0,
+                    draftEventsCount: 0,
+                    totalAttendees: 0
+                }
             },
             { status: 500 }
         );
