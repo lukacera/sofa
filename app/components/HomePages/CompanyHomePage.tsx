@@ -1,10 +1,65 @@
 import React from 'react';
 import { Calendar, Users, FileEdit, TrendingUp, AlertCircle } from 'lucide-react';
 import Header from "../../components/Header";
+import { auth } from '@/auth';
+import { EventCard } from '../HomePageComponents/EventCard';
+import { EventType } from '@/app/types/Event';
 
-export default function CompanyDashboard() {
-  // Dummy data
-  const stats = {
+interface DashboardStats {
+  totalEvents: number;
+  pastEvents: number;
+  draftEvents: number;
+  totalAttendees: number;
+  averageAttendance: number;
+  upcomingEvents: number;
+}
+
+interface HostedEventsResponse {
+  events: EventType[];
+  pastEvents: EventType[];
+  draftEvents: EventType[];
+  totalAttendees: number;
+  stats: {
+    pastEventsCount: number;
+    draftEventsCount: number;
+    totalAttendees: number;
+  };
+}
+
+// Type for our getHostedEvents function
+async function getHostedEvents(email: string): Promise<HostedEventsResponse> {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/hostedEvents/${email}`, {
+      cache: 'no-store'
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch hosted events');
+    }
+    
+    const data: HostedEventsResponse = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching hosted events:', error);
+    return {
+      events: [],
+      pastEvents: [],
+      draftEvents: [],
+      totalAttendees: 0,
+      stats: {
+        pastEventsCount: 0,
+        draftEventsCount: 0,
+        totalAttendees: 0
+      }
+    };
+  }
+}
+
+export default async function CompanyDashboard() {
+  const session = await auth();
+  const events = await getHostedEvents(session?.user?.email as string);
+
+  const stats: DashboardStats = {
     totalEvents: 24,
     pastEvents: 18,
     draftEvents: 3,
@@ -13,13 +68,7 @@ export default function CompanyDashboard() {
     upcomingEvents: 3
   };
 
-  const recentEvents = [
-    { id: 1, name: "Tech Conference 2024", date: "2024-03-15", attendees: 150, revenue: 4500 },
-    { id: 2, name: "Developer Workshop", date: "2024-03-10", attendees: 45, revenue: 1800 },
-    { id: 3, name: "Startup Meetup", date: "2024-03-05", attendees: 80, revenue: 0 }
-  ];
-
-  const aiInsights = [
+  const aiInsights: string[] = [
     "Attendance rates are 23% higher for morning events",
     "Technical workshops have shown better engagement rates",
     "Consider adding networking sessions to increase attendance"
@@ -29,7 +78,10 @@ export default function CompanyDashboard() {
     <div className="bg-gray-50 min-h-screen">
       <Header />
       <main className="pt-20 px-8">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-[80%] mx-auto">
+          <h2 className='font-semibold mb-7 text-3xl'>
+            {session?.user?.name} events dashboard
+          </h2>
           {/* Stats Overview */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
             <div className="border border-gray-200 bg-white p-6">
@@ -64,10 +116,11 @@ export default function CompanyDashboard() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Recent Events */}
-            <div className="lg:col-span-2 border border-gray-200 bg-white">
+            <div className="col-span-2 border border-gray-200 bg-white">
               <div className="border-b border-gray-200 p-4">
-                <h2 className="text-lg font-semibold">Recent Events</h2>
+                <h2 className="text-lg font-semibold">
+                  Recent Events you hosted
+                </h2>
               </div>
               <div className="p-4">
                 <table className="w-full">
@@ -76,16 +129,14 @@ export default function CompanyDashboard() {
                       <th className="pb-3">Event Name</th>
                       <th className="pb-3">Date</th>
                       <th className="pb-3">Attendees</th>
-                      <th className="pb-3">Revenue</th>
                     </tr>
                   </thead>
                   <tbody className="text-sm">
-                    {recentEvents.map(event => (
-                      <tr key={event.id} className="border-t border-gray-100">
-                        <td className="py-3">{event.name}</td>
+                    {events.events.map((event: EventType) => (
+                      <tr key={event._id} className="border-t border-gray-100">
+                        <td className="py-3">{event.title}</td>
                         <td>{new Date(event.date).toLocaleDateString()}</td>
-                        <td>{event.attendees}</td>
-                        <td>${event.revenue}</td>
+                        <td>{event.attendees.length}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -112,6 +163,17 @@ export default function CompanyDashboard() {
                 </ul>
               </div>
             </div>
+          </div>
+        </div>
+        <div className="max-w-[80%] mx-auto mt-12">
+          <h2 className="text-xl font-semibold mb-6">Top 3 Events by Attendance</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {events.events
+              .sort((a, b) => b.attendees.length - a.attendees.length)
+              .slice(0, 3)
+              .map((event) => (
+                <EventCard key={event._id} event={event} />
+              ))}
           </div>
         </div>
       </main>

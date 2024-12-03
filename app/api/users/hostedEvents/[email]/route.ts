@@ -28,7 +28,7 @@ export async function GET(
         } // Sort by date descending
         });
 
-        console.log(user.eventsCreated)
+        console.log(user?.eventsCreated)
 
         if (!user) {
             return NextResponse.json(
