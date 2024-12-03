@@ -8,10 +8,12 @@ export default async function Layout({
 }) {
   const session = await auth()
   if (session?.user.role === "company") {
-    // We can also store the current URL to redirect back after login
-    // Store fullUrl in a cookie or pass it as a query param to login page
     redirect("/not-found")
   }
 
-  return <>{children}</>
+  return (
+    <div className="min-h-screen flex flex-col bg-mainWhite">
+      <main className="flex-grow pt-16">{children}</main>
+    </div>
+  )
 }

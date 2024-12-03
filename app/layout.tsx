@@ -2,15 +2,14 @@ import type { Metadata } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
+import ClientRootLayout from "./components/ClientRootLayout";
 
-// Load Inter for body text
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-inter",
 });
 
-// Load Plus Jakarta Sans for headings
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
   display: "swap",
@@ -31,9 +30,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.className} ${plusJakarta.className}`}>
-      <body className="antialiased bg-mainWhite text-gray-900">
-        <SessionProvider>{children}</SessionProvider>
+    <html lang="en" className={`${inter.variable} ${plusJakarta.variable}`}>
+      <body className={`${inter.className} min-h-screen flex flex-col bg-mainWhite`}>
+        <SessionProvider>
+          <ClientRootLayout>{children}</ClientRootLayout>
+        </SessionProvider>
       </body>
     </html>
   );

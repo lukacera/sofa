@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, FormEvent, useRef, useEffect } from 'react';
-import Header from '@/app/components/Header';
 import { TimePicker } from '@/app/components/CreateEventComponents/TimePicker';
 import { useSession } from 'next-auth/react';
 import ImageUpload from '@/app/components/CreateEventComponents/ImageUpload';
@@ -135,177 +134,174 @@ const CreateEventForm = () => {
   shadow-sm focus:border-blue-500 focus:ring-blue-500 p-4`;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-black">Create New Event</h1>
-          <p className="mt-2 text-sm text-gray-600">
-            Fill in the details below to create your event. Fields marked with <span className="text-accent">*</span> are required.
+    <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-black">Create New Event</h1>
+        <p className="mt-2 text-sm text-gray-600">
+          Fill in the details below to create your event. Fields marked with <span className="text-accent">*</span> are required.
+        </p>
+      </div>
+
+      <form onSubmit={handleSubmit} 
+      className="bg-white p-6 rounded-xl shadow-sm space-y-10">
+        
+        {/* Basic Information */}
+        <div className='space-y-10'>
+          <h2 className="text-xl font-semibold text-black text-center">Basic Information</h2>
+          
+          <div className="space-y-4">
+            {/* Title */}
+            <div>
+              <label htmlFor="title" className="block text-sm 
+              font-medium text-gray-700 ">
+                Event Title<RequiredStar />
+              </label>
+              <input
+                type="text"
+                id="title"
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                className={`${inputClasses} w-full`}
+                placeholder="Enter event title"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Date, Time, and Event Type */}
+          <div className='flex flex-col gap-4'>
+            <div className="flex flex-col md:flex-row gap-4">
+              {/* Event Type */}
+              <div className="flex-1">
+                <label htmlFor="type" className="block text-sm font-medium text-gray-700">
+                  Event Type<RequiredStar />
+                </label>
+                <select
+                  id="type"
+                  value={formData.type}
+                  onChange={(e) => setFormData({ ...formData, type: e.target.value as EventFormData['type'] })}
+                  className={`${inputClasses} w-full pb-4 cursor-pointer`} // pb-4 to match the height of input
+                >
+                  <option value="conference">Conference</option>
+                  <option value="workshop">Workshop</option>
+                  <option value="meetup">Meetup</option>
+                  <option value="seminar">Seminar</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+
+              {/* Date */}
+              <div className="flex-1">
+                <label htmlFor="date" className="block text-sm font-medium text-gray-700">
+                  Date<RequiredStar />
+                </label>
+                <div 
+                onClick={() => dateRef.current?.showPicker()}
+                className="relative">
+                  <input
+                    type="date"
+                    id="date"
+                    ref={dateRef}
+                    value={dateValue}
+                    min={getTodayString()}
+                    onChange={(e) => {
+                      // Add validation before handling the date change
+                      const selectedDate = new Date(e.target.value);
+                      const today = new Date();
+                      today.setHours(0, 0, 0, 0); // Reset time part for accurate date comparison
+                      
+                      if (selectedDate < today) {
+                        alert("Please select a future date.");
+                        handleDateChange(getTodayString(), timeValue);
+                        return;
+                      }
+                      
+                      handleDateChange(e.target.value, timeValue);
+                    }}
+                    className={`${inputClasses} w-full cursor-pointer`}
+                    required
+                  />
+                </div>
+              </div>
+
+              <TimePicker dateValue={dateValue} handleDateChange={handleDateChange}
+              timeValue={timeValue}/>
+            </div>
+          </div>
+        </div>
+
+          {/* Tags */}
+          <div className='flex flex-col gap-4'>
+            <h2 className="block text-sm font-medium text-gray-700">
+              Tags<RequiredStar />
+            </h2>
+            <TagInput setFormData={setFormData} tags={formData.tags}/>
+          </div>
+
+
+        {/* Location */}
+        <div className="space-y-6">
+          <h2 className="text-xl text-center font-semibold text-black pb-2">
+            Location
+          </h2>
+          <label htmlFor="venueName" className="block text-sm 
+          font-medium text-gray-700">
+            Make it in this format please: CITY, COUNTRY<RequiredStar />
+            <input type="text" 
+            value={formData.location}
+            onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+            placeholder='e.g. Lagos, Nigeria'
+            className={`${inputClasses} w-full`} />
+          </label>
+        </div>
+
+        {/* Description */}
+        <div>
+          <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+            Description<RequiredStar />
+          </label>
+          <textarea
+            id="description"
+            value={formData.description}
+            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            rows={4}
+            minLength={100}
+            maxLength={1000}
+            className={textareaClasses}
+            placeholder="Describe your event (minimum 100 characters and max 1000)"
+            required
+          />
+          <p className={`text-sm mt-1 
+            ${formData.description.length < 100 || formData.description.length === 1000 ? 
+            'text-red-500' : 'text-gray-500'}`}>
+            {formData.description.length} / 1000 characters {formData.description.length < 100 && `(${100 - formData.description.length} more needed)`}
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} 
-        className="bg-white p-6 rounded-xl shadow-sm space-y-10">
-          
-          {/* Basic Information */}
-          <div className='space-y-10'>
-            <h2 className="text-xl font-semibold text-black text-center">Basic Information</h2>
-            
-            <div className="space-y-4">
-              {/* Title */}
-              <div>
-                <label htmlFor="title" className="block text-sm 
-                font-medium text-gray-700 ">
-                  Event Title<RequiredStar />
-                </label>
-                <input
-                  type="text"
-                  id="title"
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className={`${inputClasses} w-full`}
-                  placeholder="Enter event title"
-                  required
-                />
-              </div>
-            </div>
+        <ImageUpload formData={formData} inputClasses={inputClasses}
+        setFormData={setFormData}/>
 
-            {/* Date, Time, and Event Type */}
-            <div className='flex flex-col gap-4'>
-              <div className="flex flex-col md:flex-row gap-4">
-                {/* Event Type */}
-                <div className="flex-1">
-                  <label htmlFor="type" className="block text-sm font-medium text-gray-700">
-                    Event Type<RequiredStar />
-                  </label>
-                  <select
-                    id="type"
-                    value={formData.type}
-                    onChange={(e) => setFormData({ ...formData, type: e.target.value as EventFormData['type'] })}
-                    className={`${inputClasses} w-full pb-4 cursor-pointer`} // pb-4 to match the height of input
-                  >
-                    <option value="conference">Conference</option>
-                    <option value="workshop">Workshop</option>
-                    <option value="meetup">Meetup</option>
-                    <option value="seminar">Seminar</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
-
-                {/* Date */}
-                <div className="flex-1">
-                  <label htmlFor="date" className="block text-sm font-medium text-gray-700">
-                    Date<RequiredStar />
-                  </label>
-                  <div 
-                  onClick={() => dateRef.current?.showPicker()}
-                  className="relative">
-                    <input
-                      type="date"
-                      id="date"
-                      ref={dateRef}
-                      value={dateValue}
-                      min={getTodayString()}
-                      onChange={(e) => {
-                        // Add validation before handling the date change
-                        const selectedDate = new Date(e.target.value);
-                        const today = new Date();
-                        today.setHours(0, 0, 0, 0); // Reset time part for accurate date comparison
-                        
-                        if (selectedDate < today) {
-                          alert("Please select a future date.");
-                          handleDateChange(getTodayString(), timeValue);
-                          return;
-                        }
-                        
-                        handleDateChange(e.target.value, timeValue);
-                      }}
-                      className={`${inputClasses} w-full cursor-pointer`}
-                      required
-                    />
-                  </div>
-                </div>
-
-                <TimePicker dateValue={dateValue} handleDateChange={handleDateChange}
-                timeValue={timeValue}/>
-              </div>
-            </div>
+        {/* Submit Button */}
+        <div className="pt-6">
+          <div className="flex justify-end space-x-4">
+            <button
+              type="button"
+              disabled={isSubmitting}
+              className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              Save as Draft
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primaryDarker hover:bg-primaryDarker/70"
+            >
+              Create Event
+            </button>
           </div>
-
-            {/* Tags */}
-            <div className='flex flex-col gap-4'>
-              <h2 className="block text-sm font-medium text-gray-700">
-                Tags<RequiredStar />
-              </h2>
-              <TagInput setFormData={setFormData} tags={formData.tags}/>
-            </div>
-
-
-          {/* Location */}
-          <div className="space-y-6">
-            <h2 className="text-xl text-center font-semibold text-black pb-2">
-              Location
-            </h2>
-            <label htmlFor="venueName" className="block text-sm 
-            font-medium text-gray-700">
-              Make it in this format please: CITY, COUNTRY<RequiredStar />
-              <input type="text" 
-              value={formData.location}
-              onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-              placeholder='e.g. Lagos, Nigeria'
-              className={`${inputClasses} w-full`} />
-            </label>
-          </div>
-
-          {/* Description */}
-          <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-              Description<RequiredStar />
-            </label>
-            <textarea
-              id="description"
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              rows={4}
-              minLength={100}
-              maxLength={1000}
-              className={textareaClasses}
-              placeholder="Describe your event (minimum 100 characters and max 1000)"
-              required
-            />
-            <p className={`text-sm mt-1 
-              ${formData.description.length < 100 || formData.description.length === 1000 ? 
-              'text-red-500' : 'text-gray-500'}`}>
-              {formData.description.length} / 1000 characters {formData.description.length < 100 && `(${100 - formData.description.length} more needed)`}
-            </p>
-          </div>
-
-          <ImageUpload formData={formData} inputClasses={inputClasses}
-          setFormData={setFormData}/>
-
-          {/* Submit Button */}
-          <div className="pt-6">
-            <div className="flex justify-end space-x-4">
-              <button
-                type="button"
-                disabled={isSubmitting}
-                className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                Save as Draft
-              </button>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primaryDarker hover:bg-primaryDarker/70"
-              >
-                Create Event
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
+        </div>
+      </form>
     </div>
   );
 };
