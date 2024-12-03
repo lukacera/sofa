@@ -24,7 +24,6 @@ export async function GET(
             email: email
         }).populate("eventsAttending");
         
-        console.log("User:", user);
         if (!user) {
             return NextResponse.json(
                 { 

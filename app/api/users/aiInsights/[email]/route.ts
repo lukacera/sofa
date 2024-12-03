@@ -43,7 +43,7 @@ const CACHE_DURATION = 24 * 60 * 60 * 1000;
 export async function GET(
     req: NextRequest,
     { params }: { params: { email: string } }
-) {
+): Promise<NextResponse> {
     try {
         await connectToDB();
         const { email } = await params;
@@ -56,7 +56,11 @@ export async function GET(
 
         if (!user) {
             return NextResponse.json(
-                { message: "User not found", insights: [] },
+                { 
+                    message: "User not found",
+                    pros: [],
+                    cons: []
+                },
                 { status: 404 }
             );
         }
@@ -72,13 +76,13 @@ export async function GET(
             eventHash: eventHash
         });
 
-        console.log("Cached insights:", cachedInsights);
         // If we have valid cached insights, return them
         if (cachedInsights && isInsightValid(cachedInsights.lastUpdated)) {
-            return NextResponse.json({ 
-                insights: cachedInsights,
-                cached: true
-            }, { status: 200 });
+            return NextResponse.json({
+                pros: cachedInsights.pros,
+                cons: cachedInsights.cons
+            }, 
+            { status: 200 });
         }
 
         // Generate new insights
@@ -96,15 +100,19 @@ export async function GET(
             { upsert: true, new: true }
         );
 
-        return NextResponse.json({ 
-            insights: { pros, cons },
-            cached: false
+        return NextResponse.json({
+            pros: pros,
+            cons: cons
         }, { status: 200 });
 
     } catch (error) {
         console.error("Error generating insights:", error);
         return NextResponse.json(
-            { message: "Error generating insights", insights: [] },
+            { 
+                message: "User not found",
+                pros: [],
+                cons: []
+            },
             { status: 500 }
         );
     }
