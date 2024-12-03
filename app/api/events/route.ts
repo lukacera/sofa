@@ -214,13 +214,104 @@ export const POST = async (request: NextRequest) => {
     }
 };
 
-export const GET = async () => {
+interface IEvent extends Document {
+    description: string;
+    date: Date;
+    category: string;
+}
+
+interface EventFilters {
+    date?: {
+        $gte?: Date;
+        $lte?: Date;
+    };
+    category?: string;
+    $or?: Array<{
+        title?: { $regex: string; $options: string };
+        description?: { $regex: string; $options: string };
+    }>;
+}
+
+interface PaginationMetadata {
+    total: number;
+    page: number;
+    limit: number;
+    pages: number;
+}
+
+interface EventsResponse {
+    events: IEvent[];
+    pagination: PaginationMetadata;
+}
+
+export const GET = async (request: NextRequest): Promise<NextResponse<EventsResponse | { message: string; error?: string }>> => {
     try {
         await connectToDB();
-        const events = await Event.find();
-        return NextResponse.json({ events: events }, { status: 200 });
+
+        // Get URL search params
+        const { searchParams } = new URL(request.url);
+        
+        // Parse pagination parameters with type safety
+        const page = parseInt(searchParams.get('page') ?? '') || 1;
+        const limit = parseInt(searchParams.get('limit') ?? '') || 10;
+        const skip = (page - 1) * limit;
+
+        // Build filter object
+        const filters: EventFilters = {};
+
+        // Add date filters if provided
+        const startDate = searchParams.get('startDate');
+        const endDate = searchParams.get('endDate');
+        if (startDate || endDate) {
+            filters.date = {};
+            if (startDate) filters.date.$gte = new Date(startDate);
+            if (endDate) filters.date.$lte = new Date(endDate);
+        }
+
+        // Add category filter if provided
+        const category = searchParams.get('category');
+        if (category) {
+            filters.category = category;
+        }
+
+        // Add search term filter if provided
+        const search = searchParams.get('search');
+        if (search) {
+            filters.$or = [
+                { title: { $regex: search, $options: 'i' } },
+                { description: { $regex: search, $options: 'i' } }
+            ];
+        }
+
+        console.log(filters)
+        // Get total count for pagination
+        const total = await Event.countDocuments(filters);
+
+        // Execute query with filters, skip, and limit
+        const events = await Event.find(filters)
+            .sort({ date: 'asc' })
+            .skip(skip)
+            .limit(limit);
+
+        // Return response with pagination metadata
+        return NextResponse.json({
+            events,
+            pagination: {
+                total,
+                page,
+                limit,
+                pages: Math.ceil(total / limit)
+            }
+        }, { status: 200 });
+
     } catch (error) {
-        console.error(error);
-        return NextResponse.json({ message: 'Internal error in route.ts' }, { status: 500 });
+        console.error('Events route error:', error);
+        return NextResponse.json(
+            { 
+                message: 'Failed to fetch events', 
+                error: error instanceof Error ? error.message : 'Unknown error'
+            },
+            { status: 500 }
+        );
     }
 };
