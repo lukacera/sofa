@@ -72,22 +72,24 @@ export async function GET(
             eventHash: eventHash
         });
 
+        console.log("Cached insights:", cachedInsights);
         // If we have valid cached insights, return them
         if (cachedInsights && isInsightValid(cachedInsights.lastUpdated)) {
             return NextResponse.json({ 
-                insights: cachedInsights.insights,
+                insights: cachedInsights,
                 cached: true
             }, { status: 200 });
         }
 
         // Generate new insights
-        const aiInsights = await generateAIInsights(events);
+        const {cons, pros} = await generateAIInsights(events);
 
         // Update or create cache
         await Insight.findOneAndUpdate(
             { userId: user._id },
             {
-                insights: aiInsights,
+                pros: pros,
+                cons: cons,
                 lastUpdated: new Date(),
                 eventHash: eventHash
             },
@@ -95,7 +97,7 @@ export async function GET(
         );
 
         return NextResponse.json({ 
-            insights: aiInsights,
+            insights: { pros, cons },
             cached: false
         }, { status: 200 });
 
@@ -125,8 +127,11 @@ function isInsightValid(lastUpdated: Date): boolean {
     return timeDiff < CACHE_DURATION;
 }
 
-async function generateAIInsights(events: EventType[]) {
-    if (events.length === 0) return [];
+async function generateAIInsights(events: EventType[]) : Promise<{pros: string[], cons: string[]}> {
+    if (events.length === 0) return {
+        pros: [],
+        cons: []
+    };
 
     const eventData = events.map(event => ({
         title: event.title,
@@ -177,6 +182,9 @@ async function generateAIInsights(events: EventType[]) {
 
     } catch (error) {
         console.error("Error generating AI insights:", error);
-        return [];
+        return {
+            pros: [],
+            cons: []
+        };
     }
 }
