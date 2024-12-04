@@ -221,16 +221,13 @@ interface IEvent extends Document {
 }
 
 interface EventFilters {
-    date?: {
-        $gte?: Date;
-        $lte?: Date;
-    };
     tags?: {$in: string[]};
     $or?: Array<{
         title?: { $regex: string; $options: string };
         description?: { $regex: string; $options: string };
     }>;
     $text?: { $search: string };
+    date?: { $gte: Date };
 }
 
 interface PaginationMetadata {
@@ -257,20 +254,14 @@ export const GET = async (request: NextRequest): Promise<NextResponse<EventsResp
         const limit = parseInt(searchParams.get('limit') ?? '') || 10;
         const sortField = searchParams.get('sortField') || 'date';
         const sortOrder = searchParams.get('sortOrder') || 'asc';
+        const includeFinished = searchParams.get('finishedEvents') === 'true';
         const skip = (page - 1) * limit;
 
+        
         // Build filter object
         const filters: EventFilters = {};
-
-        // Add date filters if provided
-        const startDate = searchParams.get('startDate');
-        const endDate = searchParams.get('endDate');
-        if (startDate || endDate) {
-            filters.date = {};
-            if (startDate) filters.date.$gte = new Date(startDate);
-            if (endDate) filters.date.$lte = new Date(endDate);
-        }
-
+        
+        
         // Add category filter if provided
         const tags = searchParams.get('tags');
         if (tags) {
@@ -278,7 +269,7 @@ export const GET = async (request: NextRequest): Promise<NextResponse<EventsResp
             // Use $in operator to match events that have any of the provided tags
             filters.tags = { $in: tagArray };
         }
-
+        
         // Add search term filter if provided
         const search = searchParams.get('search');
         if (search) {
@@ -292,14 +283,20 @@ export const GET = async (request: NextRequest): Promise<NextResponse<EventsResp
         const sortOptions: Record<string, 1 | -1> = {
             [sortField]: sortOrder === 'asc' ? 1 : -1
         };
-
+        
+        if (!includeFinished) {
+            const now = new Date();
+            filters.date = { $gte: now }; // Only show future events
+        }
+        
+        
         const total = await Event.countDocuments(filters);
-
+        
         const events = await Event.find(filters)
-            .sort(sortOptions)
-            .skip(skip)
-            .limit(limit);
-
+        .sort(sortOptions)
+        .skip(skip)
+        .limit(limit);
+        
         return NextResponse.json({
             events,
             pagination: {

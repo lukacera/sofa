@@ -33,7 +33,8 @@ export default function EventsPage() {
   const [tags, setTags] = useState<string[]>([])
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [isTagDropdownOpen, setIsTagDropdownOpen] = useState(false)
-  
+  const [showFinishedEvents, setShowFinishedEvents] = useState(false);
+
   // Cache states for filter debouncing
   const [debouncedSearch, setDebouncedSearch] = useState('')
   
@@ -88,7 +89,8 @@ export default function EventsPage() {
         setLoading(true)
         const queryParams = new URLSearchParams({
           page: pagination.page.toString(),
-          limit: pagination.limit.toString()
+          limit: pagination.limit.toString(),
+          finishedEvents: showFinishedEvents.toString()
         })
 
         // Add filters to query params
@@ -115,7 +117,7 @@ export default function EventsPage() {
     }
 
     fetchEvents()
-  }, [debouncedSearch, sortBy, pagination.page, pagination.limit, selectedTags])
+  }, [debouncedSearch, sortBy, pagination.page, pagination.limit, selectedTags, showFinishedEvents])
 
   const handleTagSelect = (tag: string) => {
     setSelectedTags(current => 
@@ -171,7 +173,19 @@ export default function EventsPage() {
 
           {/* Filter Panel */}
           {showFilters && (
-            <div className="p-6 bg-white rounded-lg shadow-sm">
+            <div className="p-6 bg-white rounded-lg shadow-sm space-y-4">
+              <div className='flex items-center gap-2'>
+                <label htmlFor="event-finished" className="flex items-center gap-2 cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    id="event-finished"
+                    checked={showFinishedEvents}
+                    onChange={(e) => setShowFinishedEvents(e.target.checked)}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span>Show finished events</span>
+                </label>
+              </div>
               <div className="flex gap-6">
                 {/* Sort Control */}
                 <div className="flex-1">
