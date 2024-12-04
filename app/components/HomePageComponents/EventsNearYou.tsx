@@ -27,7 +27,7 @@ export async function EventsNearYou() {
       </h2>
       <div className='grid grid-cols-3 gap-10 w-full'>
         {events.events.map((event) => (
-          <EventCard key={event._id!} event={event} />
+          <EventCard key={event._id!} event={event} className='max-h-[20rem]'/>
         ))}
       </div>
     </div>

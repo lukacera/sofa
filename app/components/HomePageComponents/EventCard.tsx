@@ -4,14 +4,21 @@ import { CldImage } from "next-cloudinary";
 import Link from "next/link";
 import { EventType } from "@/app/types/Event"
 
-export const EventCard: React.FC<{ event: EventType }> = ({ event }) => {
+
+interface EventCardProps {
+  event: EventType
+  className?: string
+}
+
+export function EventCard({ event, className = '' }: EventCardProps) {
+
 
   const isFinished = new Date(event.date) < new Date();
 
   return (
     <Link 
       href={`/events/${event._id}`}
-      className="group rounded-lg shadow-xl border w-full"
+      className={`group rounded-lg shadow-xl border w-full`}
     >
       <div className="relative">
       {isFinished && (
@@ -20,7 +27,7 @@ export const EventCard: React.FC<{ event: EventType }> = ({ event }) => {
             Finished
           </div>
         )}
-        <div className="relative aspect-square overflow-hidden">
+        <div className={`relative aspect-square overflow-hidden w-full ${className}`}>
           <CldImage
             alt={event.title}
             src={event.image}

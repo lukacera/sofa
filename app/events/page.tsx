@@ -28,15 +28,10 @@ export default function EventsPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState<SortOption>('date-asc')
   const [showFilters, setShowFilters] = useState(false)
-  const [locationFilter, setLocationFilter] = useState('')
   
   // Cache states for filter debouncing
   const [debouncedSearch, setDebouncedSearch] = useState('')
   
-  // Get unique tags and locations from events
-  const allTags = Array.from(new Set(events.flatMap(event => event.tags || [])))
-  const allLocations = Array.from(new Set(events.map(event => event.location)))
-
   // Debounce search query
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -58,15 +53,12 @@ export default function EventsPage() {
 
         // Add filters to query params
         if (debouncedSearch) queryParams.set('search', debouncedSearch)
-        if (locationFilter) queryParams.set('category', locationFilter)
         if (sortBy) {
           const [field, order] = sortBy.split('-');
-          console.log("Sort by" + field, order)
           queryParams.set('sortField', field);
           queryParams.set('sortOrder', order);
-          console.log("Query Params", queryParams.toString())
         }
-        console.log()
+
         const response = await fetch(`/api/events?${queryParams.toString()}`)
         const data = await response.json()
         
@@ -80,7 +72,7 @@ export default function EventsPage() {
     }
 
     fetchEvents()
-  }, [debouncedSearch, locationFilter, sortBy, pagination.page, pagination.limit])
+  }, [debouncedSearch, sortBy, pagination.page, pagination.limit])
 
   // Pagination controls
   const handlePageChange = (newPage: number) => {
@@ -139,7 +131,7 @@ export default function EventsPage() {
                 </select>
               </div>
 
-              <div>
+              {/* <div>
                 <h3 className="font-medium mb-2">Location:</h3>
                 <select
                   value={locationFilter}
@@ -153,7 +145,7 @@ export default function EventsPage() {
                     </option>
                   ))}
                 </select>
-              </div>
+              </div> */}
 
               {/* Other filters remain the same */}
             </div>
@@ -164,7 +156,7 @@ export default function EventsPage() {
       {/* Events Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-12">
         {events.map((event) => (
-          <EventCard key={event._id} event={event} />
+          <EventCard key={event._id} event={event} className='max-h-[15rem]' />
         ))}
       </div>
 
