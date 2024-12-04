@@ -230,6 +230,7 @@ interface EventFilters {
         title?: { $regex: string; $options: string };
         description?: { $regex: string; $options: string };
     }>;
+    $text?: { $search: string };
 }
 
 interface PaginationMetadata {
