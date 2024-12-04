@@ -5,7 +5,7 @@ import { Search, SlidersHorizontal } from 'lucide-react'
 import { EventCard } from '../components/HomePageComponents/EventCard'
 import { EventType } from '../types/Event'
 
-type SortOption = 'date-asc' | 'date-desc' | 'capacity-asc' | 'capacity-desc'
+type SortOption = 'date-asc' | 'date-desc' | 'capacity-asc' | 'capacity-desc';
 
 interface PaginationData {
   total: number
@@ -26,14 +26,10 @@ export default function EventsPage() {
   
   // Filter states
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [sortBy, setSortBy] = useState<SortOption>('date-asc')
   const [showFilters, setShowFilters] = useState(false)
   const [locationFilter, setLocationFilter] = useState('')
-  const [minPrice, setMinPrice] = useState('')
-  const [maxPrice, setMaxPrice] = useState('')
-  const [isFreeOnly, setIsFreeOnly] = useState(false)
-
+  
   // Cache states for filter debouncing
   const [debouncedSearch, setDebouncedSearch] = useState('')
   
@@ -63,10 +59,14 @@ export default function EventsPage() {
         // Add filters to query params
         if (debouncedSearch) queryParams.set('search', debouncedSearch)
         if (locationFilter) queryParams.set('category', locationFilter)
-        if (sortBy.startsWith('date')) {
-          queryParams.set('sort', sortBy === 'date-asc' ? 'asc' : 'desc')
+        if (sortBy) {
+          const [field, order] = sortBy.split('-');
+          console.log("Sort by" + field, order)
+          queryParams.set('sortField', field);
+          queryParams.set('sortOrder', order);
+          console.log("Query Params", queryParams.toString())
         }
-
+        console.log()
         const response = await fetch(`/api/events?${queryParams.toString()}`)
         const data = await response.json()
         
@@ -128,14 +128,14 @@ export default function EventsPage() {
               <div>
                 <h3 className="font-medium mb-2">Sort by:</h3>
                 <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as SortOption)}
-                  className="w-full p-2 border rounded-lg"
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as SortOption)}
+                    className="w-full p-2 border rounded-lg"
                 >
-                  <option value="date-asc">Date (Earliest first)</option>
-                  <option value="date-desc">Date (Latest first)</option>
-                  <option value="capacity-asc">Capacity (Low to High)</option>
-                  <option value="capacity-desc">Capacity (High to Low)</option>
+                    <option value="date-asc">Date (Earliest first)</option>
+                    <option value="date-desc">Date (Latest first)</option>
+                    <option value="capacity-asc">Capacity (Low to High)</option>
+                    <option value="capacity-desc">Capacity (High to Low)</option>
                 </select>
               </div>
 

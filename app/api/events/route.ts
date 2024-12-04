@@ -248,12 +248,14 @@ export const GET = async (request: NextRequest): Promise<NextResponse<EventsResp
     try {
         await connectToDB();
 
-        // Get URL search params
+        console.log("Request:", request.url);
         const { searchParams } = new URL(request.url);
         
-        // Parse pagination parameters with type safety
+        // Parse pagination and sorting parameters
         const page = parseInt(searchParams.get('page') ?? '') || 1;
         const limit = parseInt(searchParams.get('limit') ?? '') || 10;
+        const sortField = searchParams.get('sortField') || 'date';
+        const sortOrder = searchParams.get('sortOrder') || 'asc';
         const skip = (page - 1) * limit;
 
         // Build filter object
@@ -283,17 +285,18 @@ export const GET = async (request: NextRequest): Promise<NextResponse<EventsResp
             ];
         }
 
-        console.log(filters)
-        // Get total count for pagination
+        // Build sort object
+        const sortOptions: Record<string, 1 | -1> = {
+            [sortField]: sortOrder === 'asc' ? 1 : -1
+        };
+
         const total = await Event.countDocuments(filters);
 
-        // Execute query with filters, skip, and limit
         const events = await Event.find(filters)
-            .sort({ date: 'asc' })
+            .sort(sortOptions)
             .skip(skip)
             .limit(limit);
 
-        // Return response with pagination metadata
         return NextResponse.json({
             events,
             pagination: {
