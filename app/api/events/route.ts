@@ -225,7 +225,7 @@ interface EventFilters {
         $gte?: Date;
         $lte?: Date;
     };
-    category?: string;
+    tags?: {$in: string[]};
     $or?: Array<{
         title?: { $regex: string; $options: string };
         description?: { $regex: string; $options: string };
@@ -272,9 +272,11 @@ export const GET = async (request: NextRequest): Promise<NextResponse<EventsResp
         }
 
         // Add category filter if provided
-        const category = searchParams.get('category');
-        if (category) {
-            filters.category = category;
+        const tags = searchParams.get('tags');
+        if (tags) {
+            const tagArray = tags.split(',').map(tag => tag.trim());
+            // Use $in operator to match events that have any of the provided tags
+            filters.tags = { $in: tagArray };
         }
 
         // Add search term filter if provided
