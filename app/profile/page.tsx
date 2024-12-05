@@ -22,7 +22,7 @@ export default function Page() {
       id: 'events',
       label: session?.user.role === "company" ? "Hosted Events" : "Attended Events",
       icon: <Calendar size={20} />,
-      component: session?.user.role === "company" ? <EventList type='hosted' gridCols={3} /> : 
+      component: session?.user.role === "company" ? <EventList type='hosted' gridCols={2} /> : 
       <AttendedEvents />,
     },
   ];
@@ -32,7 +32,7 @@ export default function Page() {
       id: 'drafts',
       label: 'My drafts',
       icon: <Pencil size={20} />,
-      component: <div>New Tab Component</div>
+      component: <EventList type='drafts' gridCols={2} />
     });
   }
   

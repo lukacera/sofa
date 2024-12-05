@@ -16,7 +16,9 @@ export async function GET(
             match: { status: "draft" }
         });
 
-        return NextResponse.json(user?.eventsCreated, { status: 200 });
+        return NextResponse.json({
+            data: user?.eventsCreated || []
+        }, { status: 200 });
     } catch (error) {
         console.error("Error fetching users:", error);
         return NextResponse.json(

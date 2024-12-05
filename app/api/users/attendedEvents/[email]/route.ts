@@ -31,7 +31,7 @@ export async function GET(
             return NextResponse.json(
                 {
                     message: "User not found",
-                    events: []
+                    data: []
                 },
                 { status: 404 }
             );
@@ -40,7 +40,7 @@ export async function GET(
         return NextResponse.json(
             {
                 message: "Events found",
-                events: user.eventsAttending
+                data: user.eventsAttending
             },
             { status: 200 }
         );
@@ -49,7 +49,7 @@ export async function GET(
         return NextResponse.json(
             {
                 message: "Error fetching events",
-                events: []
+                data: []
             },
             { status: 500 }
         );

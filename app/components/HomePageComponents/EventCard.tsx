@@ -21,10 +21,16 @@ export function EventCard({ event, className = '' }: EventCardProps) {
       className={`group rounded-lg shadow-xl border w-full`}
     >
       <div className="relative">
-      {isFinished && (
-          <div className="absolute top-2 right-2 z-10 bg-red-500 text-white px-2 py-1 rounded-md 
+        {isFinished && (
+          <div className="absolute top-2 right-2 z-10 bg-accent text-white px-2 py-1 rounded-md 
           text-sm font-semibold">
             Finished
+          </div>
+        )}
+        {event.status === "draft" && (
+          <div className="absolute top-2 right-2 z-10 bg-secondary text-white px-2 py-1 rounded-md 
+          text-sm font-semibold">
+            Draft
           </div>
         )}
         <div className={`relative aspect-square overflow-hidden w-full ${className}`}>

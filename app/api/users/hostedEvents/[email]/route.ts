@@ -33,7 +33,6 @@ export async function GET(
         if (!user) {
             return NextResponse.json(
                 {
-                    message: "User not found",
                     events: [],
                     pastEvents: [],
                     draftEvents: [],
@@ -77,11 +76,7 @@ export async function GET(
 
         return NextResponse.json(
             {
-                upcomingEvents: upcomingEvents, // Current and future events
-                pastEvents,
-                draftEvents,
-                totalAttendees,
-                stats
+                data: user.eventsCreated || [],
             },
             { status: 200 }
         );

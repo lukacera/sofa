@@ -7,7 +7,7 @@ import { EventType } from '@/app/types/Event'
 import { EventCard } from '../HomePageComponents/EventCard'
 
 interface EventListProps {
-  type: 'hosted' | 'attended'
+  type: 'hosted' | 'attended' | 'drafts'
   gridCols?: number
   showHeader?: boolean
 }
@@ -19,11 +19,13 @@ export const EventList = ({ type, gridCols = 1, showHeader = true }: EventListPr
   const [error, setError] = useState<string | null>(null)
 
   const isHosted = type === 'hosted'
-  const title = isHosted ? 'Your hosted events' : 'Your Attended Events'
-  const emptyMessage = isHosted 
-    ? "You haven't hosted any events yet"
-    : "You haven't attended any events yet"
-  const endpoint = isHosted ? 'hostedEvents' : 'attendedEvents'
+  const isAttended = type === 'attended'
+  const title = isHosted ? 'Your hosted events' : isAttended ? 'Your Attended Events' : 'Your Drafts'
+
+  const emptyMessage = isHosted ? "You haven't hosted any events yet" : 
+  isAttended ? "You haven't attended any events yet" : "You haven't created any drafts yet"
+
+  const endpoint = isHosted ? 'hostedEvents' : isAttended ? 'attendedEvents' : 'drafts'
 
   useEffect(() => {
     async function fetchEvents() {
@@ -36,7 +38,8 @@ export const EventList = ({ type, gridCols = 1, showHeader = true }: EventListPr
         }
 
         const data = await response.json()
-        setEvents(data.events || [])
+        console.log(data)
+        setEvents(data.data || [])
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load events')
       } finally {
@@ -82,7 +85,7 @@ export const EventList = ({ type, gridCols = 1, showHeader = true }: EventListPr
 
   const renderEvent = (event: EventType) => {
     if (isHosted) {
-      return <EventCard event={event} key={event._id} />
+      return <EventCard className='h-[20rem]' event={event} key={event._id} />
     }
 
     return (
@@ -127,7 +130,7 @@ export const EventList = ({ type, gridCols = 1, showHeader = true }: EventListPr
     <div className="mt-10">
       {showHeader && <h2 className="text-xl font-semibold mb-6">{title}</h2>}
       <div className={`grid grid-cols-${gridCols} gap-6`}>
-        {events.map(renderEvent)}
+        {events.map(event => <EventCard className='h-[20rem]' event={event} key={event._id} />)}
       </div>
     </div>
   )
