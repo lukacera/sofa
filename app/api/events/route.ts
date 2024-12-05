@@ -204,6 +204,8 @@ interface EventFilters {
     }>;
     $text?: { $search: string };
     date?: { $gte: Date };
+    'location.country'?: string;
+    'location.city'?: string;
 }
 
 interface PaginationMetadata {
@@ -230,6 +232,8 @@ export const GET = async (request: NextRequest): Promise<NextResponse<EventsResp
         const sortField = searchParams.get('sortField') || 'date';
         const sortOrder = searchParams.get('sortOrder') || 'asc';
         const includeFinished = searchParams.get('finishedEvents') === 'true';
+        const country = searchParams.get('country');
+        const city = searchParams.get('city');
         const skip = (page - 1) * limit;
 
         
@@ -264,7 +268,14 @@ export const GET = async (request: NextRequest): Promise<NextResponse<EventsResp
             filters.date = { $gte: now }; // Only show future events
         }
         
+        if (country) {
+            filters['location.country'] = country;
+        }
         
+        if (city) {
+            filters['location.city'] = city;
+        }
+
         const total = await Event.countDocuments(filters);
         
         const events = await Event.find(filters)
