@@ -36,12 +36,12 @@ export default function Page() {
     });
   }
   
-  tabs.push({
-    id: 'security',
-    label: 'Account Security',
-    icon: <ShieldAlert size={20} />,
-    component: <div>Security Component</div> // Replace with your security component
-  });
+  // tabs.push({
+  //   id: 'security',
+  //   label: 'Account Security',
+  //   icon: <ShieldAlert size={20} />,
+  //   component: <div>Security Component</div> // Replace with your security component
+  // });
   
   return (
     <main className='w-[70%] mx-auto mt-20'>

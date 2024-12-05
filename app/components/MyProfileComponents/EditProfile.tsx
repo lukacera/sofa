@@ -4,11 +4,13 @@ import { useSession } from 'next-auth/react'
 
 export default function EditProfile() {
     const { data: session } = useSession();
+    console.log(session);
     const [formData, setFormData] = useState({
-        name: session?.user?.name || '',
-        email: session?.user?.email || '',
+        name: session?.user?.name,
+        email: session?.user?.email,
         bio: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. A, deleniti non, inventore laborum veritatis alias impedit accusantium, qui velit nulla temporibus provident consequatur ad voluptatum quasi expedita? Id, iure blanditiis."
     });
+    console.log(formData);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
