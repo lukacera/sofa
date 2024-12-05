@@ -120,128 +120,128 @@ export default async function CompanyDashboard() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="col-span-2">
-            {/* Upcoming Events Container */}
-            <div className="border border-gray-200 bg-white mb-8">
-              <div className="border-b border-gray-200 p-4">
-                <h2 className="text-lg font-semibold">
-                  Upcoming Events
-                </h2>
-              </div>
-              <div className="p-4">
-                <table className="w-full">
-                  <thead>
-                    <tr className="text-left text-sm text-gray-600">
-                      <th className="pb-3">Event Name</th>
-                      <th className="pb-3">Date</th>
-                      <th className="pb-3">Registered</th>
-                    </tr>
-                  </thead>
-                  <tbody className="text-sm">
-                    {upcomingEvents.length > 0 ? (
-                      upcomingEvents.map((event: EventType) => (
-                        <tr key={event._id} className="border-t border-gray-100">
-                          <td className="py-3">{event.title}</td>
-                          <td>{new Date(event.date).toLocaleDateString()}</td>
-                          <td>{event.attendees.length}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan={3} className="py-6 text-center text-gray-500">
-                          No upcoming events scheduled
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* Recent Events Container */}
-            <div className="border border-gray-200 bg-white max-h-[20rem]">
-              <div className="border-b border-gray-200 p-4">
-                <h2 className="text-lg font-semibold">
-                  Recent Events you hosted
-                </h2>
-              </div>
-              <div className="p-4 overflow-y-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="text-left text-sm text-gray-600">
-                      <th className="pb-3">Event Name</th>
-                      <th className="pb-3">Date</th>
-                      <th className="pb-3">Attendees</th>
-                    </tr>
-                  </thead>
-                  <tbody className="text-sm">
-                    {pastEvents.length > 0 ? (
-                      pastEvents.map((event: EventType) => (
-                        <tr key={event._id} className="border-t border-gray-100">
-                          <td className="py-3">{event.title}</td>
-                          <td>{new Date(event.date).toLocaleDateString()}</td>
-                          <td>{event.attendees.length}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan={3} className="py-6 text-center text-gray-500">
-                          No past events to display yet
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          {/* AI Insights */}
-          <div className="border border-gray-200 bg-white">
-            <div className="border-b border-gray-200 p-4">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold">AI Insights</h2>
-                <TrendingUp className="text-blue-600 w-5 h-5" />
-              </div>
-            </div>
-            <div className="p-4 space-y-6">
-              {/* Pros */}
-              <div>
-                <h3 className="font-medium mb-3">Strengths</h3>
-                <ul className="space-y-4">
-                  {pros.length > 0 ? (
-                    pros.map((insight, index) => (
-                      <li key={index} className="flex items-start gap-3 text-sm">
-                        <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                        <span>{insight}</span>
-                      </li>
-                    ))
-                  ) : (
-                    <li className="text-gray-500 text-center py-2">No strengths analyzed yet</li>
-                  )}
-                </ul>
-              </div>
-              
-              {/* Cons */}
-              <div>
-                <h3 className="font-medium mb-3">Areas for Improvement</h3>
-                <ul className="space-y-4">
-                  {cons.length > 0 ? (
-                    cons.map((insight, index) => (
-                      <li key={index} className="flex items-start gap-3 text-sm">
-                        <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
-                        <span>{insight}</span>
-                      </li>
-                    ))
-                  ) : (
-                    <li className="text-gray-500 text-center py-2">No improvements suggested yet</li>
-                  )}
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
+  <div className="col-span-2 flex flex-col">
+    {/* Upcoming Events Container */}
+    <div className="border border-gray-200 bg-white mb-8 flex-1">
+      <div className="border-b border-gray-200 p-4">
+        <h2 className="text-lg font-semibold">
+          Upcoming Events
+        </h2>
       </div>
+      <div className="p-4 overflow-y-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="text-left text-sm text-gray-600">
+              <th className="pb-3">Event Name</th>
+              <th className="pb-3">Date</th>
+              <th className="pb-3">Registered</th>
+            </tr>
+          </thead>
+          <tbody className="text-sm">
+            {upcomingEvents.length > 0 ? (
+              upcomingEvents.map((event: EventType) => (
+                <tr key={event._id} className="border-t border-gray-100">
+                  <td className="py-3">{event.title}</td>
+                  <td>{new Date(event.date).toLocaleDateString()}</td>
+                  <td>{event.attendees.length}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={3} className="py-6 text-center text-gray-500">
+                  No upcoming events scheduled
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    {/* Recent Events Container */}
+    <div className="border border-gray-200 bg-white flex-1">
+      <div className="border-b border-gray-200 p-4">
+        <h2 className="text-lg font-semibold">
+          Recent Events you hosted
+        </h2>
+      </div>
+      <div className="p-4 overflow-y-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="text-left text-sm text-gray-600">
+              <th className="pb-3">Event Name</th>
+              <th className="pb-3">Date</th>
+              <th className="pb-3">Attendees</th>
+            </tr>
+          </thead>
+          <tbody className="text-sm">
+            {pastEvents.length > 0 ? (
+              pastEvents.map((event: EventType) => (
+                <tr key={event._id} className="border-t border-gray-100">
+                  <td className="py-3">{event.title}</td>
+                  <td>{new Date(event.date).toLocaleDateString()}</td>
+                  <td>{event.attendees.length}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={3} className="py-6 text-center text-gray-500">
+                  No past events to display yet
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  {/* AI Insights */}
+  <div className="border border-gray-200 bg-white h-full">
+    <div className="border-b border-gray-200 p-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold">AI Insights</h2>
+        <TrendingUp className="text-blue-600 w-5 h-5" />
+      </div>
+    </div>
+    <div className="p-4 space-y-6">
+      {/* Pros */}
+      <div>
+        <h3 className="font-medium mb-3">Strengths</h3>
+        <ul className="space-y-4">
+          {pros.length > 0 ? (
+            pros.map((insight, index) => (
+              <li key={index} className="flex items-start gap-3 text-sm">
+                <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                <span>{insight}</span>
+              </li>
+            ))
+          ) : (
+            <li className="text-gray-500 text-center py-2">No strengths analyzed yet</li>
+          )}
+        </ul>
+      </div>
+      
+      {/* Cons */}
+      <div>
+        <h3 className="font-medium mb-3">Areas for Improvement</h3>
+        <ul className="space-y-4">
+          {cons.length > 0 ? (
+            cons.map((insight, index) => (
+              <li key={index} className="flex items-start gap-3 text-sm">
+                <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+                <span>{insight}</span>
+              </li>
+            ))
+          ) : (
+            <li className="text-gray-500 text-center py-2">No improvements suggested yet</li>
+          )}
+        </ul>
+      </div>
+    </div>
+  </div>
+      </div>
+    </div>
 
       <div className="max-w-[80%] mx-auto mt-12">
         <h2 className="text-xl font-semibold mb-2">Top 3 Events by Attendance</h2>
