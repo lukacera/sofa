@@ -5,6 +5,7 @@ import { Search, SlidersHorizontal, X } from 'lucide-react'
 import { EventCard } from '../components/HomePageComponents/EventCard'
 import { EventType } from '../types/Event'
 import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react'
+import { LocationDropdown } from '../components/EventsPageComponents/LocationDropdown'
 
 type SortOption = 'date-asc' | 'date-desc' | 'capacity-asc' | 'capacity-desc';
 
@@ -34,7 +35,8 @@ export default function EventsPage() {
   const [showFinishedEvents, setShowFinishedEvents] = useState(false)
   const [country, setCountry] = useState('')
   const [city, setCity] = useState('')
-  
+  const [countries, setCountries] = useState<string[]>([])
+  const [cities, setCities] = useState<string[]>([])  
   const [debouncedSearch, setDebouncedSearch] = useState('')
   const [debouncedCountry, setDebouncedCountry] = useState('')
   const [debouncedCity, setDebouncedCity] = useState('')
@@ -49,6 +51,21 @@ export default function EventsPage() {
         console.error('Error fetching tags:', error)
       }
     }
+    async function fetchLocations() {
+      try {
+        const [countriesRes, citiesRes] = await Promise.all([
+          fetch('/api/countries'),
+          fetch('/api/cities')
+        ]);
+        const countriesData = await countriesRes.json();
+        const citiesData = await citiesRes.json();
+        setCountries(countriesData.countries);
+        setCities(citiesData.cities);
+      } catch (error) {
+        console.error('Error fetching locations:', error);
+      }
+    }
+    fetchLocations();
     fetchTags()
   }, [])
 
@@ -183,30 +200,22 @@ export default function EventsPage() {
               </div>
 
               <div className='space-y-2'>
-                <h2 className='font-medium'>
-                  Location:
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="relative">
-                    <input
-                      type="text"
-                      placeholder="Country"
-                      value={country}
-                      onChange={(e) => setCountry(e.target.value)}
-                      className="w-full px-4 py-2 border rounded-lg"
-                    />
-                  </div>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      placeholder="City"
-                      value={city}
-                      onChange={(e) => setCity(e.target.value)}
-                      className="w-full px-4 py-2 border rounded-lg"
-                    />
-                  </div>
-                </div>
-              </div>
+  <h2 className='font-medium'>Location:</h2>
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <LocationDropdown 
+  value={country}
+  onChange={setCountry}
+  options={countries}
+  type="country"
+/>
+<LocationDropdown 
+  value={city}
+  onChange={setCity}
+  options={cities}
+  type="city"
+/>
+  </div>
+</div>
 
               <div className="flex gap-6">
                 <div className="flex-1">
