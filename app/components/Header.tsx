@@ -2,7 +2,7 @@
 import { signOut, useSession } from "next-auth/react"
 import Link from "next/link"
 import React, { useState } from "react"
-import { Home, Calendar, Menu, X, Plus, ChevronDown, ChartNoAxesColumnIncreasing, Pencil } from "lucide-react"
+import { Home, Calendar, Menu, X, Plus, ChevronDown } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { CldImage } from "next-cloudinary"
 
@@ -15,12 +15,12 @@ export default function Header() {
   const navLinks = [
     { name: "Home", href: "/home", icon: Home },
     { name: "Events", href: "/events", icon: Calendar },
-    {
-      name: session?.user.role === "individual" ? "Calendar" : "My drafts",
-      href: session?.user.role === "individual" ? "my-calendar" : "drafts",
-      icon: session?.user.role === "individual" ? Calendar : Pencil,
-    },
-  ]
+    ...(session?.user.role === "individual" ? [{
+      name: "Calendar",
+      href: "my-calendar", 
+      icon: Calendar
+    }] : [])
+   ]
 
   return (
     <header className="bg-secondary w-full">

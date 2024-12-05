@@ -23,7 +23,7 @@ interface AIInsightsResponse {
 
 async function getHostedEvents(email: string): Promise<HostedEventsResponse> {
  try {
-   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/hostedEvents/${email}`, {
+   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/eventsStats/${email}`, {
      cache: 'no-store'
    });
    
