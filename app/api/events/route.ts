@@ -3,7 +3,6 @@ import { connectToDB } from "@/app/utils/connectWithDB";
 import { NextRequest, NextResponse } from "next/server";
 import { EventType } from '@/app/types/Event';
 import OpenAI from "openai"
-import mongoose from "mongoose";
 import User from "@/app/schemas/User";
 
 function validateEvent(event: EventType) {
@@ -112,7 +111,10 @@ export const POST = async (request: NextRequest) => {
             imageUrl = data.url;
         }
 
-        const organizer = await User.findById(eventData.organizer);
+        const organizer = await User.findByIdAndUpdate(
+            eventData.organizer,
+            { $push: { eventsCreated: eventData._id } }
+        );
 
         if (!organizer) {
             return NextResponse.json(

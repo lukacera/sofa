@@ -81,7 +81,7 @@ export default async function CompanyDashboard() {
  const { pros, cons } = await getAIInsights(session?.user?.email as string);
 
  return (
-    <main className="px-8">
+    <main className="px-8 mt-10">
       <div className="max-w-[80%] mx-auto">
         <h2 className='font-semibold mb-7 text-3xl'>
           {session?.user?.name} events dashboard
