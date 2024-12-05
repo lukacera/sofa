@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from 'react'
-import { Calendar, ShieldAlert, Settings, Pencil } from 'lucide-react'
+import { Calendar, Settings, Pencil } from 'lucide-react'
 import EditProfile from '../components/MyProfileComponents/EditProfile'
 import { useSession } from 'next-auth/react'
 import AttendedEvents from '../components/MyProfileComponents/AttendedEvents'
@@ -22,7 +22,7 @@ export default function Page() {
       id: 'events',
       label: session?.user.role === "company" ? "Hosted Events" : "Attended Events",
       icon: <Calendar size={20} />,
-      component: session?.user.role === "company" ? <EventList type='hosted' gridCols={2} /> : 
+      component: session?.user.role === "company" ? <EventList key="hosted" type='hosted' gridCols={2} /> : 
       <AttendedEvents />,
     },
   ];
@@ -32,16 +32,9 @@ export default function Page() {
       id: 'drafts',
       label: 'My drafts',
       icon: <Pencil size={20} />,
-      component: <EventList type='drafts' gridCols={2} />
+      component: <EventList key="drafts" type='drafts' gridCols={2} />
     });
   }
-  
-  // tabs.push({
-  //   id: 'security',
-  //   label: 'Account Security',
-  //   icon: <ShieldAlert size={20} />,
-  //   component: <div>Security Component</div> // Replace with your security component
-  // });
   
   return (
     <main className='w-[70%] mx-auto mt-20'>
@@ -64,7 +57,6 @@ export default function Page() {
           ))}
         </ul>
         
-        {/* Render active tab content */}
         <div className='flex-1'>
           {tabs.find(tab => tab.id === activeTab)?.component}
         </div>
