@@ -150,8 +150,8 @@ export const POST = async (request: NextRequest) => {
                 {
                     role: "system",
                     content: `
-                    You are an expert event analyst. Your task is to analyze events and provide EXACTLY 450 character analyses - no more, no less.
-                    When analyzing the event, create a compelling summary using the description and tags provided.
+                    You are an expert event analyst. Your response must be a single paragraph and EXACTLY between 450 and 460 characters, including spaces. 
+                    Count your characters and ensure compliance before completing the response. No exceptions. 
                     Rules:
                     - The response MUST be EXACTLY between 450 and 460 characters
                     - Write in a single paragraph

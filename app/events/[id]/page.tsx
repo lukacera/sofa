@@ -58,7 +58,7 @@ export default function EventPage() {
   }
 
   return (
-    <main className="w-[75%] mx-auto px-4 sm:px-6 lg:px-8">
+    <main className="w-[75%] mx-auto px-4 sm:px-6 lg:px-8 mt-10">
       <section>
         <div className="grid lg:grid-cols-[40%_50%] gap-6">
           {/* Left Column */}
@@ -135,7 +135,7 @@ export default function EventPage() {
                   <div>
                     <p className="text-xs text-gray-500">Location</p>
                     <p className="font-medium text-gray-900 text-sm">
-                      {event.location.city}
+                      {event.location.city}, {event.location.country}
                     </p>
                   </div>
                 </div>
@@ -163,7 +163,7 @@ export default function EventPage() {
           </div>
 
           {/* Right Column */}
-          <div className="flex flex-col h-full gap-10">
+          <div className="flex flex-col h-full gap-5">
             {/* Image Container */}
             <div className="relative flex-grow">
               <div className="absolute inset-0 w-[95%] ml-auto">
@@ -207,7 +207,7 @@ export default function EventPage() {
                 <Users size={16} />
                 <span className="text-sm font-medium">
                 {event.attendees?.length 
-                  ? `${event.attendees.length} people attending` 
+                  ? `${event.attendees.length} ${[1,0].includes(event.attendees.length) ? "person" : "people"} attending` 
                   : 'No one has registered for this event yet'}
                 </span>
               </div>

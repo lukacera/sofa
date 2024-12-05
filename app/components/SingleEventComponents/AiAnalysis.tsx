@@ -39,7 +39,7 @@ export const AIAnalysis: React.FC<{
   return (
     <div className={`bg-gradient-to-r from-primary to-primaryDarker/30
       p-5 rounded-xl flex flex-col gap-4 transition-all duration-500 ease-out
-      min-h-[15rem] h-auto mt-4
+      min-h-[17rem] h-auto mt-4
       ${isVisible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'}`}>
       <div className={`flex items-center gap-2 transition-opacity duration-300
         ${isHeaderVisible ? 'opacity-100' : 'opacity-0'}`}>

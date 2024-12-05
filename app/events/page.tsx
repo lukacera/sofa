@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from 'react'
-import { Search, SlidersHorizontal, X, MapPin } from 'lucide-react'
+import { Search, SlidersHorizontal, X } from 'lucide-react'
 import { EventCard } from '../components/HomePageComponents/EventCard'
 import { EventType } from '../types/Event'
 import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react'
