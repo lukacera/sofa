@@ -37,7 +37,6 @@ export async function GET(
             );
         }
 
-        console.log(user.eventsAttending)
         return NextResponse.json(
             {
                 message: "Events found",

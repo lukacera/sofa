@@ -69,7 +69,6 @@ export async function POST(request: Request) {
             );
         }
 
-        console.log("Creating user:", body);
         const existingUser = await User.findOne({ email: body.email });
         if (existingUser) {
             return NextResponse.json(

@@ -25,7 +25,6 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
   useEffect(() => {
     if (status === 'authenticated' && session?.user) {
-      console.log(session.user.id);
       setUserId(session.user.id);
     }
   }, [status, session]);

@@ -12,7 +12,6 @@ export default function Header() {
   const pathname = usePathname()
   const isLoading = status === "loading"
 
-  console.log(session)
   const navLinks = [
     { name: "Home", href: "/home", icon: Home },
     { name: "Events", href: "/events", icon: Calendar },

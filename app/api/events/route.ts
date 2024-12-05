@@ -18,8 +18,15 @@ function validateEvent(event: EventType) {
         errors.push({ field: 'description', message: 'Description is required' });
     }
     
-    if (!event.location?.trim()) {
-        errors.push({ field: 'location', message: 'Location is required' });
+    // Location validation
+    if (!event.location?.city?.trim()) {
+        errors.push({ field: 'location.city', message: 'City is required' });
+    }
+    if (!event.location?.country?.trim()) {
+        errors.push({ field: 'location.country', message: 'Country is required' });
+    }
+    if (!event.location?.address?.trim()) {
+        errors.push({ field: 'location.address', message: 'Address is required' });
     }
 
     if (!event.date) {
@@ -33,57 +40,30 @@ function validateEvent(event: EventType) {
         }
     }
     
-    // Capacity validation
+    // Remaining validations stay the same
     if (!event.capacity || event.capacity < 1) {
         errors.push({ field: 'capacity', message: 'Capacity must be greater than 0' });
     }
 
-    // Organizer validation
     if (!event.organizer) {
         errors.push({ field: 'organizer', message: 'Organizer is required' });
     }
 
-    // Status validation
     const validStatuses = ['draft', 'published', 'cancelled'];
     if (!event.status || !validStatuses.includes(event.status)) {
         errors.push({ field: 'status', message: 'Status must be either draft, published, or cancelled' });
     }
 
-    // Type validation
     const validTypes = ['conference', 'workshop', 'seminar', 'meetup', 'other'];
     if (!event.type || !validTypes.includes(event.type)) {
         errors.push({ field: 'type', message: 'Invalid event type' });
     }
 
-    // Tags validation
     if (!Array.isArray(event.tags)) {
         errors.push({ field: 'tags', message: 'Tags must be an array' });
     } else if (event.tags.some(tag => typeof tag !== 'string' || !tag.trim())) {
         errors.push({ field: 'tags', message: 'All tags must be non-empty strings' });
     }
-
-    // Tickets validation
-    // if (event.tickets?.length) {
-    //     event.tickets.forEach((ticket, index) => {
-    //         if (!["free", "paid"].includes(ticket.type?.trim())) {
-    //             errors.push({ field: `tickets[${index}].name`, message: 'Ticket name is required' });
-    //         }
-    //         if (ticket.price === undefined || ticket.price < 0) {
-    //             errors.push({ field: `tickets[${index}].price`, message: 'Ticket price must be a non-negative number' });
-    //         }
-    //         if (!ticket.total || ticket.total < 1) {
-    //             errors.push({ field: `tickets[${index}].total`, message: 'Ticket total must be greater than 0' });
-    //         }
-    //         if (ticket.sold !== undefined && (ticket.sold < 0 || ticket.sold > ticket.total)) {
-    //             errors.push({ field: `tickets[${index}].sold`, message: 'Sold tickets must be between 0 and total tickets' });
-    //         }
-    //         if (!Array.isArray(ticket.benefits)) {
-    //             errors.push({ field: `tickets[${index}].benefits`, message: 'Benefits must be an array' });
-    //         } else if (ticket.benefits.some(benefit => typeof benefit !== 'string' || !benefit.trim())) {
-    //             errors.push({ field: `tickets[${index}].benefits`, message: 'All benefits must be non-empty strings' });
-    //         }
-    //     });
-    // }
 
     return {
         isValid: errors.length === 0,
@@ -102,10 +82,8 @@ export const POST = async (request: NextRequest) => {
         const formData = await request.formData();
         
         // Parse the JSON data
-        const eventData = JSON.parse(formData.get('data') as string);
+        const eventData: EventType = JSON.parse(formData.get('data') as string);
         const imageFile = formData.get('image') as File;
-
-        console.log("Mongo schemas:", mongoose.models);
 
         // Validate the event data
         const { isValid, errors } = validateEvent(eventData);
@@ -153,7 +131,6 @@ export const POST = async (request: NextRequest) => {
                     You are an expert event analyst. Your response must be a single paragraph and EXACTLY between 450 and 460 characters, including spaces. 
                     Count your characters and ensure compliance before completing the response. No exceptions. 
                     Rules:
-                    - The response MUST be EXACTLY between 450 and 460 characters
                     - Write in a single paragraph
                     - Do not mention pricing
                     - Focus on event value and benefits
@@ -167,7 +144,8 @@ export const POST = async (request: NextRequest) => {
                     content: `Analyze this event:
                       Title: ${eventData.title}
                       Description: ${eventData.description}
-                      Location: ${eventData.location}
+                      City: ${eventData.location.city}, 
+                      Country: ${eventData.location.country}
                       Target Audience: ${eventData.tags?.join(', ')}
                     `
                 }
@@ -246,7 +224,6 @@ export const GET = async (request: NextRequest): Promise<NextResponse<EventsResp
     try {
         await connectToDB();
 
-        console.log("Request:", request.url);
         const { searchParams } = new URL(request.url);
         
         // Parse pagination and sorting parameters

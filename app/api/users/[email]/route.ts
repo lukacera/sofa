@@ -13,7 +13,6 @@ export async function GET(
         await connectToDB();
 
         const { email } = await params;
-        console.log("Email:", email);
         
         // Force register Event model if it doesn't exist
         if (!mongoose.models.Event) {

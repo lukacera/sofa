@@ -25,7 +25,6 @@ export async function GET(
     .populate("organizer")
     .populate("attendees");
     
-    console.log(event.attendees);
     if (!event) {
       return NextResponse.json(
         { error: "Event not found" },

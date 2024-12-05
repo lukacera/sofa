@@ -10,7 +10,11 @@ export interface EventFormData {
     title: string;
     description: string;
     date: string;
-    location: string;
+    location: {
+        address: string;
+        city: string;
+        country: string;
+    };
     capacity: number;
     image: File | null;
     type: 'conference' | 'workshop' | 'meetup' | 'seminar' | 'other';

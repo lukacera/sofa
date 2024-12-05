@@ -22,7 +22,11 @@ const CreateEventForm = () => {
   const [formData, setFormData] = useState<EventFormData>({
     title: '',
     description: '',
-    location: '',
+    location: {
+      address: '',
+      city: '',
+      country: ''
+    },
     date: now.toISOString(),
     capacity: 100,
     image: new File([], 'image'),
@@ -45,13 +49,8 @@ const CreateEventForm = () => {
   }, [status, session?.user?.id]);
   
   useEffect(() => {
-    console.log(formData)
-  }, [formData]);
-
-  useEffect(() => {
     if (formData.date) {
       const date = new Date(formData.date)
-      console.log(date)
       setDateValue(date.toISOString().split('T')[0])
       setTimeValue(date.toLocaleTimeString('en-US', { 
         hour: '2-digit', 
@@ -105,14 +104,8 @@ const CreateEventForm = () => {
       });
   
       if (!response.ok) {
-        const data = await response.json();
-        console.log('Error creating event:', data);
         throw new Error(`Error: ${response}`);
       }
-  
-      const data = await response.json();
-      console.log('Event created successfully:', data);
-  
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create event');
       console.error('Failed to create event:', err);
@@ -245,17 +238,51 @@ const CreateEventForm = () => {
           <h2 className="text-xl text-center font-semibold text-black pb-2">
             Location
           </h2>
-          <label htmlFor="venueName" className="block text-sm 
-          font-medium text-gray-700">
-            Make it in this format please: CITY, COUNTRY<RequiredStar />
-            <input type="text" 
-            value={formData.location}
-            onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-            placeholder='e.g. Lagos, Nigeria'
-            className={`${inputClasses} w-full`} />
-          </label>
-        </div>
+          
+          <div className="space-y-4">
+            <label className="block text-sm font-medium text-gray-700">
+              City<RequiredStar />
+              <input
+                type="text"
+                value={formData.location.city}
+                onChange={(e) => setFormData({ 
+                  ...formData, 
+                  location: { ...formData.location, city: e.target.value }
+                })}
+                placeholder="e.g. Barcelona"
+                className={`${inputClasses} w-full`}
+              />
+            </label>
 
+            <label className="block text-sm font-medium text-gray-700">
+              Country<RequiredStar />
+              <input
+                type="text"
+                value={formData.location.country}
+                onChange={(e) => setFormData({ 
+                  ...formData, 
+                  location: { ...formData.location, country: e.target.value }
+                })}
+                placeholder="e.g. Spain"
+                className={`${inputClasses} w-full`}
+              />
+            </label>
+
+            <label className="block text-sm font-medium text-gray-700">
+              Address<RequiredStar />
+              <input
+                type="text"
+                value={formData.location.address}
+                onChange={(e) => setFormData({ 
+                  ...formData, 
+                  location: { ...formData.location, address: e.target.value }
+                })}
+                placeholder="e.g. 123 Main Street"
+                className={`${inputClasses} w-full`}
+              />
+            </label>
+          </div>
+        </div>
         {/* Description */}
         <div>
           <label htmlFor="description" className="block text-sm font-medium text-gray-700">

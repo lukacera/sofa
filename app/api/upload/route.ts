@@ -11,16 +11,7 @@ export async function POST(request: Request) {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
-    console.log('File properties:', {
-      name: file.name,
-      type: file.type,
-      size: file.size,
-      lastModified: file.lastModified,
-      webkitRelativePath: file.webkitRelativePath,
-    });
 
-    // You can also log the entire file object
-    console.log(file);
     if (!file || !file.type.startsWith('image')) {
       return NextResponse.json(
         { error: 'No file provided' },
