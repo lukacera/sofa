@@ -111,10 +111,7 @@ export const POST = async (request: NextRequest) => {
             imageUrl = data.url;
         }
 
-        const organizer = await User.findByIdAndUpdate(
-            eventData.organizer,
-            { $push: { eventsCreated: eventData._id } }
-        );
+        const organizer = await User.findById(eventData.organizer);
 
         if (!organizer) {
             return NextResponse.json(
@@ -174,8 +171,7 @@ export const POST = async (request: NextRequest) => {
         // Save to database
         const createdEvent = await Event.create(newEvent);
 
-
-        await organizer.updateOne({ $push: { events: createdEvent._id } });
+        await organizer.updateOne({ $push: { eventsCreated: createdEvent._id } });
 
         return NextResponse.json(
             { 

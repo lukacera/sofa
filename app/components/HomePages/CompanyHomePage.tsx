@@ -3,7 +3,6 @@ import { Calendar, Users, FileEdit, TrendingUp, AlertTriangle, CheckCircle } fro
 import { auth } from '@/auth';
 import { EventCard } from '../HomePageComponents/EventCard';
 import { EventType } from '@/app/types/Event';
-import Footer from '../Footer';
 
 interface HostedEventsResponse {
  upcomingEvents: EventType[];
@@ -86,6 +85,7 @@ export default async function CompanyDashboard() {
         <h2 className='font-semibold mb-7 text-3xl'>
           {session?.user?.name} events dashboard
         </h2>
+        
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
           <div className="border border-gray-200 bg-white p-6">
@@ -120,39 +120,79 @@ export default async function CompanyDashboard() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="col-span-2 border border-gray-200 bg-white">
-            <div className="border-b border-gray-200 p-4">
-              <h2 className="text-lg font-semibold">
-                Recent Events you hosted
-              </h2>
-            </div>
-            <div className="p-4">
-              <table className="w-full">
-                <thead>
-                  <tr className="text-left text-sm text-gray-600">
-                    <th className="pb-3">Event Name</th>
-                    <th className="pb-3">Date</th>
-                    <th className="pb-3">Attendees</th>
-                  </tr>
-                </thead>
-                <tbody className="text-sm">
-                  {pastEvents.length > 0 ? (
-                    pastEvents.map((event: EventType) => (
-                      <tr key={event._id} className="border-t border-gray-100">
-                        <td className="py-3">{event.title}</td>
-                        <td>{new Date(event.date).toLocaleDateString()}</td>
-                        <td>{event.attendees.length}</td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan={3} className="py-6 text-center text-gray-500">
-                        No past events to display yet
-                      </td>
+          <div className="col-span-2">
+            {/* Upcoming Events Container */}
+            <div className="border border-gray-200 bg-white mb-8">
+              <div className="border-b border-gray-200 p-4">
+                <h2 className="text-lg font-semibold">
+                  Upcoming Events
+                </h2>
+              </div>
+              <div className="p-4">
+                <table className="w-full">
+                  <thead>
+                    <tr className="text-left text-sm text-gray-600">
+                      <th className="pb-3">Event Name</th>
+                      <th className="pb-3">Date</th>
+                      <th className="pb-3">Registered</th>
                     </tr>
-                  )}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="text-sm">
+                    {upcomingEvents.length > 0 ? (
+                      upcomingEvents.map((event: EventType) => (
+                        <tr key={event._id} className="border-t border-gray-100">
+                          <td className="py-3">{event.title}</td>
+                          <td>{new Date(event.date).toLocaleDateString()}</td>
+                          <td>{event.attendees.length}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={3} className="py-6 text-center text-gray-500">
+                          No upcoming events scheduled
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Recent Events Container */}
+            <div className="border border-gray-200 bg-white max-h-[20rem]">
+              <div className="border-b border-gray-200 p-4">
+                <h2 className="text-lg font-semibold">
+                  Recent Events you hosted
+                </h2>
+              </div>
+              <div className="p-4 overflow-y-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="text-left text-sm text-gray-600">
+                      <th className="pb-3">Event Name</th>
+                      <th className="pb-3">Date</th>
+                      <th className="pb-3">Attendees</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-sm">
+                    {pastEvents.length > 0 ? (
+                      pastEvents.map((event: EventType) => (
+                        <tr key={event._id} className="border-t border-gray-100">
+                          <td className="py-3">{event.title}</td>
+                          <td>{new Date(event.date).toLocaleDateString()}</td>
+                          <td>{event.attendees.length}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={3} className="py-6 text-center text-gray-500">
+                          No past events to display yet
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
 
@@ -202,6 +242,7 @@ export default async function CompanyDashboard() {
           </div>
         </div>
       </div>
+
       <div className="max-w-[80%] mx-auto mt-12">
         <h2 className="text-xl font-semibold mb-2">Top 3 Events by Attendance</h2>
         <p className="text-gray-600 mb-6">
