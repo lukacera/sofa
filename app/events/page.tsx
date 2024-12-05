@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from 'react'
-import { Search, SlidersHorizontal, X } from 'lucide-react'
+import { Search, SlidersHorizontal, X, MapPin } from 'lucide-react'
 import { EventCard } from '../components/HomePageComponents/EventCard'
 import { EventType } from '../types/Event'
 import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react'
@@ -25,20 +25,20 @@ export default function EventsPage() {
     pages: 0
   })
   
-  console.log(pagination.total)
-  // Filter states
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState<SortOption>('date-asc')
   const [showFilters, setShowFilters] = useState(false)
   const [tags, setTags] = useState<string[]>([])
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [isTagDropdownOpen, setIsTagDropdownOpen] = useState(false)
-  const [showFinishedEvents, setShowFinishedEvents] = useState(false);
-
-  // Cache states for filter debouncing
-  const [debouncedSearch, setDebouncedSearch] = useState('')
+  const [showFinishedEvents, setShowFinishedEvents] = useState(false)
+  const [country, setCountry] = useState('')
+  const [city, setCity] = useState('')
   
-  // Fetch tags when component mounts
+  const [debouncedSearch, setDebouncedSearch] = useState('')
+  const [debouncedCountry, setDebouncedCountry] = useState('')
+  const [debouncedCity, setDebouncedCity] = useState('')
+
   useEffect(() => {
     async function fetchTags() {
       try {
@@ -54,7 +54,6 @@ export default function EventsPage() {
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Add click outside handler
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -62,27 +61,25 @@ export default function EventsPage() {
       }
     }
 
-    // Only add the event listener if the dropdown is open
     if (isTagDropdownOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
-    // Clean up the event listener
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isTagDropdownOpen]);
 
-  // Debounce search query
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(searchQuery)
+      setDebouncedCountry(country)
+      setDebouncedCity(city)
     }, 300)
 
     return () => clearTimeout(timer)
-  }, [searchQuery])
+  }, [searchQuery, country, city])
 
-  // Fetch events with filters
   useEffect(() => {
     async function fetchEvents() {
       try {
@@ -93,8 +90,9 @@ export default function EventsPage() {
           finishedEvents: showFinishedEvents.toString()
         })
 
-        // Add filters to query params
         if (debouncedSearch) queryParams.set('search', debouncedSearch)
+        if (debouncedCountry) queryParams.set('country', debouncedCountry)
+        if (debouncedCity) queryParams.set('city', debouncedCity)
         if (sortBy) {
           const [field, order] = sortBy.split('-');
           queryParams.set('sortField', field);
@@ -117,7 +115,7 @@ export default function EventsPage() {
     }
 
     fetchEvents()
-  }, [debouncedSearch, sortBy, pagination.page, pagination.limit, selectedTags, showFinishedEvents])
+  }, [debouncedSearch, debouncedCountry, debouncedCity, sortBy, pagination.page, pagination.limit, selectedTags, showFinishedEvents])
 
   const handleTagSelect = (tag: string) => {
     setSelectedTags(current => 
@@ -131,7 +129,6 @@ export default function EventsPage() {
     setSelectedTags(current => current.filter(t => t !== tag))
   }
 
-  // Pagination controls
   const handlePageChange = (newPage: number) => {
     setPagination(prev => ({ ...prev, page: newPage }))
   }
@@ -149,7 +146,6 @@ export default function EventsPage() {
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-center mb-8">Events</h1>
         
-        {/* Search and Filter Controls */}
         <div className="space-y-4">
           <div className="flex gap-4">
             <div className="relative flex-1">
@@ -171,9 +167,8 @@ export default function EventsPage() {
             </button>
           </div>
 
-          {/* Filter Panel */}
           {showFilters && (
-            <div className="p-6 bg-white rounded-lg shadow-sm space-y-4">
+            <div className="p-6 bg-white rounded-lg shadow-sm space-y-7">
               <div className='flex items-center gap-2'>
                 <label htmlFor="event-finished" className="flex items-center gap-2 cursor-pointer">
                   <input 
@@ -186,8 +181,34 @@ export default function EventsPage() {
                   <span>Show finished events</span>
                 </label>
               </div>
+
+              <div className='space-y-2'>
+                <h2 className='font-medium'>
+                  Location:
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="relative">
+                    <input
+                      type="text"
+                      placeholder="Country"
+                      value={country}
+                      onChange={(e) => setCountry(e.target.value)}
+                      className="w-full px-4 py-2 border rounded-lg"
+                    />
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      placeholder="City"
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                      className="w-full px-4 py-2 border rounded-lg"
+                    />
+                  </div>
+                </div>
+              </div>
+
               <div className="flex gap-6">
-                {/* Sort Control */}
                 <div className="flex-1">
                   <h3 className="font-medium mb-2">Sort by:</h3>
                   <select
@@ -202,7 +223,6 @@ export default function EventsPage() {
                   </select>
                 </div>
   
-                {/* Tags Filter */}
                 <div className="flex-1">
                   <h3 className="font-medium mb-2">Filter by tags:</h3>
                   <div className="relative" ref={dropdownRef}>
@@ -218,7 +238,6 @@ export default function EventsPage() {
                       {isTagDropdownOpen ? <ArrowUpIcon size={20} /> : <ArrowDownIcon size={20} />}
                     </button>
   
-                    {/* Tags Dropdown */}
                     {isTagDropdownOpen && (
                       <div className="absolute z-20 w-full mt-1 py-1 bg-white border rounded-lg shadow-lg max-h-60 overflow-auto">
                         {tags.map(tag => (
@@ -242,7 +261,6 @@ export default function EventsPage() {
               </div>
             </div>
           )}
-          {/* Selected Tags Display */}
           {selectedTags.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-2">
               {selectedTags.map(tag => (
@@ -269,7 +287,6 @@ export default function EventsPage() {
           {pagination.total} {pagination.total === 1 ? "event" : "events"} found 
         </p>
         }
-        {/* Events Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {events.map((event) => (
             <EventCard key={event._id} event={event} className='max-h-[15rem]' />
@@ -277,7 +294,6 @@ export default function EventsPage() {
         </div>
       </div>
   
-      {/* Pagination Controls */}
       {pagination.pages > 1 && (
         <div className="flex justify-center gap-2 mt-8">
           <button
@@ -312,7 +328,6 @@ export default function EventsPage() {
         </div>
       )}
   
-      {/* No Results Message */}
       {events.length === 0 && !loading && (
         <div className="text-center py-12">
           <p className="text-gray-500">No events found matching your criteria</p>

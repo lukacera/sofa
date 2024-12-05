@@ -134,7 +134,9 @@ export default function EventPage() {
                   <MapPin size={18} className="text-gray-500" />
                   <div>
                     <p className="text-xs text-gray-500">Location</p>
-                    <p className="font-medium text-gray-900 text-sm">{event.location}</p>
+                    <p className="font-medium text-gray-900 text-sm">
+                      {event.location.city}
+                    </p>
                   </div>
                 </div>
               </div>

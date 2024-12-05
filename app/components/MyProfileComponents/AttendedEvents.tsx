@@ -92,7 +92,7 @@ export default function AttendedEvents() {
                                     })}
                                 </p>
                                 <p className="text-gray-500 mt-1">
-                                    {event.location}
+                                    {event.location.city}
                                 </p>
                             </div>
                             <div className="text-right">

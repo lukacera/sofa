@@ -87,7 +87,7 @@ export async function POST(request: Request) {
             name: body.name,
             email: body.email?.toLowerCase(),
             image: body.image,
-            type: body.type,
+            type: body.role,
             password: hashedPassword,
             description: body.description || null,
             location: body.location || null

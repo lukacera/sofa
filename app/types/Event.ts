@@ -6,7 +6,11 @@ export type EventType = {
     description: string;
     aiAnalysis: string;
     date: Date;
-    location: string;
+    location: {
+        city: string;
+        address: string;
+        country: string;
+    };
     capacity: number;
     type: 'conference' | 'workshop' | 'meetup' | 'seminar' | 'other'
     organizer: UserType;

@@ -2,7 +2,7 @@ import React from 'react'
 import NextEventsUser from '../HomePageComponents/NextEventsUser';
 import { EventsNearYou } from '../HomePageComponents/EventsNearYou';
 import { TopicsGrid } from '../HomePageComponents/TopicsGrid';
-import { Calendar, MapPin } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 import Link from 'next/link';
 import { auth } from '@/auth';
 import { EventType } from '@/app/types/Event';
@@ -76,16 +76,15 @@ export default async function IndividualHomePage() {
           <CitySearch />
           <NextEventsUser nextEvents={nextEvents}/>
           <EventsNearYou />
-        </section>
-
-        <section className="flex flex-col gap-10 mt-20">
-          <div className="flex flex-col items-center gap-5">
-            <h2 className="font-bold text-2xl mb-5">Topics you might like</h2>
-            <TopicsGrid />
-          </div>
-          <div className="flex flex-col items-center mt-20 gap-6">
-            <EventsNearYou />
-          </div>
+          <section className="flex flex-col gap-10 mt-20">
+            <div className="flex flex-col items-center gap-5">
+              <h2 className="font-bold text-2xl mb-5">Topics you might like</h2>
+              <TopicsGrid />
+            </div>
+            <div className="flex flex-col items-center mt-20 gap-6">
+              <EventsNearYou />
+            </div>
+          </section>
         </section>
       </main>
     );

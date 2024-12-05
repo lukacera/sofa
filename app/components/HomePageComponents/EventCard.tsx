@@ -43,7 +43,7 @@ export function EventCard({ event, className = '' }: EventCardProps) {
           </h3>
           <div className="flex items-center gap-1 text-gray-500 text-xs">
             <MapPin size={16} className="flex-shrink-0" />
-            <span className="truncate">{event.location}</span>
+            <span className="truncate">{event.location.city}</span>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <div className="flex items-center gap-1 text-gray-600">
