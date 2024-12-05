@@ -24,7 +24,7 @@ export default function Header() {
   ]
 
   return (
-    <header className="bg-secondary shadow-lg w-full">
+    <header className="bg-secondary w-full">
       <div className="max-w-[90%] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center h-16">
           {/* Logo - Fixed Width */}

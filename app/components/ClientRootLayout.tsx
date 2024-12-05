@@ -11,7 +11,7 @@ export default function ClientRootLayout({ children }: { children: React.ReactNo
   return (
     <>
       {!isAuthPage && <Header />}
-      <main className={`flex-grow ${!isAuthPage ? 'pt-10 pb-16' : ''}`}>{children}</main>
+      <main className={`flex-grow ${!isAuthPage ? 'pb-16' : ''}`}>{children}</main>
       {!isAuthPage && <Footer />}
     </>
   );

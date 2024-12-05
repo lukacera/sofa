@@ -23,7 +23,7 @@ export async function EventsNearYou() {
   return (
     <div className='flex flex-col items-center mt-20 gap-6'>
       <h2 className='font-bold text-2xl mb-5'>
-        Events near you
+        Events near you this month
       </h2>
       <div className='grid grid-cols-3 gap-10 w-full'>
         {events.events.map((event) => (

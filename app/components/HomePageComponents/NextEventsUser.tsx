@@ -1,43 +1,14 @@
 import React from 'react'
 import { EventCard } from './EventCard';
-import { headers } from 'next/headers';
 import { EventType } from '@/app/types/Event';
-import { auth } from '@/auth';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
-async function getUpcomingEvents(email: string): Promise<EventType[]> {
-    const headersList = headers();
-    const host = (await headersList).get('host');
-    const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
-    
-    const url = `${protocol}://${host}/api/users/upcomingEvents/${email}`;
-    
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  
-    if (!response.ok) {
-      throw new Error('Failed to fetch upcoming events');
-    }
-  
-    const data: {
-      message: string;
-      events: EventType[]
-    } = await response.json();
-  
-    const { events } = data;
-    return events
-}
+type CompProps = {
+  nextEvents: EventType[];
+};
 
-export default async function NextEventsUser() {
-
-    const session = await auth();
-
-    const nextEvents = await getUpcomingEvents(session?.user?.email ?? "");
+export default async function MyComponent({ nextEvents }: CompProps) {
 
     return (
     <section className="mt-20">
