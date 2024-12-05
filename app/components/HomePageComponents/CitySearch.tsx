@@ -23,9 +23,7 @@ export default function CitySearch() {
            onChange={(e) => setCity(e.target.value)}
            placeholder="Enter city name..."
            className="w-full px-5 py-3 border-2 border-gray-200 rounded-xl
-             focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary
-             transition-all duration-200 text-lg placeholder:text-gray-400
-             hover:border-gray-300"
+            text-lg placeholder:text-gray-400 hover:border-gray-300"
          />
          {city && (
            <button className="absolute right-3 top-1/2 -translate-y-1/2

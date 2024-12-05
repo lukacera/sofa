@@ -32,7 +32,7 @@ export function EventCard({ event, className = '' }: EventCardProps) {
             alt={event.title}
             src={event.image}
             fill={true}
-            className="object-cover"
+            className="object-cover rounded-t-lg"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/40" />
         </div>

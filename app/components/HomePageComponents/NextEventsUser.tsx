@@ -11,7 +11,7 @@ type CompProps = {
 export default async function MyComponent({ nextEvents }: CompProps) {
 
     return (
-    <section className="mt-20">
+    <section className="mt-10">
         <div className="flex flex-col items-center gap-5">
         <h2 className="font-bold text-2xl mb-5">Your upcoming events</h2>
         {nextEvents.length > 0 ? (

@@ -51,7 +51,7 @@ export default async function IndividualHomePage() {
               {nextEvents.length > 0  ?
                 <span className='text-lg'>
                   You have
-                  <span className="font-bold mx-1">{nextEvents.length}</span>
+                  <span className="font-bold mx-2">{nextEvents.length}</span>
                   {nextEvents.length === 1 ? "event" : "events"} to attend this month! 🎉
                 </span>
                 :
@@ -72,9 +72,11 @@ export default async function IndividualHomePage() {
         </section>
 
         {/* New City Input Section */}
-        <CitySearch />
-        <NextEventsUser nextEvents={nextEvents}/>
-        <EventsNearYou />
+        <section className='w-[75%] mx-auto'>
+          <CitySearch />
+          <NextEventsUser nextEvents={nextEvents}/>
+          <EventsNearYou />
+        </section>
 
         <section className="flex flex-col gap-10 mt-20">
           <div className="flex flex-col items-center gap-5">
