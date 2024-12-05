@@ -20,20 +20,15 @@ export const EventSchema = new Schema<EventType>({
     required: true
   },
   location: {
-    city: {
-      type: String,
-      required: true,
-      trim: true
+    type: {
+      city: { type: String, trim: true },
+      address: { type: String, trim: true },
+      country: { type: String, trim: true }
     },
-    address: {
-      type: String,
-      required: true,
-      trim: true
-    },
-    country: {
-      type: String,
-      required: true,
-      trim: true
+    default: {
+      city: 'Unknown City',
+      address: 'Unknown Address',
+      country: 'Unknown Country'
     }
   },
   capacity: {

@@ -7,7 +7,12 @@ import User from "@/app/schemas/User";
 
 function validateEvent(event: EventType) {
     const errors = [];
-    
+
+    // Don't validate if the event is a draft
+    if (event.status === 'draft') {
+        return { isValid: true, errors: [] };
+    }
+
     // Required string fields
     if (!event.title?.trim()) {
         errors.push({ field: 'title', message: 'Title is required' });
@@ -149,7 +154,7 @@ export const POST = async (request: NextRequest) => {
                     `
                 }
             ],
-            temperature: 0.4,
+            temperature: 0.6,
             response_format: { type: "text" }                
         });
 

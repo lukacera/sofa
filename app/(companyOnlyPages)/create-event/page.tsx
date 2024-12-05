@@ -6,6 +6,7 @@ import ImageUpload from '@/app/components/CreateEventComponents/ImageUpload';
 import { EventFormData } from '@/app/types/EventForm';
 import { TagInput } from '@/app/components/CreateEventComponents/TagsInput';
 import { useRouter } from 'next/navigation';
+import { SaveButtons } from '@/app/components/CreateEventComponents/SaveButtons';
 
 const CreateEventForm = () => {
 
@@ -127,7 +128,7 @@ const CreateEventForm = () => {
   shadow-sm focus:border-blue-500 focus:ring-blue-500 p-4`;
 
   return (
-    <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <div className="w-[60%] mx-auto py-8 px-4 sm:px-6 lg:px-8">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-black">Create New Event</h1>
@@ -310,24 +311,9 @@ const CreateEventForm = () => {
         setFormData={setFormData}/>
 
         {/* Submit Button */}
-        <div className="pt-6">
-          <div className="flex justify-end space-x-4">
-            <button
-              type="button"
-              disabled={isSubmitting}
-              className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              Save as Draft
-            </button>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primaryDarker hover:bg-primaryDarker/70"
-            >
-              Create Event
-            </button>
-          </div>
-        </div>
+        <SaveButtons isSubmitting={isSubmitting} 
+        onSave={(status) => setFormData({ ...formData, status })}
+        />
       </form>
     </div>
   );
