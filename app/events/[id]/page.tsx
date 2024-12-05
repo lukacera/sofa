@@ -1,13 +1,14 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { Clock, Heart, Bookmark, MapPin, TagIcon, Users } from 'lucide-react';
+import { Clock, Heart, Bookmark, MapPin, TagIcon, Users, Pencil } from 'lucide-react';
 import { CldImage } from 'next-cloudinary';
 import { AIAnalysis } from '@/app/components/SingleEventComponents/AiAnalysis';
 import ConfirmationModal from '@/app/components/SingleEventComponents/EventRegistrationConfirmation';
 import { baseURL } from '@/app/constants/apiURL';
 import { EventType } from '@/app/types/Event';
 import { useSession } from 'next-auth/react';
+import AnimatedEditButton from '@/app/components/SingleEventComponents/AnimatedEditButton';
 
 export default function EventPage() {
   
@@ -91,6 +92,7 @@ export default function EventPage() {
                   >
                     <Bookmark size={18} className={`${isSaved ? 'fill-current' : ''} transition-all duration-300`} />
                   </button>
+                  <AnimatedEditButton />
                 </div>
               </div>
 

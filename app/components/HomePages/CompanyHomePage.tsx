@@ -94,7 +94,7 @@ export default async function CompanyDashboard() {
                 <p className="text-gray-600 text-sm">Past Events</p>
                 <h3 className="text-3xl font-semibold mt-1">{stats.pastEventsCount}</h3>
               </div>
-              <Calendar className="text-blue-600" />
+              <Calendar size={30} className="text-blue-600" />
             </div>
           </div>
 
@@ -104,7 +104,7 @@ export default async function CompanyDashboard() {
                 <p className="text-gray-600 text-sm">Draft Events</p>
                 <h3 className="text-3xl font-semibold mt-1">{stats.draftEventsCount}</h3>
               </div>
-              <FileEdit className="text-gray-600" />
+              <FileEdit size={30} className="text-gray-600" />
             </div>
           </div>
 
@@ -114,7 +114,7 @@ export default async function CompanyDashboard() {
                 <p className="text-gray-600 text-sm">Total Attendees</p>
                 <h3 className="text-3xl font-semibold mt-1">{totalAttendees}</h3>
               </div>
-              <Users className="text-green-600" />
+              <Users size={30} className="text-green-600" />
             </div>
           </div>
         </div>
@@ -201,7 +201,7 @@ export default async function CompanyDashboard() {
     <div className="border-b border-gray-200 p-4">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold">AI Insights</h2>
-        <TrendingUp className="text-blue-600 w-5 h-5" />
+        <TrendingUp size={30} className="text-blue-600" />
       </div>
     </div>
     <div className="p-4 space-y-6">

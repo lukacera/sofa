@@ -26,6 +26,7 @@ export const AIAnalysis: React.FC<{
   const [isHeaderVisible, setHeaderVisible] = useState(false)
   const [startTyping, setStartTyping] = useState(false)
   
+  const truncatedText = text.length > 500 ? text.slice(0, 500) + '...' : text
 
   useEffect(() => {
     // Start container fade in
@@ -49,7 +50,7 @@ export const AIAnalysis: React.FC<{
       <p className='text-sm min-h-[4rem] break-words'>
         {startTyping ? (
           <TypewriterText 
-            text={text} 
+            text={truncatedText} 
             delay={15}
           />
         ) : (
