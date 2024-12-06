@@ -4,7 +4,6 @@ import { useSession } from 'next-auth/react'
 
 export default function EditProfile() {
     const { data: session, update } = useSession();
-    console.log(session);
     const [formData, setFormData] = useState({
         name: session?.user?.name,
         email: session?.user?.email,
@@ -47,8 +46,6 @@ export default function EditProfile() {
                 throw new Error('Failed to update profile');
             }
 
-            console.log("session is:")
-            console.log(session)
             await update({
                 ...session,
                 user: {
@@ -57,8 +54,6 @@ export default function EditProfile() {
                 }
               });
             
-            // Could add a success notification here
-            console.log('Profile updated successfully');
         } catch (error) {
             console.error('Error updating profile:', error);
             // Could add an error notification here

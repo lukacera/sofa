@@ -14,7 +14,6 @@ const AnimatedEditButton = () => {
 
   return (
     <button
-      onClick={() => console.log('Edit button clicked')}
       onMouseEnter={() => setShouldAnimate(false)}
       className="flex items-center justify-center p-2 rounded-full 
       bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-110 

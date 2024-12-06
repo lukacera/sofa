@@ -73,9 +73,6 @@ export async function PATCH(
                 runValidators: true // Run schema validators
             }
         )
-
-        console.log("updatedUser is:")
-        console.log(updatedUser)
         if (!updatedUser) {
             return NextResponse.json(
                 {

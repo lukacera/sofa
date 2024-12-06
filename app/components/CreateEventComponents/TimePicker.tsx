@@ -34,7 +34,6 @@ export const TimePicker: React.FC<{
  
   const handleTimeSelect = (time: string) => {
     setSelectedTime(time);
-    console.log(dateValue)
     handleDateChange(dateValue, time);
     setIsOpen(false);
   };

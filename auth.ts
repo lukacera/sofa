@@ -83,9 +83,7 @@ const authConfig: NextAuthConfig = {
   ],
   callbacks: {
     async jwt({ token, user, trigger, session }) {
-      console.log("trigger is: ", trigger);
       if (trigger === "update") {
-        console.log("Setting the name to: ", session.user.name);
         token.name = session.user.name
       }
       if (user) {

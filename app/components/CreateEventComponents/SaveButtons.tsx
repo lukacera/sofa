@@ -6,10 +6,8 @@ interface SaveOptionsProps {
 }
 
 export function SaveButtons({ isSubmitting, onSave }: SaveOptionsProps) {
-  console.log(onSave)
  const handleClick = (status: 'draft' | 'published', e: FormEvent) => {
    e.preventDefault();
-   console.log(onSave)
    onSave(status, e);
  };
 

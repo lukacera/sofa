@@ -38,7 +38,6 @@ export const EventList = ({ type, gridCols = 1, showHeader = true }: EventListPr
         }
 
         const data = await response.json()
-        console.log(data)
         setEvents(data.data || [])
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load events')
