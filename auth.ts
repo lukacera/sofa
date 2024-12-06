@@ -85,6 +85,7 @@ const authConfig: NextAuthConfig = {
     async jwt({ token, user, trigger, session }) {
       if (trigger === "update") {
         token.name = session.user.name
+        token.description = session.user.description
       }
       if (user) {
         token.id = user.id;

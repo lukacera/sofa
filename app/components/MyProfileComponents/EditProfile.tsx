@@ -7,7 +7,7 @@ export default function EditProfile() {
     const [formData, setFormData] = useState({
         name: session?.user?.name,
         email: session?.user?.email,
-        bio: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. A, deleniti non, inventore laborum veritatis alias impedit accusantium, qui velit nulla temporibus provident consequatur ad voluptatum quasi expedita? Id, iure blanditiis."
+        bio: session?.user?.description,
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -17,6 +17,7 @@ export default function EditProfile() {
             ...prev,
             name: session.user.name || prev.name,
             email: session.user.email || prev.email,
+            bio: session.user.description || prev.bio,
           }));
         }
     }, [session?.user]);
@@ -50,7 +51,8 @@ export default function EditProfile() {
                 ...session,
                 user: {
                   ...session.user,
-                  name: formData.name
+                  name: formData.name,
+                  description: formData.bio
                 }
               });
             
