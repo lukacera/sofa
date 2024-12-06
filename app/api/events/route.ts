@@ -75,6 +75,12 @@ function validateEvent(event: EventType) {
     };
 }
 
+function removeNullFields<T>(data: T): Partial<T> {
+    return Object.fromEntries(
+        Object.entries(data).filter(([_, value]) => value !== null)
+    ) as Partial<T>;
+}
+
 export const POST = async (request: NextRequest) => {
     try {
         await connectToDB();
@@ -86,11 +92,14 @@ export const POST = async (request: NextRequest) => {
         const formData = await request.formData();
         
         // Parse the JSON data
-        const eventData: EventType = JSON.parse(formData.get('data') as string);
+        let eventData: Partial<EventType> = JSON.parse(formData.get('data') as string);
         const imageFile = formData.get('image') as File;
 
+        // Remove null fields from the event data
+        eventData = removeNullFields(eventData);
+
         // Validate the event data
-        const { isValid, errors } = validateEvent(eventData);
+        const { isValid, errors } = validateEvent(eventData as EventType);
 
         if (!isValid) {
             console.log(errors);
@@ -126,7 +135,9 @@ export const POST = async (request: NextRequest) => {
         }
 
         // OpenAI completion
-        const completion = await openai.chat.completions.create({
+        let completion;
+        if (eventData.status !== 'draft') {
+            completion = await openai.chat.completions.create({
             model: "gpt-3.5-turbo",
             messages: [
                 {
@@ -139,7 +150,6 @@ export const POST = async (request: NextRequest) => {
                     - Do not mention pricing
                     - Focus on event value and benefits
                     - Make it professional and engaging
-                    - Do not use tags or bullet points
                     - End with a complete sentence
                     `
                 },
@@ -148,25 +158,24 @@ export const POST = async (request: NextRequest) => {
                     content: `Analyze this event:
                       Title: ${eventData.title}
                       Description: ${eventData.description}
-                      City: ${eventData.location.city}, 
-                      Country: ${eventData.location.country}
-                      Target Audience: ${eventData.tags?.join(', ')}
+                      City: ${eventData.location?.city || 'N/A'}, 
+                      Country: ${eventData.location?.country || 'N/A'}
+                      Target Audience: ${eventData.tags?.join(', ') || 'N/A'}
                     `
                 }
             ],
             temperature: 0.6,
             response_format: { type: "text" }                
         });
+    }
 
         // Create new event with defaults
         const newEvent: Partial<EventType> = {
-            title: eventData.title,
-            description: eventData.description,
-            aiAnalysis: completion.choices[0].message.content || '',
+            ...eventData, // Use cleaned eventData with nulls removed
+            ...completion && completion.choices[0].message.content && {
+            aiAnalysis: completion.choices[0].message.content
+            },
             date: new Date(eventData.date || Date.now()),
-            location: eventData.location,
-            capacity: eventData.capacity,
-            organizer: eventData.organizer,
             tags: eventData.tags || [],
             status: eventData.status || 'draft',
             type: eventData.type || 'conference',

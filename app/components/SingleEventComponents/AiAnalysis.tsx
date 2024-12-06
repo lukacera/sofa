@@ -26,7 +26,7 @@ export const AIAnalysis: React.FC<{
   const [isHeaderVisible, setHeaderVisible] = useState(false)
   const [startTyping, setStartTyping] = useState(false)
   
-  const truncatedText = text.length > 500 ? text.slice(0, 500) + '...' : text
+  const truncatedText = text.length > 450 ? text.slice(0, 450) + '...' : text
 
   useEffect(() => {
     // Start container fade in

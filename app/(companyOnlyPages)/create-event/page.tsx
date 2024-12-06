@@ -82,7 +82,7 @@ const CreateEventForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>, status: "draft" | "published") => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
@@ -95,6 +95,7 @@ const CreateEventForm = () => {
       
       const restOfData = {
         ...formData,
+        status: status,
         image: undefined // Remove image from the rest of the data
       };
       formDataToSend.append('data', JSON.stringify(restOfData));
@@ -137,7 +138,7 @@ const CreateEventForm = () => {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} 
+      <form onSubmit={(e) => handleSubmit(e, formData.status)}
       className="bg-white p-6 rounded-xl shadow-sm space-y-10">
         
         {/* Basic Information */}
@@ -311,9 +312,10 @@ const CreateEventForm = () => {
         setFormData={setFormData}/>
 
         {/* Submit Button */}
-        <SaveButtons isSubmitting={isSubmitting} 
-        onSave={(status) => setFormData({ ...formData, status })}
-        />
+        <SaveButtons 
+            isSubmitting={isSubmitting}
+            onSave={(status, e) => handleSubmit(e as FormEvent<HTMLFormElement>, status)}
+          />
       </form>
     </div>
   );

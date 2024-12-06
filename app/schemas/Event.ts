@@ -5,11 +5,13 @@ export const EventSchema = new Schema<EventType>({
   title: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
+    default: ''
   },
   description: {
     type: String,
-    required: true
+    required: true,
+    default: ''
   },
   aiAnalysis: {
     type: String,
@@ -75,7 +77,6 @@ export const EventSchema = new Schema<EventType>({
 });
 
 EventSchema.index({ title: 1 });
-EventSchema.index({ status: 1 });
 EventSchema.index({ 'organizer.id': 1 });
 EventSchema.index({ date: 1 });
 
