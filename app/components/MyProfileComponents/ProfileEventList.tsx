@@ -20,9 +20,9 @@ export const EventList = ({ type, gridCols = 1, showHeader = true }: EventListPr
 
   const isHosted = type === 'hosted'
   const isAttended = type === 'attended'
-  const title = isHosted ? 'Your hosted events' : isAttended ? 'Your Attended Events' : 'Your Drafts'
+  const title = isHosted ? 'Your created events' : isAttended ? 'Your Attended Events' : 'Your Drafts'
 
-  const emptyMessage = isHosted ? "You haven't hosted any events yet" : 
+  const emptyMessage = isHosted ? "You haven't created any events yet" : 
   isAttended ? "You haven't attended any events yet" : "You haven't created any drafts yet"
 
   const endpoint = isHosted ? 'hostedEvents' : isAttended ? 'attendedEvents' : 'drafts'
