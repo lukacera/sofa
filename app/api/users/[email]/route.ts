@@ -57,7 +57,7 @@ export async function PATCH(
     try {
         await connectToDB();
         
-        const { email } = params;
+        const { email } = await params;
         const data = await req.json();
         
         const updatedUser = await User.findOneAndUpdate(
@@ -72,8 +72,10 @@ export async function PATCH(
                 new: true, // Return updated document
                 runValidators: true // Run schema validators
             }
-        ).populate("eventsAttending");
+        )
 
+        console.log("updatedUser is:")
+        console.log(updatedUser)
         if (!updatedUser) {
             return NextResponse.json(
                 {

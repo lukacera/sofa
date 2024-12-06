@@ -1,17 +1,26 @@
 "use client"
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 
 export default function EditProfile() {
-    const { data: session } = useSession();
+    const { data: session, update } = useSession();
     console.log(session);
     const [formData, setFormData] = useState({
         name: session?.user?.name,
         email: session?.user?.email,
         bio: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. A, deleniti non, inventore laborum veritatis alias impedit accusantium, qui velit nulla temporibus provident consequatur ad voluptatum quasi expedita? Id, iure blanditiis."
     });
-    console.log(formData);
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    useEffect(() => {
+        if (session?.user) {
+          setFormData(prev => ({
+            ...prev,
+            name: session.user.name || prev.name,
+            email: session.user.email || prev.email,
+          }));
+        }
+    }, [session?.user]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { id, value } = e.target;
@@ -38,6 +47,16 @@ export default function EditProfile() {
                 throw new Error('Failed to update profile');
             }
 
+            console.log("session is:")
+            console.log(session)
+            await update({
+                ...session,
+                user: {
+                  ...session.user,
+                  name: formData.name
+                }
+              });
+            
             // Could add a success notification here
             console.log('Profile updated successfully');
         } catch (error) {
@@ -58,7 +77,7 @@ export default function EditProfile() {
                 <input
                     type="text"
                     id="name"
-                    value={formData.name}
+                    value={formData.name ?? ''}
                     onChange={handleChange}
                     className='w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
                     placeholder='Enter your name'
@@ -73,7 +92,7 @@ export default function EditProfile() {
                     type="email"
                     id="email"
                     disabled
-                    value={formData.email}
+                    value={formData.email ?? ''}
                     className='w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50'
                     placeholder='Enter your email'
                 />
