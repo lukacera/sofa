@@ -200,23 +200,22 @@ export default function EventsPage() {
               </div>
 
               <div className='space-y-2'>
-  <h2 className='font-medium'>Location:</h2>
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <LocationDropdown 
-  value={country}
-  onChange={setCountry}
-  options={countries}
-  type="country"
-/>
-<LocationDropdown 
-  value={city}
-  onChange={setCity}
-  options={cities}
-  type="city"
-/>
-  </div>
-</div>
-
+                <h2 className='font-medium'>Location:</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <LocationDropdown 
+                    value={country}
+                    onChange={setCountry}
+                    options={countries}
+                    type="country"
+                  />
+                  <LocationDropdown 
+                    value={city}
+                    onChange={setCity}
+                    options={cities}
+                    type="city"
+                  />
+                </div>
+              </div>
               <div className="flex gap-6">
                 <div className="flex-1">
                   <h3 className="font-medium mb-2">Sort by:</h3>

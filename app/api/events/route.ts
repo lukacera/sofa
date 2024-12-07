@@ -183,6 +183,7 @@ interface EventFilters {
     }>;
     $text?: { $search: string };
     date?: { $gte: Date };
+    status?: { $ne: string };
     'location.country'?: string;
     'location.city'?: string;
 }
@@ -253,12 +254,16 @@ export const GET = async (request: NextRequest): Promise<NextResponse<EventsResp
             filters['location.city'] = city;
         }
 
+        
+        filters.status = { $ne: "draft" }
+        
         const total = await Event.countDocuments(filters);
         
         const events = await Event.find(filters)
         .sort(sortOptions)
         .skip(skip)
         .limit(limit);
+        
         
         return NextResponse.json({
             events,
