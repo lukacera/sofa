@@ -9,7 +9,7 @@ export type EventType = {
     location: {
         city: string;
         address: string;
-    country: string;
+        country: string;
     };
     capacity: number;
     type: 'conference' | 'workshop' | 'meetup' | 'seminar' | 'other'

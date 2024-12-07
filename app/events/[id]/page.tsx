@@ -24,6 +24,7 @@ export default function EventPage() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const amIRegistered = event?.attendees?.some((attendee) => attendee._id === session?.user.id);
+  const isEventFinished = new Date(event?.date ?? "") < new Date();
 
   useEffect(() => {
     async function fetchEvent() {
@@ -95,7 +96,15 @@ export default function EventPage() {
                   >
                     <Bookmark size={18} className={`${isSaved ? 'fill-current' : ''} transition-all duration-300`} />
                   </button>
-                  <AnimatedEditButton onClick={() => setIsEditModalOpen(true)} />
+                  {new Date(event.date) > new Date() && session?.user.id === event.organizer._id ? (
+                      <AnimatedEditButton onClick={() => setIsEditModalOpen(true)} />                    
+                    )
+                    :
+                      <span className='bg-accent text-white px-2 py-1 rounded-md 
+                        text-sm font-semibold'>
+                        Finished
+                      </span>
+                  }
                 </div>
               </div>
 
@@ -163,7 +172,7 @@ export default function EventPage() {
 
             {/* AI Analysis or Publish CTA */}
             <div className="flex-grow">
-              {event.status === 'draft' ? (
+              {isEventFinished ? <span>234</span> : (
                 <div className="border-dashed border-gray-200 text-center">
                   <h3 className="font-semibold">
                     This event is currently a draft

@@ -3,6 +3,7 @@ import { Calendar, Users, FileEdit, TrendingUp, AlertTriangle, CheckCircle, Chev
 import { auth } from '@/auth';
 import { EventCard } from '../HomePageComponents/EventCard';
 import { EventType } from '@/app/types/Event';
+import { EventsTable } from '../HomePageComponents/EventsTable';
 
 interface HostedEventsResponse {
  upcomingEvents: EventType[];
@@ -138,88 +139,8 @@ export default async function CompanyDashboard() {
             {/* Events Tables Section */}
             <div className="lg:col-span-2 space-y-8">
               {/* Upcoming Events Table */}
-              <div className="bg-white rounded-lg border border-gray-200">
-                <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                  <h2 className="text-xl font-semibold text-gray-900">Upcoming Events</h2>
-                  <button className="text-sm text-blue-600 hover:text-blue-700 flex items-center">
-                    View all <ChevronRight className="h-4 w-4 ml-1" />
-                  </button>
-                </div>
-                <div className="p-6">
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="text-left text-sm text-gray-500 border-b">
-                          <th className="pb-3 font-medium">Event Name</th>
-                          <th className="pb-3 font-medium">Date</th>
-                          <th className="pb-3 font-medium">Registered</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-100">
-                        {upcomingEvents.length > 0 ? (
-                          upcomingEvents.map((event) => (
-                            <tr key={event._id} className="group hover:bg-gray-50">
-                              <td className="py-4 text-sm font-medium text-gray-900">{event.title}</td>
-                              <td className="py-4 text-sm text-gray-500">
-                                {new Date(event.date).toLocaleDateString()}
-                              </td>
-                              <td className="py-4 text-sm text-gray-500">{event.attendees.length}</td>
-                            </tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td colSpan={3} className="py-6 text-center text-gray-500">
-                              No upcoming events scheduled
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-
-              {/* Past Events Table */}
-              <div className="bg-white rounded-lg border border-gray-200">
-                <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                  <h2 className="text-xl font-semibold text-gray-900">Recent Events</h2>
-                  <button className="text-sm text-blue-600 hover:text-blue-700 flex items-center">
-                    View all <ChevronRight className="h-4 w-4 ml-1" />
-                  </button>
-                </div>
-                <div className="p-6">
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="text-left text-sm text-gray-500 border-b">
-                          <th className="pb-3 font-medium">Event Name</th>
-                          <th className="pb-3 font-medium">Date</th>
-                          <th className="pb-3 font-medium">Attendees</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-100">
-                        {pastEvents.length > 0 ? (
-                          pastEvents.map((event) => (
-                            <tr key={event._id} className="group hover:bg-gray-50">
-                              <td className="py-4 text-sm font-medium text-gray-900">{event.title}</td>
-                              <td className="py-4 text-sm text-gray-500">
-                                {new Date(event.date).toLocaleDateString()}
-                              </td>
-                              <td className="py-4 text-sm text-gray-500">{event.attendees.length}</td>
-                            </tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td colSpan={3} className="py-6 text-center text-gray-500">
-                              No past events to display yet
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
+              <EventsTable events={upcomingEvents}/>
+              <EventsTable events={pastEvents}/>
             </div>
 
             {/* AI Insights Section */}
