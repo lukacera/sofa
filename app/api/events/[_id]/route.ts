@@ -72,6 +72,7 @@ export async function PATCH(
           { 
               $set: {
                   ...data,
+                  image: data.imagePreview,
                   updatedAt: new Date()
               }
           },

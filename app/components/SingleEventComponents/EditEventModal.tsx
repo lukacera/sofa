@@ -24,13 +24,11 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
       address: event.location.address
     },
     capacity: event.capacity,
-    image: new File([], 'placeholder'), // Initialize with empty File
     type: event.type,
     tags: event.tags || [],
-    status: event.status
+    status: event.status,
+    imagePreview: event.image
   });
-
-  const [imagePreview, setImagePreview] = useState(event.image);
 
   const handleImageUpload = async (result: any) => {
     try {
@@ -39,12 +37,11 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
       const file = new File([blob], result.info.original_filename || 'image', {
         type: blob.type
       });
-      
       setFormData(prev => ({
         ...prev,
-        image: file
+        imagePreview: result.info.secure_url
       }));
-      setImagePreview(result.info.secure_url);
+
     } catch (err) {
       console.error('Error creating File:', err);
     }
@@ -92,42 +89,6 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
       }));
     }
   }, [formData.date]);
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>, status: "draft" | "published") => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setError(null);
-
-    try {
-      const formDataToSend = new FormData();
-      
-      // Only append image if it's a real file (not our placeholder)
-      if (formData.image instanceof File && formData.image.size > 0) {
-        formDataToSend.append('image', formData.image);
-      }
-      
-      const restOfData = {
-        ...formData,
-        status,
-        image: undefined // Remove image from JSON data
-      };
-      formDataToSend.append('data', JSON.stringify(restOfData));
-
-      const response = await fetch(`/api/events/${event._id}`, {
-        method: 'PATCH',
-        body: formDataToSend
-      });
-
-      if (!response.ok) throw new Error('Failed to update event');
-
-      onClose();
-      window.location.reload();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update event');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   const handlePublish = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -400,7 +361,7 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
             >
               <div className="flex flex-col items-center gap-2">
                 <Image
-                  src={imagePreview ?? ""}
+                  src={formData.imagePreview ?? ""}
                   alt="Event preview"
                   height={128}
                   width={128}

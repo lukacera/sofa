@@ -21,4 +21,5 @@ export interface EventFormData {
     organizer: string;
     status: 'draft' | 'published' | 'cancelled' | 'finished';
     tags: string[];
+    imagePreview: string | null | undefined;
 }
