@@ -4,8 +4,8 @@ import Image from 'next/image';
 import { EventFormData } from '@/app/types/EventForm';
 
 interface ImageUploadProps {
-  formData: EventFormData;
-  setFormData: React.Dispatch<React.SetStateAction<EventFormData>>;
+  formData: Partial<EventFormData>;
+  setFormData: React.Dispatch<React.SetStateAction<Partial<EventFormData>>>;
   inputClasses: string;
 }
 

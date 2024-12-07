@@ -7,19 +7,18 @@ export interface Ticket {
 }
 
 export interface EventFormData {
-    title: string | null; 
-    description: string | null;
+    title: string | null | undefined; 
+    description: string | null | undefined;
     date: string;
     location: {
-        address: string | null;
-        city: string | null;
-        country: string | null;
+        address: string | null | undefined;
+        city: string | null | undefined;
+        country: string | null | undefined;
     };
-    capacity: number | null;
-    image: File | null;
+    capacity: number | null | undefined;
+    image: File | null | undefined;
     type: 'conference' | 'workshop' | 'meetup' | 'seminar' | 'other';
     organizer: string;
-    status: 'draft' | 'published';
+    status: 'draft' | 'published' | 'cancelled' | 'finished';
     tags: string[];
 }
-  

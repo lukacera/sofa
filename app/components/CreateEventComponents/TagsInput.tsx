@@ -5,7 +5,7 @@ import { EventFormData } from '@/app/types/EventForm';
 
 interface TagInputProps {
   tags: string[];
-  setFormData: React.Dispatch<React.SetStateAction<EventFormData>>;
+  setFormData: React.Dispatch<React.SetStateAction<Partial<EventFormData>>>;
 }
 
 export const TagInput = ({ tags, setFormData }: TagInputProps) => {
@@ -16,7 +16,7 @@ export const TagInput = ({ tags, setFormData }: TagInputProps) => {
     if (trimmedTag && !tags.includes(trimmedTag) && tags.length < 5) {
       setFormData(prev => ({
         ...prev,
-        tags: [...prev.tags, trimmedTag]
+        tags: [...prev.tags as string[], trimmedTag]
       }));
     }
     setInputValue('');
@@ -25,7 +25,7 @@ export const TagInput = ({ tags, setFormData }: TagInputProps) => {
   const removeTag = (tagToRemove: string) => {
     setFormData(prev => ({
       ...prev,
-      tags: prev.tags.filter(tag => tag !== tagToRemove)
+      tags: prev.tags?.filter(tag => tag !== tagToRemove)
     }));
   };
 

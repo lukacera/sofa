@@ -9,6 +9,7 @@ import { baseURL } from '@/app/constants/apiURL';
 import { EventType } from '@/app/types/Event';
 import { useSession } from 'next-auth/react';
 import AnimatedEditButton from '@/app/components/SingleEventComponents/AnimatedEditButton';
+import EditEventModal from '@/app/components/SingleEventComponents/EditEventModal';
 
 export default function EventPage() {
   
@@ -20,6 +21,8 @@ export default function EventPage() {
   const [showModal, setShowModal] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
   const amIRegistered = event?.attendees?.some((attendee) => attendee._id === session?.user.id);
 
   useEffect(() => {
@@ -92,7 +95,7 @@ export default function EventPage() {
                   >
                     <Bookmark size={18} className={`${isSaved ? 'fill-current' : ''} transition-all duration-300`} />
                   </button>
-                  <AnimatedEditButton />
+                  <AnimatedEditButton onClick={() => setIsEditModalOpen(true)} />
                 </div>
               </div>
 
@@ -261,6 +264,11 @@ export default function EventPage() {
           )}
         </div>
       )}
+      <EditEventModal 
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        event={event}
+      />
     </main>
   );
 }

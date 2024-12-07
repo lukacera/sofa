@@ -42,3 +42,81 @@ export async function GET(
     );
   }
 }
+
+export async function PATCH(
+  request: Request,
+  { params }: { params: { _id: string } }
+) {
+  try {
+      await connectToDB();
+      
+      const { _id } = await params;
+      const formData = await request.formData();
+
+      const data = JSON.parse(formData.get('data') as string);
+
+      console.log(data);
+      // Validate if id is a valid MongoDB ObjectId
+      if (!mongoose.Types.ObjectId.isValid(_id)) {
+          return NextResponse.json(
+              { 
+                  message: "Invalid event ID format",
+                  event: null
+              },
+              { status: 400 }
+          );
+      }
+      
+      const updatedEvent = await Event.findByIdAndUpdate(
+          _id,
+          { 
+              $set: {
+                  ...data,
+                  updatedAt: new Date()
+              }
+          },
+          { 
+              new: true,
+              runValidators: true
+          }
+      ).populate("organizer").populate("attendees");
+      
+      if (!updatedEvent) {
+          return NextResponse.json(
+              {
+                  message: "Event not found",
+                  event: null
+              },
+              { status: 404 }
+          );
+      }
+
+      return NextResponse.json(
+          {
+              message: "Event updated successfully",
+              event: updatedEvent
+          },
+          { status: 200 }
+      );
+  } catch (error) {
+      console.error("Error updating event:", error);
+      
+      if (error instanceof mongoose.Error.ValidationError) {
+          return NextResponse.json(
+              {
+                  message: "Validation error",
+                  errors: error.errors
+              },
+              { status: 400 }
+          );
+      }
+
+      return NextResponse.json(
+          {
+              message: "Error updating event",
+              error: error instanceof Error ? error.message : "Unknown error"
+          },
+          { status: 500 }
+      );
+  }
+}
