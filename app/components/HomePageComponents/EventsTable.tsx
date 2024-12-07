@@ -1,6 +1,7 @@
 import { EventType } from '@/app/types/Event'
 import React from 'react'
 import ModalWrapper from './ModalWrapper'
+import Link from 'next/link'
 
 export const EventsTable: React.FC<{
     events: EventType[],
@@ -9,7 +10,7 @@ export const EventsTable: React.FC<{
   return (
     <>
         <div className="bg-white rounded-lg border border-gray-200">
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+            <div className="flex items-center justify-between p-6 border-b">
                 <h2 className="text-xl font-semibold text-gray-900">
                     {title}
                 </h2>
@@ -30,13 +31,23 @@ export const EventsTable: React.FC<{
                         events
                         .slice(0, 3)
                         .map((event) => (
-                        <tr key={event._id} className="group hover:bg-gray-50">
-                            <td className="py-4 text-sm font-medium text-gray-900">{event.title}</td>
-                            <td className="py-4 text-sm text-gray-500">
-                            {new Date(event.date).toLocaleDateString()}
+                            <tr key={event._id} className="hover:bg-gray-100 cursor-pointer">
+                            <td className="px-2 py-4 text-sm font-medium text-gray-900">
+                              <Link href={`/events/${event._id}`}>
+                                {event.title}
+                              </Link>
                             </td>
-                            <td className="py-4 text-sm text-gray-500">{event.attendees.length}</td>
-                        </tr>
+                            <td className="px-2 py-4 text-sm text-gray-500">
+                              <Link href={`/events/${event._id}`}>
+                                {new Date(event.date).toLocaleDateString()}
+                              </Link>
+                            </td>
+                            <td className="px-2 py-4 text-sm text-gray-500">
+                              <Link href={`/events/${event._id}`}>
+                                {event.attendees.length}
+                              </Link>
+                            </td>
+                          </tr>
                         ))
                     ) : (
                         <tr>

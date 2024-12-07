@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import { Clock, Heart, Bookmark, MapPin, TagIcon, Users, Pencil } from 'lucide-react';
 import { CldImage } from 'next-cloudinary';
 import { AIAnalysis } from '@/app/components/SingleEventComponents/AiAnalysis';
@@ -25,6 +25,8 @@ export default function EventPage() {
 
   const amIRegistered = event?.attendees?.some((attendee) => attendee._id === session?.user.id);
   const isEventFinished = new Date(event?.date ?? "") < new Date();
+  const usersEvent = session?.user.id === event?.organizer._id;
+  const isDraft = event?.status === "draft";
 
   useEffect(() => {
     async function fetchEvent() {
@@ -52,14 +54,9 @@ export default function EventPage() {
       </div>
     );
   }
-
-  if (!event) {
-    return (
-      <div className="flex-grow flex flex-col items-center justify-center gap-2">
-        <div className="text-2xl font-semibold text-gray-700">Event not found</div>
-        <p className="text-gray-500">The event you&apos;re looking for doesn&apos;t exist or has been removed.</p>
-      </div>
-    );
+  
+  if (!event || (isDraft && session?.user.id !== event.organizer._id)) {
+    notFound();
   }
 
   return (
@@ -94,17 +91,23 @@ export default function EventPage() {
                         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                     }`}
                   >
-                    <Bookmark size={18} className={`${isSaved ? 'fill-current' : ''} transition-all duration-300`} />
+                    <Bookmark size={18} className={`${isSaved ? 'fill-current' : ''} 
+                      transition-all duration-300`} 
+                    />
                   </button>
-                  {new Date(event.date) > new Date() && session?.user.id === event.organizer._id ? (
-                      <AnimatedEditButton onClick={() => setIsEditModalOpen(true)} />                    
-                    )
-                    :
-                      <span className='bg-accent text-white px-2 py-1 rounded-md 
-                        text-sm font-semibold'>
-                        Finished
-                      </span>
-                  }
+                  {isDraft && usersEvent ? (
+                    <button
+                      className="bg-secondary text-white px-2 py-1 rounded-md text-sm font-semibold cursor-auto"
+                    >
+                      Draft
+                    </button>
+                    ) : !isEventFinished && usersEvent && !isDraft ? (
+                    <AnimatedEditButton onClick={() => setIsEditModalOpen(true)} />                    
+                    ) : isEventFinished ? (
+                    <span className='bg-accent text-white px-2 py-1 rounded-md text-sm font-semibold'>
+                      Finished
+                    </span>
+                    ) : null}
                 </div>
               </div>
 
@@ -172,7 +175,7 @@ export default function EventPage() {
 
             {/* AI Analysis or Publish CTA */}
             <div className="flex-grow">
-              {isEventFinished ? <span>234</span> : (
+              {event.status === "draft" ?  (
                 <div className="border-dashed border-gray-200 text-center">
                   <h3 className="font-semibold">
                     This event is currently a draft
