@@ -4,7 +4,7 @@ import { TimePicker } from '@/app/components/CreateEventComponents/TimePicker';
 import { TagInput } from '@/app/components/CreateEventComponents/TagsInput';
 import { EventType } from '@/app/types/Event';
 import { EventFormData } from '@/app/types/EventForm';
-import { CldUploadButton } from 'next-cloudinary';
+import { CldUploadButton, CloudinaryUploadWidgetInfo, CloudinaryUploadWidgetResults  } from 'next-cloudinary';
 import Image from 'next/image';
 
 interface EditEventModalProps {
@@ -30,20 +30,17 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
     imagePreview: event.image
   });
 
-  const handleImageUpload = async (result: any) => {
+  const handleImageUpload = async (results: CloudinaryUploadWidgetResults) => {
     try {
-      const response = await fetch(result.info.secure_url);
-      const blob = await response.blob();
-      const file = new File([blob], result.info.original_filename || 'image', {
-        type: blob.type
-      });
-      setFormData(prev => ({
-        ...prev,
-        imagePreview: result.info.secure_url
-      }));
-
+      if (results.info instanceof Object) {
+        const info = results.info as CloudinaryUploadWidgetInfo;
+        setFormData(prev => ({
+          ...prev,
+          imagePreview: info.secure_url
+        }));
+      }
     } catch (err) {
-      console.error('Error creating File:', err);
+      console.error('Error handling image upload:', err);
     }
   };
 
@@ -56,7 +53,9 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
     })
   );
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+
   const [error, setError] = useState<string | null>(null);
   const dateRef = useRef<HTMLInputElement>(null);
 
@@ -92,7 +91,7 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
 
   const handlePublish = async (e: React.MouseEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
+    setIsPublishing(true);
     setError(null);
 
     try {
@@ -102,7 +101,10 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ status: 'published' })
+        body: JSON.stringify({ 
+          ...formData,
+          status: 'published'
+         })
       });
 
       if (!response.ok) throw new Error('Failed to publish event');
@@ -112,57 +114,39 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to publish event');
     } finally {
-      setIsSubmitting(false);
+      setIsPublishing(false);
     }
   };
 
   // Handle updating event details
   const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSubmitting(true);
+    setIsUpdating(true);
     setError(null);
-
+  
     try {
-      const formDataToSend = new FormData();
-      
-      // Only append image if it's a real file (not our placeholder)
-      if (formData.image instanceof File && formData.image.size > 0) {
-        formDataToSend.append('image', formData.image);
-      }
-      
-      // Prepare the date from our date and time values
-      const [hours, minutes] = timeValue.split(':');
-      const [year, month, day] = dateValue.split('-');
-      const dateObj = new Date(
-        parseInt(year),
-        parseInt(month) - 1,
-        parseInt(day),
-        parseInt(hours),
-        parseInt(minutes)
-      );
-
       const dataToUpdate = {
         ...formData,
-        date: dateObj.toISOString(),
-        image: undefined // Remove image from JSON data since we're sending it separately
+        date: new Date(dateValue + 'T' + timeValue).toISOString(),
+        image: formData.imagePreview
       };
-      
-      formDataToSend.append('data', JSON.stringify(dataToUpdate));
-
-      console.log('Data to send:', dataToUpdate);
+  
       const response = await fetch(`/api/events/${event._id}`, {
         method: 'PATCH',
-        body: formDataToSend
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToUpdate)
       });
-
+  
       if (!response.ok) throw new Error('Failed to update event');
-
+  
       onClose();
       window.location.reload();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update event');
     } finally {
-      setIsSubmitting(false);
+      setIsUpdating(false);
     }
   };
 
@@ -377,50 +361,51 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
 
           {/* Save Buttons */}
           <div className="flex justify-end gap-3 pt-6">
-        <button
-          type="button"
-          onClick={onClose}
-          className="px-4 py-2 text-gray-500 hover:text-gray-700 transition-colors"
-          disabled={isSubmitting}
-        >
-          Cancel
-        </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 text-gray-500 hover:text-gray-700 transition-colors text-sm"
+              disabled={isPublishing || isUpdating}
+            >
+              Cancel
+            </button>
 
-        {event.status === 'draft' && (
-          <button
-            type="button"
-            onClick={handlePublish}
-            disabled={isSubmitting}
-            className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 
-            transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-          >
-            {isSubmitting ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Publishing...
-              </>
-            ) : (
-              'Publish Event'
+            {event.status === 'draft' && (
+              <button
+                type="button"
+                onClick={handlePublish}
+                disabled={isPublishing}
+                className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/80 text-sm 
+                transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                {isPublishing ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Publishing...
+                  </>
+                ) : (
+                  'Publish Event'
+                )}
+              </button>
             )}
-          </button>
-        )}
 
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 
-          transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-        >
-          {isSubmitting ? (
-            <>
-              <Loader2 className="w-4 h-4 animate-spin" />
-              Updating...
-            </>
-          ) : (
-            'Update Event'
-          )}
-        </button>
-      </div>
+            <button
+              type="submit"
+              disabled={isUpdating}
+              className="px-4 py-2 bg-primaryDarker text-white rounded-lg hover:bg-primaryDarker/80
+              transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2
+              text-sm"
+            >
+              {isUpdating ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Updating...
+                </>
+              ) : (
+                'Update Event'
+              )}
+            </button>
+          </div>
         </form>
       </div>
     </div>
