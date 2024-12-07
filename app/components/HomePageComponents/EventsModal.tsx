@@ -11,6 +11,7 @@ interface EventsModalProps {
 }
 
 export default function EventsModal({ title, events, isOpen, onClose }: EventsModalProps) {
+  
   const [search, setSearch] = useState('');
   const [sortConfig, setSortConfig] = useState<{
     key: keyof EventType;
@@ -93,8 +94,13 @@ export default function EventsModal({ title, events, isOpen, onClose }: EventsMo
                 <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">
                   Location
                 </th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">
-                  Attendees
+                <th 
+                className="px-4 py-3 text-left text-sm font-medium text-gray-500 cursor-pointer"
+                onClick={() => handleSort('attendees')}>
+                  <div className="flex items-center gap-2">
+                    Attendees
+                    <ArrowUpDown className="h-4 w-4" />
+                  </div>
                 </th>
                 <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">
                   Status

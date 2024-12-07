@@ -139,8 +139,8 @@ export default async function CompanyDashboard() {
             {/* Events Tables Section */}
             <div className="lg:col-span-2 space-y-8">
               {/* Upcoming Events Table */}
-              <EventsTable events={upcomingEvents}/>
-              <EventsTable events={pastEvents}/>
+              <EventsTable title='Upcoming events' events={upcomingEvents}/>
+              <EventsTable title='Recent events' events={pastEvents}/>
             </div>
 
             {/* AI Insights Section */}

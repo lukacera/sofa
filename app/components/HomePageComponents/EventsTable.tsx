@@ -3,13 +3,16 @@ import React from 'react'
 import ModalWrapper from './ModalWrapper'
 
 export const EventsTable: React.FC<{
-    events: EventType[]
-}> = ({events}) => {
+    events: EventType[],
+    title: string
+}> = ({events, title}) => {
   return (
     <>
         <div className="bg-white rounded-lg border border-gray-200">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                <h2 className="text-xl font-semibold text-gray-900">Upcoming Events</h2>
+                <h2 className="text-xl font-semibold text-gray-900">
+                    {title}
+                </h2>
                 <ModalWrapper title="All Events" events={events} />
             </div>
             <div className="p-6">
