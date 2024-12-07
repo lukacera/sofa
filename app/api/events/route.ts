@@ -98,6 +98,7 @@ export const POST = async (request: NextRequest) => {
         // Remove null fields from the event data
         eventData = removeNullFields(eventData);
 
+        console.log(eventData)
         // Validate the event data
         const { isValid, errors } = validateEvent(eventData as EventType);
 
@@ -250,10 +251,8 @@ export const GET = async (request: NextRequest): Promise<NextResponse<EventsResp
         const city = searchParams.get('city');
         const skip = (page - 1) * limit;
 
-        
         // Build filter object
         const filters: EventFilters = {};
-        
         
         // Add category filter if provided
         const tags = searchParams.get('tags');

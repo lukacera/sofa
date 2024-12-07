@@ -21,12 +21,12 @@ const CreateEventForm = () => {
   now.setMilliseconds(0);
 
   const [formData, setFormData] = useState<EventFormData>({
-    title: '',
-    description: '',
+    title: null,
+    description: null,
     location: {
-      address: '',
-      city: '',
-      country: ''
+      address: null,
+      city: null,
+      country: null
     },
     date: now.toISOString(),
     capacity: 100,
@@ -155,7 +155,7 @@ const CreateEventForm = () => {
               <input
                 type="text"
                 id="title"
-                value={formData.title}
+                value={formData.title || ''} 
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 className={`${inputClasses} w-full`}
                 placeholder="Enter event title"
@@ -246,7 +246,7 @@ const CreateEventForm = () => {
               City<RequiredStar />
               <input
                 type="text"
-                value={formData.location.city}
+                value={formData.location.city || ''}
                 onChange={(e) => setFormData({ 
                   ...formData, 
                   location: { ...formData.location, city: e.target.value }
@@ -260,7 +260,7 @@ const CreateEventForm = () => {
               Country<RequiredStar />
               <input
                 type="text"
-                value={formData.location.country}
+                value={formData.location.country || ''}
                 onChange={(e) => setFormData({ 
                   ...formData, 
                   location: { ...formData.location, country: e.target.value }
@@ -274,7 +274,7 @@ const CreateEventForm = () => {
               Address<RequiredStar />
               <input
                 type="text"
-                value={formData.location.address}
+                value={formData.location.address || ''}
                 onChange={(e) => setFormData({ 
                   ...formData, 
                   location: { ...formData.location, address: e.target.value }
@@ -292,7 +292,7 @@ const CreateEventForm = () => {
           </label>
           <textarea
             id="description"
-            value={formData.description}
+            value={formData.description || ''}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             rows={4}
             minLength={100}
@@ -302,9 +302,9 @@ const CreateEventForm = () => {
             required
           />
           <p className={`text-sm mt-1 
-            ${formData.description.length < 100 || formData.description.length === 1000 ? 
+            ${formData.description && (formData.description.length < 100 || formData.description.length === 1000) ? 
             'text-red-500' : 'text-gray-500'}`}>
-            {formData.description.length} / 1000 characters {formData.description.length < 100 && `(${100 - formData.description.length} more needed)`}
+            {formData.description ? `${formData.description.length} / 1000 characters ${formData.description.length < 100 ? `(${100 - formData.description.length} more needed)` : ''}` : '0 / 1000 characters (100 more needed)'}
           </p>
         </div>
 

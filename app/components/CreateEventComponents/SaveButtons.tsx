@@ -1,8 +1,8 @@
 import React, { FormEvent } from 'react';
 
 interface SaveOptionsProps {
- isSubmitting: boolean;
- onSave: (status: 'draft' | 'published', e: FormEvent) => void;
+  isSubmitting: boolean;
+  onSave: (status: 'draft' | 'published', e: FormEvent) => void;
 }
 
 export function SaveButtons({ isSubmitting, onSave }: SaveOptionsProps) {

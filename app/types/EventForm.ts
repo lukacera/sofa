@@ -7,15 +7,15 @@ export interface Ticket {
 }
 
 export interface EventFormData {
-    title: string;
-    description: string;
+    title: string | null; 
+    description: string | null;
     date: string;
     location: {
-        address: string;
-        city: string;
-        country: string;
+        address: string | null;
+        city: string | null;
+        country: string | null;
     };
-    capacity: number;
+    capacity: number | null;
     image: File | null;
     type: 'conference' | 'workshop' | 'meetup' | 'seminar' | 'other';
     organizer: string;

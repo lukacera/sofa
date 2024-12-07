@@ -4,13 +4,11 @@ import { EventType } from '../types/Event';
 export const EventSchema = new Schema<EventType>({
   title: {
     type: String,
-    required: true,
     trim: true,
     default: ''
   },
   description: {
     type: String,
-    required: true,
     default: ''
   },
   aiAnalysis: {
@@ -19,7 +17,11 @@ export const EventSchema = new Schema<EventType>({
   },
   date: {
     type: Date,
-    required: true
+    default: () => {
+      const now = new Date();
+      now.setMonth(now.getMonth() + 1);
+      return now;
+    }
   },
   location: {
     type: {
@@ -28,14 +30,13 @@ export const EventSchema = new Schema<EventType>({
       country: { type: String, trim: true }
     },
     default: {
-      city: 'Unknown City',
-      address: 'Unknown Address',
-      country: 'Unknown Country'
+      city: 'Unknown',
+      address: 'Unknown',
+      country: 'Unknown'
     }
   },
   capacity: {
     type: Number,
-    required: true,
     min: 1,
     default: 100
   },
