@@ -89,12 +89,16 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
     }
   }, [formData.date]);
 
-  const handlePublish = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    setIsPublishing(true);
-    setError(null);
-
+  const handlePublish = async (e: React.FormEvent<HTMLFormElement>) => {
+   
     try {
+      e.preventDefault();
+      setIsPublishing(true);
+      setError(null);
+      if (!formData.tags?.length) {
+        setError("Please add at least one tag");
+        return;
+      }
       // Simple PATCH request to update status
       const response = await fetch(`/api/events/${event._id}`, {
         method: 'PATCH',
@@ -119,7 +123,7 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
   };
 
   // Handle updating event details
-  const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleUpdate = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setIsUpdating(true);
     setError(null);
@@ -175,16 +179,8 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
             </button>
           </div>
         </div>
-
-        {error && (
-          <div className="mx-6 mt-4 flex items-center gap-2 text-red-500 bg-red-50 p-3 rounded-lg">
-            <AlertCircle className="w-5 h-5" />
-            <p>{error}</p>
-          </div>
-        )}
-
-        <form onSubmit={handleUpdate} 
-        className="p-6 space-y-8">
+        <form onSubmit={handlePublish}
+         className="p-6 space-y-8">
           {/* Basic Information */}
           <div className="space-y-6">
             <h2 className="text-xl font-semibold text-black text-center">Basic Information</h2>
@@ -358,7 +354,12 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
             </CldUploadButton>
           </div>
 
-
+          {error && (
+          <div className="mx-6 mt-4 flex items-center gap-2 text-red-500 bg-red-50 p-3 rounded-lg">
+            <AlertCircle className="w-5 h-5" />
+            <p>{error}</p>
+          </div>
+        )}
           {/* Save Buttons */}
           <div className="flex justify-end gap-3 pt-6">
             <button
@@ -370,10 +371,27 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
               Cancel
             </button>
 
+
+            <button
+              type={event.status === 'draft' ? 'button' : 'submit'}
+              disabled={isUpdating}
+              onClick={handleUpdate}
+              className="px-4 py-2 bg-primaryDarker text-white rounded-lg hover:bg-primaryDarker/80
+              transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2
+              text-sm"
+              >
+              {isUpdating ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Updating...
+                </>
+              ) : (
+                'Update Event'
+              )}
+            </button>
             {event.status === 'draft' && (
               <button
-                type="button"
-                onClick={handlePublish}
+                type="submit"
                 disabled={isPublishing}
                 className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/80 text-sm 
                 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
@@ -388,23 +406,6 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
                 )}
               </button>
             )}
-
-            <button
-              type="submit"
-              disabled={isUpdating}
-              className="px-4 py-2 bg-primaryDarker text-white rounded-lg hover:bg-primaryDarker/80
-              transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2
-              text-sm"
-            >
-              {isUpdating ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Updating...
-                </>
-              ) : (
-                'Update Event'
-              )}
-            </button>
           </div>
         </form>
       </div>

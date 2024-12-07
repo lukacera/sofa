@@ -161,9 +161,29 @@ export default function EventPage() {
               ))}
             </div>
 
-            {/* AI Analysis */}
+            {/* AI Analysis or Publish CTA */}
             <div className="flex-grow">
-              <AIAnalysis text={event.aiAnalysis} />
+              {event.status === 'draft' ? (
+                <div className="border-dashed border-gray-200 text-center">
+                  <h3 className="font-semibold">
+                    This event is currently a draft
+                  </h3>
+                  <p className="text-gray-600 text-sm mt-1">
+                    Publish your event to make it visible to others.
+                  </p>
+                  <button
+                    onClick={() => setIsEditModalOpen(true)}
+                    className="bg-accent hover:bg-accent/80 text-mainWhite font-medium py-3 px-4 
+                    rounded-lg transition-all duration-300 flex items-center justify-center gap-2 mx-auto
+                    text-sm mt-5"
+                  >
+                    <Pencil size={14} />
+                    Open the edit event modal
+                  </button>
+                </div>
+              ) : (
+                <AIAnalysis text={event.aiAnalysis} />
+              )}
             </div>
           </div>
 

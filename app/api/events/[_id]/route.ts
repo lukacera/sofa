@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import Event from "@/app/schemas/Event";
 import { connectToDB } from "@/app/utils/connectWithDB";
+import { generateEventAnalysis } from "@/app/utils/generateEventAnalysis";
 
 export async function GET(
   request: Request,
@@ -48,57 +49,66 @@ export async function PATCH(
   { params }: { params: { _id: string } }
 ) {
   try {
-      await connectToDB();
-      
-      const { _id } = await params;
-      const formData = await request.formData();
+    await connectToDB();
+    
+    const { _id } = await params;
 
-      const data = JSON.parse(formData.get('data') as string);
+    const data = await request.json();
 
-      console.log(data);
-      // Validate if id is a valid MongoDB ObjectId
-      if (!mongoose.Types.ObjectId.isValid(_id)) {
-          return NextResponse.json(
-              { 
-                  message: "Invalid event ID format",
-                  event: null
-              },
-              { status: 400 }
-          );
+    let AiAnalysisText: string | null = "";
+
+    if (data.title || data.description || data.location || data.tags) {
+      AiAnalysisText = await generateEventAnalysis(data);
+    }
+    
+    // Validate if id is a valid MongoDB ObjectId
+    if (!mongoose.Types.ObjectId.isValid(_id)) {
+        return NextResponse.json(
+            { 
+                message: "Invalid event ID format",
+                event: null
+            },
+            { status: 400 }
+        );
+    }
+    
+    const updateData = {
+      ...data,
+      image: data.imagePreview,
+      updatedAt: new Date()
+    };
+    
+    // Include AiAnalysisText only if it's not null
+    if (AiAnalysisText) {
+      updateData.aiAnalysis = AiAnalysisText;
+    }
+    
+    const updatedEvent = await Event.findByIdAndUpdate(
+      _id,
+      { $set: updateData },
+      { 
+        new: true,
+        runValidators: true
       }
-      
-      const updatedEvent = await Event.findByIdAndUpdate(
-          _id,
-          { 
-              $set: {
-                  ...data,
-                  image: data.imagePreview,
-                  updatedAt: new Date()
-              }
-          },
-          { 
-              new: true,
-              runValidators: true
-          }
-      ).populate("organizer").populate("attendees");
-      
-      if (!updatedEvent) {
-          return NextResponse.json(
-              {
-                  message: "Event not found",
-                  event: null
-              },
-              { status: 404 }
-          );
-      }
+    ).populate("organizer").populate("attendees");
+    
+    if (!updatedEvent) {
+        return NextResponse.json(
+            {
+                message: "Event not found",
+                event: null
+            },
+            { status: 404 }
+        );
+    }
 
-      return NextResponse.json(
-          {
-              message: "Event updated successfully",
-              event: updatedEvent
-          },
-          { status: 200 }
-      );
+    return NextResponse.json(
+        {
+            message: "Event updated successfully",
+            event: updatedEvent
+        },
+        { status: 200 }
+    );
   } catch (error) {
       console.error("Error updating event:", error);
       

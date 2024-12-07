@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { EventType } from '@/app/types/Event';
 import OpenAI from "openai"
 import User from "@/app/schemas/User";
+import { generateEventAnalysis } from "@/app/utils/generateEventAnalysis";
 
 function validateEvent(event: EventType) {
     const errors = [];
@@ -84,9 +85,6 @@ function removeNullFields<T>(data: T): Partial<T> {
 export const POST = async (request: NextRequest) => {
     try {
         await connectToDB();
-        const openai = new OpenAI({
-            apiKey: process.env.OPENAI_API_KEY
-        });
 
         // Get FormData from the request
         const formData = await request.formData();
@@ -136,46 +134,12 @@ export const POST = async (request: NextRequest) => {
         }
 
         // OpenAI completion
-        let completion;
-        if (eventData.status !== 'draft') {
-            completion = await openai.chat.completions.create({
-            model: "gpt-3.5-turbo",
-            messages: [
-                {
-                    role: "system",
-                    content: `
-                    You are an expert event analyst. Your response must be a single paragraph and EXACTLY between 450 and 460 characters, including spaces. 
-                    Count your characters and ensure compliance before completing the response. No exceptions. 
-                    Rules:
-                    - Write in a single paragraph
-                    - Do not mention pricing
-                    - Focus on event value and benefits
-                    - Make it professional and engaging
-                    - End with a complete sentence
-                    `
-                },
-                {
-                    role: "user",
-                    content: `Analyze this event:
-                      Title: ${eventData.title}
-                      Description: ${eventData.description}
-                      City: ${eventData.location?.city || 'N/A'}, 
-                      Country: ${eventData.location?.country || 'N/A'}
-                      Target Audience: ${eventData.tags?.join(', ') || 'N/A'}
-                    `
-                }
-            ],
-            temperature: 0.6,
-            response_format: { type: "text" }                
-        });
-    }
+        const aiAnalysisText = await generateEventAnalysis(eventData);
 
         // Create new event with defaults
         const newEvent: Partial<EventType> = {
             ...eventData, // Use cleaned eventData with nulls removed
-            ...completion && completion.choices[0].message.content && {
-            aiAnalysis: completion.choices[0].message.content
-            },
+            aiAnalysis: aiAnalysisText ?? "",
             date: new Date(eventData.date || Date.now()),
             tags: eventData.tags || [],
             status: eventData.status || 'draft',
