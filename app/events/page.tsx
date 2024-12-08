@@ -7,6 +7,7 @@ import { EventType } from '../types/Event'
 import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react'
 import { LocationDropdown } from '../components/EventsPageComponents/LocationDropdown'
 import { useSearchParams } from 'next/navigation'
+import { TagData, TagsResponse } from '../types/Tags'
 
 type SortOption = 'date-asc' | 'date-desc' | 'capacity-asc' | 'capacity-desc';
 
@@ -29,7 +30,7 @@ export default function EventsPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState<SortOption>('date-asc')
   const [showFilters, setShowFilters] = useState(false)
-  const [tags, setTags] = useState<string[]>([])
+  const [tags, setTags] = useState<TagData[]>([])
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [isTagDropdownOpen, setIsTagDropdownOpen] = useState(false)
   const [showFinishedEvents, setShowFinishedEvents] = useState(false)
@@ -58,7 +59,7 @@ export default function EventsPage() {
     async function fetchTags() {
       try {
         const response = await fetch('/api/tags')
-        const data = await response.json()
+        const data: TagsResponse = await response.json()
         setTags(data.tags)
       } catch (error) {
         console.error('Error fetching tags:', error)
@@ -263,16 +264,16 @@ export default function EventsPage() {
                       <div className="absolute z-20 w-full mt-1 py-1 bg-white border rounded-lg shadow-lg max-h-60 overflow-auto">
                         {tags.map(tag => (
                           <label
-                            key={tag}
+                            key={tag.name}
                             className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer"
                           >
                             <input
                               type="checkbox"
-                              checked={selectedTags.includes(tag)}
-                              onChange={() => handleTagSelect(tag)}
+                              checked={selectedTags.includes(tag.name)}
+                              onChange={() => handleTagSelect(tag.name)}
                               className="mr-2"
                             />
-                            {tag}
+                            {tag.name}
                           </label>
                         ))}
                       </div>
