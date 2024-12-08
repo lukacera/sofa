@@ -10,6 +10,7 @@ export async function GET(request: Request) {
     const searchQuery = url.searchParams.get("query")?.toLowerCase() || "";
 
     const pipeline = [
+      {$match: {"location.city": {$ne : null}}},
       // If there's a search query, add a $match stage
       ...(searchQuery
         ? [

@@ -81,9 +81,6 @@ export default async function IndividualHomePage() {
               <h2 className="font-bold text-2xl mb-5">Topics you might like</h2>
               <TopicsGrid />
             </div>
-            <div className="flex flex-col items-center mt-20 gap-6">
-              <EventsNearYou />
-            </div>
           </section>
         </section>
       </main>

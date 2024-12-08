@@ -6,6 +6,7 @@ import { EventCard } from '../components/HomePageComponents/EventCard'
 import { EventType } from '../types/Event'
 import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react'
 import { LocationDropdown } from '../components/EventsPageComponents/LocationDropdown'
+import { useSearchParams } from 'next/navigation'
 
 type SortOption = 'date-asc' | 'date-desc' | 'capacity-asc' | 'capacity-desc';
 
@@ -25,7 +26,6 @@ export default function EventsPage() {
     limit: 9,
     pages: 0
   })
-  
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState<SortOption>('date-asc')
   const [showFilters, setShowFilters] = useState(false)
@@ -40,7 +40,16 @@ export default function EventsPage() {
   const [debouncedSearch, setDebouncedSearch] = useState('')
   const [debouncedCountry, setDebouncedCountry] = useState('')
   const [debouncedCity, setDebouncedCity] = useState('')
-
+  
+  const searchParams = useSearchParams();
+  
+  useEffect(() => {
+    const cityFromUrl = searchParams.get('city')
+    if (cityFromUrl) {
+      setCity(cityFromUrl)
+    }
+  }, [searchParams])
+  
   useEffect(() => {
     async function fetchTags() {
       try {
