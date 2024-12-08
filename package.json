@@ -11,6 +11,8 @@
   "dependencies": {
     "@auth/core": "^0.37.3",
     "@fullcalendar/react": "^6.1.15",
+    "@types/google.maps": "^3.58.1",
+    "@vis.gl/react-google-maps": "^1.4.2",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.5.1",
     "fullcalendar": "^6.1.15",

@@ -5,7 +5,7 @@ import { EventFormData } from '@/app/types/EventForm';
 
 interface TagInputProps {
   tags: string[];
-  setFormData: React.Dispatch<React.SetStateAction<Partial<EventFormData>>>;
+  setFormData: React.Dispatch<React.SetStateAction<EventFormData>>;
 }
 
 export const TagInput = ({ tags, setFormData }: TagInputProps) => {

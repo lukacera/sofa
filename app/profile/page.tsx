@@ -19,7 +19,7 @@ export default function Page() {
     },
     {
       id: 'events',
-      label: session?.user.role === "company" ? "Created Events" : "Attended Events",
+      label: session?.user.role === "company" ? "Created Events" : "My Events",
       icon: <Calendar size={20} />,
       component: session?.user.role === "company" ? <EventList key="hosted" type='hosted' gridCols={2} /> : 
       <EventList key="attended" type='attended' gridCols={2} />
