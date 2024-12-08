@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import { Calendar, Settings, Pencil } from 'lucide-react'
 import EditProfile from '../components/MyProfileComponents/EditProfile'
 import { useSession } from 'next-auth/react'
-import AttendedEvents from '../components/MyProfileComponents/AttendedEvents'
 import { EventList } from '../components/MyProfileComponents/ProfileEventList'
 
 type TabType = 'personal' | 'events' | 'security';
@@ -23,7 +22,7 @@ export default function Page() {
       label: session?.user.role === "company" ? "Created Events" : "Attended Events",
       icon: <Calendar size={20} />,
       component: session?.user.role === "company" ? <EventList key="hosted" type='hosted' gridCols={2} /> : 
-      <AttendedEvents />,
+      <EventList key="attended" type='attended' gridCols={2} />
     },
   ];
 

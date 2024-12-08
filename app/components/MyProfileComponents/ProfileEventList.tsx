@@ -36,8 +36,8 @@ export const EventList = ({ type, gridCols = 1, showHeader = true }: EventListPr
         if (!response.ok) {
           throw new Error('Failed to fetch events')
         }
-
         const data = await response.json()
+        console.log(data)
         setEvents(data.data || [])
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load events')
@@ -68,18 +68,32 @@ export const EventList = ({ type, gridCols = 1, showHeader = true }: EventListPr
   }
 
   if (events.length === 0) {
+    // First, determine if we should show any action button
+    const shouldShowButton = isHosted || isAttended;
+    
+    // Determine the button text and link based on the conditions
+    const buttonConfig = {
+      text: isHosted ? 'Create Event' : isAttended ? 'Explore Events' : '',
+      href: isHosted ? '/create-event' : isAttended ? '/events' : ''
+    };
+  
     return (
       <div className="flex flex-col items-center justify-center mt-20">
         <CalendarX className="h-8 w-8 text-gray-400" />
         <p className="mt-2 text-gray-600">{emptyMessage}</p>
-        <Link 
-          href={isHosted ? '/create-event' : isAttended ? '/events' : '/create-event'}
-          className="mt-4 px-4 py-2 bg-secondary text-white rounded-xl hover:bg-secondary/80 transition-colors"
-        >
-          {isHosted ? 'Create Event' : isAttended ? 'Explore Events' : 'Create Event'}
-        </Link>
+        
+        {/* Only render the button if we should show it */}
+        {shouldShowButton && (
+          <Link 
+            href={buttonConfig.href}
+            className="mt-4 px-4 py-2 bg-secondary text-white rounded-xl 
+                     hover:bg-secondary/80 transition-colors"
+          >
+            {buttonConfig.text}
+          </Link>
+        )}
       </div>
-    )
+    );
   }
 
   return (
