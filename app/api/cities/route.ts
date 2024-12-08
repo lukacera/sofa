@@ -2,16 +2,29 @@ import { NextResponse } from "next/server";
 import { connectToDB } from "@/app/utils/connectWithDB";
 import Event from "@/app/schemas/Event";
 
-export const revalidate = 300; // 5 minutes in seconds
-
-export async function GET() {
+export async function GET(request: Request) {
   try {
     await connectToDB();
 
-    const agg = await Event.aggregate([
+    const url = new URL(request.url);
+    const searchQuery = url.searchParams.get("query")?.toLowerCase() || "";
+
+    const pipeline = [
+      // If there's a search query, add a $match stage
+      ...(searchQuery
+        ? [
+            {
+              $match: {
+                "location.city": { $regex: searchQuery, $options: "i" },
+              },
+            },
+          ]
+        : []),
       { $group: { _id: "$location.city" } },
-      { $project: { city: "$_id", _id: 0 } }
-    ]);
+      { $project: { city: "$_id", _id: 0 } },
+    ];
+
+    const agg = await Event.aggregate(pipeline);
 
     const cities = agg.map(item => item.city);
 
