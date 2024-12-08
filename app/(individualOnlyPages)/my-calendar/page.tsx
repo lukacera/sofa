@@ -278,7 +278,7 @@ const EventsCalendar = () => {
                 content: info.event.title,
                 position: {
                   x: rect.left - 100,
-                  y: rect.top + 70
+                  y: rect.top - 20
                 }
               });
             }}
