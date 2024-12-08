@@ -11,7 +11,7 @@ type SlideshowProps = {
 
 export function EventsSlideshow({ events }: SlideshowProps) {
   const [currentPage, setCurrentPage] = useState(0)
-  const eventsPerPage = 6
+  const eventsPerPage = 3
   const totalPages = Math.ceil(events.length / eventsPerPage)
 
   const handleNext = () => {

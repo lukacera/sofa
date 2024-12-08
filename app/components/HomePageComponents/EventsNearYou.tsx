@@ -5,9 +5,7 @@ import { EventCard } from './EventCard'
 
 async function getEventsNearby(): Promise<{ events: EventType[] }> {
   try {
-    const response = await fetch(`${baseURL}/events`, {
-      cache: 'no-store' // or { next: { revalidate: 60 } } for ISR
-    })
+    const response = await fetch(`${baseURL}/events`)
     
     if (!response.ok) {
       throw new Error('Failed to fetch events')

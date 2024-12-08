@@ -78,7 +78,9 @@ export default async function IndividualHomePage() {
           <EventsNearYou />
           <section className="flex flex-col gap-10 mt-20">
             <div className="flex flex-col items-center gap-5">
-              <h2 className="font-bold text-2xl mb-5">Topics you might like</h2>
+              <h2 className="font-semibold text-2xl mb-5">
+                You might be interested in events with these tags
+              </h2>
               <TopicsGrid />
             </div>
           </section>
