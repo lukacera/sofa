@@ -10,10 +10,13 @@ import { EventType } from '@/app/types/Event';
 import { useSession } from 'next-auth/react';
 import AnimatedEditButton from '@/app/components/SingleEventComponents/AnimatedEditButton';
 import EditEventModal from '@/app/components/SingleEventComponents/EditEventModal';
+import { useRouter } from 'next/navigation';
 
 export default function EventPage() {
   
   const params = useParams();
+  const router = useRouter();
+
   const {data: session} = useSession();
   const [event, setEvent] = useState<EventType | null>(null);
   const [loading, setLoading] = useState(true);
@@ -163,6 +166,7 @@ export default function EventPage() {
             <div className="flex flex-wrap gap-1.5 my-2">
               {event.tags?.map((tag, i) => (
                 <div
+                  onClick={() => router.push(`/events?tag=${tag}`)}
                   key={i}
                   className="flex items-center gap-1.5 bg-secondary/10 text-secondary px-3 py-1 rounded-lg
                   transition-all duration-300 hover:bg-secondary hover:text-white cursor-pointer"

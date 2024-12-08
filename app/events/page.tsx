@@ -45,8 +45,12 @@ export default function EventsPage() {
   
   useEffect(() => {
     const cityFromUrl = searchParams.get('city')
+    const tagFromUrl = searchParams.get('tag')
     if (cityFromUrl) {
       setCity(cityFromUrl)
+    }
+    if (tagFromUrl) {
+      setSelectedTags([tagFromUrl])
     }
   }, [searchParams])
   
