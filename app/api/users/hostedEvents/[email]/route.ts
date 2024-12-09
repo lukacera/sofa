@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 import User from "@/app/schemas/User";
 import mongoose from "mongoose";
 import { EventSchema } from "@/app/schemas/Event";
-import { EventType } from "@/app/types/Event";
 
 export async function GET(
     req: NextRequest,
@@ -25,7 +24,7 @@ export async function GET(
             path: "eventsCreated",
             model: "Event",
             options: { 
-                sort: { date: -1 },
+                sort: { createdAt: -1 },
                 strictPopulate: false
             }
         });
@@ -46,33 +45,6 @@ export async function GET(
                 { status: 404 }
             );
         }
-
-        const currentDate = new Date();
-        const events = user.eventsCreated || [];
-
-        // Separate events into categories
-        const pastEvents = events.filter((event: EventType) => 
-            new Date(event.date) < currentDate && event.status !== 'draft'
-        );
-
-        const draftEvents = events.filter((event: EventType) => 
-            event.status === 'draft'
-        );
-
-        const upcomingEvents = events.filter((event: EventType) => 
-            new Date(event.date) >= currentDate && event.status !== 'draft'
-        );
-
-        // Calculate total attendees across all events
-        const totalAttendees = events.reduce((sum: number, event: EventType) => 
-            sum + (event.attendees?.length || 0), 0
-        );
-
-        const stats = {
-            pastEventsCount: pastEvents.length,
-            draftEventsCount: draftEvents.length,
-            totalAttendees: totalAttendees
-        };
 
         return NextResponse.json(
             {
