@@ -6,7 +6,7 @@ import Footer from './Footer';
 
 export default function ClientRootLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isAuthPage = pathname.startsWith('/auth') || pathname === '/login';
+  const isAuthPage = pathname.startsWith('/auth') || pathname === '/login' || pathname === "/register";
 
   return (
     <>
