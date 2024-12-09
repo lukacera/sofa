@@ -23,7 +23,6 @@ export default function EventPage() {
   const [error, setError] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const amIRegistered = event?.attendees?.some((attendee) => attendee._id === session?.user.id);
@@ -85,18 +84,6 @@ export default function EventPage() {
                     }`}
                   >
                     <Heart size={18} className={`${isLiked ? 'fill-current' : ''} transition-all duration-300`} />
-                  </button>
-                  <button
-                    onClick={() => setIsSaved(!isSaved)}
-                    className={`flex items-center justify-center p-2 rounded-full transition-all duration-300 hover:scale-105 ${
-                      isSaved 
-                        ? 'bg-blue-100 text-blue-500 shadow-blue-100/50 shadow-sm' 
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                    }`}
-                  >
-                    <Bookmark size={18} className={`${isSaved ? 'fill-current' : ''} 
-                      transition-all duration-300`} 
-                    />
                   </button>
                   {isDraft && usersEvent ? (
                     <button

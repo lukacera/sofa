@@ -34,7 +34,7 @@ export default function RegisterPage(): JSX.Element {
       const body: Partial<UserType> = {
         email,
         name,
-        type: userType ?? 'individual',
+        role: userType ?? 'individual',
         password
       }
 
@@ -71,49 +71,60 @@ export default function RegisterPage(): JSX.Element {
 
   if (!userType) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-main/40">
-        <div className="bg-mainWhite p-8 rounded-2xl shadow-xl w-full max-w-2xl 
-        space-y-6">
-          <div className="text-center space-y-4">
-            <h2 className="text-3xl font-bold text-secondary">Join Sofa AI</h2>
-            <p className="text-gray-600">Choose how you want to experience our platform</p>
+      <div className="min-h-screen flex items-center justify-center bg-primary/40">
+        <div className="relative bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-2xl w-full max-w-2xl mx-4">
+          {/* Subtle decorative elements */}
+  
+          <div className="relative text-center space-y-3 mb-6">
+            <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary 
+                         bg-clip-text text-transparent">
+              Join Sofa AI
+            </h2>
+            <p className="text-gray-600">Choose your journey with us</p>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  
+          <div className="relative grid grid-cols-1 sm:grid-cols-2 gap-4">
             <button
               onClick={() => setUserType("company")}
-              className="p-6 rounded-xl border-2 border-transparent hover:border-secondary/20
-                       hover:shadow-lg transition-all duration-200"
+              className="group p-6 rounded-xl bg-white/50 hover:bg-white transition-all duration-300
+                       border border-gray-100 hover:border-secondary/20 hover:shadow-lg
+                       transform hover:-translate-y-1"
             >
-              <div className="w-16 h-16 rounded-xl bg-secondary/10 flex items-center 
-                            justify-center mb-4 mx-auto">
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-secondary/10 to-secondary/20 
+                            flex items-center justify-center mb-4 mx-auto group-hover:scale-110 
+                            transition-transform duration-300">
                 <Building2 className="w-8 h-8 text-secondary" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Company Account</h3>
-              <p className="text-sm text-gray-600">
-                Perfect for businesses looking to create and manage events
+              <h3 className="text-lg font-semibold mb-2 text-gray-800">Company Account</h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Create and manage events
               </p>
             </button>
-
+  
             <button
               onClick={() => setUserType("individual")}
-              className="p-6 rounded-xl border-2 border-transparent hover:border-secondary/20
-                       hover:shadow-lg transition-all duration-200"
+              className="group p-6 rounded-xl bg-white/50 hover:bg-white transition-all duration-300
+                       border border-gray-100 hover:border-secondary/20 hover:shadow-lg
+                       transform hover:-translate-y-1"
             >
-              <div className="w-16 h-16 rounded-xl bg-secondary/10 flex items-center 
-                            justify-center mb-4 mx-auto">
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-secondary/10 to-secondary/20 
+                            flex items-center justify-center mb-4 mx-auto group-hover:scale-110 
+                            transition-transform duration-300">
                 <User className="w-8 h-8 text-secondary" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Personal Account</h3>
-              <p className="text-sm text-gray-600">
-                Discover and participate in exciting events around you
+              <h3 className="text-lg font-semibold mb-2 text-gray-800">Personal Account</h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Discover amazing events near you
               </p>
             </button>
           </div>
-
-          <div className="text-center text-sm text-gray-600">
-            <p>Already have an account?{" "}
-              <Link href="/login" className="text-secondary hover:text-secondary/80">
+  
+          <div className="relative text-center mt-6">
+            <p className="text-sm text-gray-600">
+              Already have an account?{" "}
+              <Link href="/login" 
+                className="text-secondary font-medium hover:text-secondary/80 
+                         underline-offset-4 hover:underline transition-all">
                 Sign in here
               </Link>
             </p>
@@ -121,10 +132,10 @@ export default function RegisterPage(): JSX.Element {
         </div>
       </div>
     )
-  }
-
+  }  
+  
   return (
-    <div className="min-h-screen flex items-center justify-center bg-main/40">
+    <div className="min-h-screen flex items-center justify-center bg-primary/40">
       <div className="bg-mainWhite p-8 rounded-2xl shadow-xl w-full max-w-md space-y-6 max-h-[75%]">
         <button
           onClick={() => setUserType(null)}
