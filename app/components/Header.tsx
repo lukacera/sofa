@@ -62,7 +62,15 @@ export default function Header() {
 
           {/* Right Side Actions - Fixed Width */}
           <div className="w-[140px] flex items-center justify-end space-x-4">
-            {!isLoading && (
+            {isLoading ? (
+              <div className="flex items-center space-x-4 relative">
+                {/* Loading placeholder for Create Event button */}
+                <div className="absolute top-1 -left-44 w-[10rem] h-9 bg-accent/40 animate-pulse rounded-lg"></div>
+                {/* Loading placeholder for profile image */}
+                <div className="w-10 h-10 rounded-full bg-gray-300/60 animate-pulse"></div>
+                <div className="w-4 h-4 bg-gray-300/60 animate-pulse"></div>
+              </div>
+            ) : (
               <>
                 {session && (
                   <div className="relative">
@@ -103,13 +111,10 @@ export default function Header() {
                         <div className="px-4 py-2 border-b">
                           <p className="text-sm font-medium text-gray-900">{session.user?.name}</p>
                           <p className="text-xs text-gray-500">{session.user?.email}</p>
-                          <p className="text-xs text-gray-500 mt-2 text-center
-                          font-semibold">
-                            {session.user?.role.charAt(0).toUpperCase() 
-                            + session.user.role.slice(1)} profile
+                          <p className="text-xs text-gray-500 mt-2 text-center font-semibold">
+                            {session.user?.role.charAt(0).toUpperCase() + session.user.role.slice(1)} profile
                           </p>
                         </div>
-
                         <Link
                           href="/profile"
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -117,7 +122,6 @@ export default function Header() {
                         >
                           Profile
                         </Link>
-
                         <button
                           onClick={() => signOut({ callbackUrl: "/login" })}
                           className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
