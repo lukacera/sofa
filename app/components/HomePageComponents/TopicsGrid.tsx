@@ -9,8 +9,8 @@ const TopicPreview: React.FC<{tag: TagData}> = ({ tag }) => {
   
   return ( 
     <button 
-      onClick={() => router.push(`/events?tag=${encodeURIComponent(tag.name)}`)}
-      className="group w-full text-left focus:outline-none focus:ring-2 
+    onClick={() => window.location.href = `/events?tag=${encodeURIComponent(tag.name)}`}      
+    className="group w-full text-left focus:outline-none focus:ring-2 
       focus:ring-primary-100 focus:ring-offset-2 rounded-xl"
     > 
       <div className="p-5 bg-white rounded-xl border border-gray-100 

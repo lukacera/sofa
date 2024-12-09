@@ -33,7 +33,7 @@ export default function EventsPage() {
   const [tags, setTags] = useState<TagData[]>([])
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [isTagDropdownOpen, setIsTagDropdownOpen] = useState(false)
-  const [showFinishedEvents, setShowFinishedEvents] = useState(false)
+  const [showFinishedEvents, setShowFinishedEvents] = useState(true)
   const [country, setCountry] = useState('')
   const [city, setCity] = useState('')
   const [countries, setCountries] = useState<string[]>([])
@@ -42,19 +42,8 @@ export default function EventsPage() {
   const [debouncedCountry, setDebouncedCountry] = useState('')
   const [debouncedCity, setDebouncedCity] = useState('')
   
-  const searchParams = useSearchParams();
-  
-  useEffect(() => {
-    const cityFromUrl = searchParams.get('city')
-    const tagFromUrl = searchParams.get('tag')
-    if (cityFromUrl) {
-      setCity(cityFromUrl)
-    }
-    if (tagFromUrl) {
-      setSelectedTags([tagFromUrl])
-    }
-  }, [searchParams])
-  
+  const searchParams = useSearchParams()
+  const dropdownRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
     async function fetchTags() {
       try {
@@ -83,23 +72,29 @@ export default function EventsPage() {
     fetchTags()
   }, [])
 
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const cityFromUrl = searchParams.get('city')
+    const tagFromUrl = searchParams.get('tag')
+    
+    if (cityFromUrl) setCity(cityFromUrl)
+    if (tagFromUrl) setSelectedTags([tagFromUrl])
+  }, [searchParams])
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsTagDropdownOpen(false);
+        setIsTagDropdownOpen(false)
       }
     }
 
     if (isTagDropdownOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('mousedown', handleClickOutside)
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isTagDropdownOpen]);
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isTagDropdownOpen])
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -125,9 +120,9 @@ export default function EventsPage() {
         if (debouncedCountry) queryParams.set('country', debouncedCountry)
         if (debouncedCity) queryParams.set('city', debouncedCity)
         if (sortBy) {
-          const [field, order] = sortBy.split('-');
-          queryParams.set('sortField', field);
-          queryParams.set('sortOrder', order);
+          const [field, order] = sortBy.split('-')
+          queryParams.set('sortField', field)
+          queryParams.set('sortOrder', order)
         }
         if (selectedTags.length > 0) {
           queryParams.set('tags', selectedTags.join(','))
@@ -174,7 +169,7 @@ export default function EventsPage() {
 
   return (
     <main className="container mx-auto px-4 py-10 max-w-7xl">
-      <div className="mb-8">
+      <div className="mb-5">
         <h1 className="text-4xl font-bold text-center mb-8">Events</h1>
         
         <div className="space-y-4">
@@ -199,90 +194,79 @@ export default function EventsPage() {
           </div>
 
           {showFilters && (
-            <div className="p-6 bg-white rounded-lg shadow-sm space-y-7">
-              <div className='flex items-center gap-2'>
-                <label htmlFor="event-finished" className="flex items-center gap-2 cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    id="event-finished"
-                    checked={showFinishedEvents}
-                    onChange={(e) => setShowFinishedEvents(e.target.checked)}
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                  />
-                  <span>Show finished events</span>
-                </label>
-              </div>
+            <div className="p-6 bg-white rounded-lg shadow-sm">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                {/* Location Column */}
+                <div className="space-y-4">
+                  <h2 className="font-medium text-gray-900">Location</h2>
+                  <div className="space-y-3">
+                    <LocationDropdown 
+                      value={country}
+                      onChange={setCountry}
+                      options={countries}
+                      type="country"
+                    />
+                    <LocationDropdown 
+                      value={city}
+                      onChange={setCity}
+                      options={cities}
+                      type="city"
+                    />
+                  </div>
+                </div>
 
-              <div className='space-y-2'>
-                <h2 className='font-medium'>Location:</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <LocationDropdown 
-                    value={country}
-                    onChange={setCountry}
-                    options={countries}
-                    type="country"
-                  />
-                  <LocationDropdown 
-                    value={city}
-                    onChange={setCity}
-                    options={cities}
-                    type="city"
-                  />
-                </div>
-              </div>
-              <div className="flex gap-6">
-                <div className="flex-1">
-                  <h3 className="font-medium mb-2">Sort by:</h3>
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value as SortOption)}
-                    className="w-full p-2 border rounded-lg"
-                  >
-                    <option value="date-asc">Date (Earliest first)</option>
-                    <option value="date-desc">Date (Latest first)</option>
-                    <option value="capacity-asc">Capacity (Low to High)</option>
-                    <option value="capacity-desc">Capacity (High to Low)</option>
-                  </select>
-                </div>
-  
-                <div className="flex-1">
-                  <h3 className="font-medium mb-2">Filter by tags:</h3>
+                {/* Filters Column */}
+                <div className="space-y-4">
+                  <h2 className="font-medium text-gray-900">Filters</h2>
+                  {/* Tags */}
                   <div className="relative" ref={dropdownRef}>
                     <button
                       onClick={() => setIsTagDropdownOpen(!isTagDropdownOpen)}
-                      className="w-full p-2 border rounded-lg text-left flex justify-between items-center"
+                      className="w-full p-2.5 border rounded-lg text-left flex justify-between items-center hover:border-gray-400 transition-colors"
                     >
                       <span className="text-gray-600">
                         {selectedTags.length === 0
                           ? "Select tags..."
                           : `${selectedTags.length} tag(s) selected`}
                       </span>
-                      {isTagDropdownOpen ? <ArrowUpIcon size={20} /> : <ArrowDownIcon size={20} />}
+                      {isTagDropdownOpen ? <ArrowUpIcon size={18} /> : <ArrowDownIcon size={18} />}
                     </button>
-  
+
                     {isTagDropdownOpen && (
                       <div className="absolute z-20 w-full mt-1 py-1 bg-white border rounded-lg shadow-lg max-h-60 overflow-auto">
                         {tags.map(tag => (
                           <label
                             key={tag.name}
-                            className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer"
+                            className="flex items-center px-4 py-2.5 hover:bg-gray-50 cursor-pointer"
                           >
                             <input
                               type="checkbox"
                               checked={selectedTags.includes(tag.name)}
                               onChange={() => handleTagSelect(tag.name)}
-                              className="mr-2"
+                              className="mr-3 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                             />
-                            {tag.name}
+                            <span className="text-gray-700">{tag.name}</span>
                           </label>
                         ))}
                       </div>
                     )}
                   </div>
+
+                  {/* Show Finished Events */}
+                  <label className="flex items-center gap-3 hover:cursor-pointer p-1">
+                    <input 
+                      type="checkbox" 
+                      checked={showFinishedEvents}
+                      onChange={(e) => setShowFinishedEvents(e.target.checked)}
+                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    />
+                    <span className="text-gray-700">Show finished events</span>
+                  </label>
                 </div>
               </div>
-            </div>
+            </div>          
           )}
+          
           {selectedTags.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-2">
               {selectedTags.map(tag => (
@@ -304,11 +288,27 @@ export default function EventsPage() {
         </div>
       </div>
       
-      <div className='flex flex-col gap-2'>
-        {pagination.total > 0 && <p className='text-gray-500'>
-          {pagination.total} {pagination.total === 1 ? "event" : "events"} found 
-        </p>
-        }
+      <div className='flex flex-col gap-4'>
+        <div className='flex justify-between items-center'>
+          <p className='text-gray-500 pt-8'>
+            {pagination.total} {pagination.total === 1 ? "event" : "events"} found 
+          </p>
+          
+          <div className="flex flex-col gap-[2px]">
+            <span className="text-sm text-gray-600">Sort by:</span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as SortOption)}
+              className="p-2 border rounded-lg text-sm bg-white"
+            >
+              <option value="date-asc">Date (Earliest first)</option>
+              <option value="date-desc">Date (Latest first)</option>
+              <option value="capacity-asc">Capacity (Low to High)</option>
+              <option value="capacity-desc">Capacity (High to Low)</option>
+            </select>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {events.map((event) => (
             <EventCard key={event._id} event={event} className='max-h-[15rem]' />
