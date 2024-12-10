@@ -39,7 +39,7 @@ export const TimePicker: React.FC<{
   };
  
   return (
-    <div className="relative flex flex-col justify-end w-[6rem]" ref={dropdownRef}>
+    <div className="relative flex flex-col justify-end w-full" ref={dropdownRef}>
       <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-3">
         Time<span className="text-accent ml-1">*</span>
       </label>

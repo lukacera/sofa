@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, Users, FileEdit, TrendingUp, AlertTriangle, CheckCircle, ChevronRight } from 'lucide-react';
+import { Calendar, Users, FileEdit, TrendingUp, AlertTriangle, CheckCircle } from 'lucide-react';
 import { auth } from '@/auth';
 import { EventCard } from '../HomePageComponents/EventCard';
 import { EventType } from '@/app/types/Event';
