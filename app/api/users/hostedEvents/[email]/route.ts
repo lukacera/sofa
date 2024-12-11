@@ -17,12 +17,11 @@ export async function GET(
         if (!mongoose.models.Event) {
             mongoose.model('Event', EventSchema);
         }
-
-        const user = await User.findOne({
-            email: email
-        }).populate({
+        
+        const user = await User.findOne({ email: email }).populate({
             path: "eventsCreated",
             model: "Event",
+            match: { status: "published" },
             options: { 
                 sort: { createdAt: -1 },
                 strictPopulate: false
