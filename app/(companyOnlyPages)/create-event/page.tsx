@@ -12,8 +12,6 @@ import EnhancedDescriptionInput from '@/app/components/CreateEventComponents/Enc
 import { ErrorDisplay } from '@/app/components/CreateEventComponents/ErrorDisplay';
 import { LocationInput } from '@/app/components/CreateEventComponents/LocationInput';
 
-
-
 export default function CreateEventForm() {
   const {data: session, status} = useSession();
   const router = useRouter();
@@ -119,23 +117,25 @@ export default function CreateEventForm() {
     // Validation checks
     const validationErrors: string[] = [];
   
-    // Required field checks
-    if (!formData.title) validationErrors.push("Event title is required");
-    if (!formData.description || formData.description.length < 100) 
-      validationErrors.push("Description must be at least 100 characters");
-    if (!formData.location.address || !formData.location.city || !formData.location.country) 
-      validationErrors.push("Complete location information is required");
-    if (!formData.tags || formData.tags.length === 0) 
-      validationErrors.push("At least one tag is required");
-    if (!formData.image || formData.image instanceof File && formData.image.size === 0) 
-      validationErrors.push("Event image is required");
-  
-    // If there are validation errors, show them and stop submission
-    if (validationErrors.length > 0) {
-      setError(validationErrors.join('\n'));
-      return;
+    if (status === "published"){
+        // Required field checks
+        if (!formData.title) validationErrors.push("Event title is required");
+        if (!formData.description || formData.description.length < 100) 
+          validationErrors.push("Description must be at least 100 characters");
+        if (!formData.location.address || !formData.location.city || !formData.location.country) 
+          validationErrors.push("Complete location information is required");
+        if (!formData.tags || formData.tags.length === 0) 
+          validationErrors.push("At least one tag is required");
+        if (!formData.image || formData.image instanceof File && formData.image.size === 0) 
+          validationErrors.push("Event image is required");
+        
+        // If there are validation errors, show them and stop submission
+        if (validationErrors.length > 0) {
+          setError(validationErrors.join('\n'));
+          return;
+        }
     }
-  
+    
     // Set loading state based on status
     if (status === 'draft') setIsDrafting(true);
     else setIsCreating(true);
@@ -321,12 +321,31 @@ export default function CreateEventForm() {
               </label>
 
               {formData.location.address && (
-                <div className="mt-4 p-4 bg-gray-50 rounded-lg space-y-2">
-                  <p className="text-sm"><span className="font-medium">Address:</span> {formData.location.address}</p>
-                  <p className="text-sm"><span className="font-medium">City:</span> {formData.location.city}</p>
-                  <p className="text-sm"><span className="font-medium">Country:</span> {formData.location.country}</p>
-                </div>
-              )}
+                  <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                    <div className="flex justify-between items-start mb-3">
+                      <h3 className="font-semibold">Selected Location</h3>
+                      <button
+                        type="button"
+                        onClick={() => setFormData(prev => ({
+                          ...prev,
+                          location: {
+                            city: '',
+                            country: '',
+                            address: ''
+                          }
+                        }))}
+                        className="text-sm text-red-500 hover:text-red-700 transition-colors"
+                      >
+                        Clear location
+                      </button>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-sm"><span className="font-medium">Address:</span> {formData.location.address}</p>
+                      <p className="text-sm"><span className="font-medium">City:</span> {formData.location.city}</p>
+                      <p className="text-sm"><span className="font-medium">Country:</span> {formData.location.country}</p>
+                    </div>
+                  </div>
+                )}
             </div>
           </div>
 
@@ -342,9 +361,9 @@ export default function CreateEventForm() {
             setFormData={setFormData}
           />
           <ErrorDisplay 
-  error={error} 
-  onDismiss={() => setError(null)}
-/>
+            error={error} 
+            onDismiss={() => setError(null)}
+          />
           <SaveButtons 
             isCreating={isCreating}
             isDrafting={isDrafting}

@@ -298,50 +298,52 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
               </label>
               <TagInput setFormData={setFormData} tags={formData.tags || []} />
             </div>
-            {/* Location */}
-{/* Location */}
-<div className="space-y-6">
-  <h2 className="text-xl text-center font-semibold text-black pb-2">
-    Location
-  </h2>
 
-  <div className="space-y-4 relative">
-    <label className="block text-sm font-medium text-gray-700">
-      Search Location<RequiredStar />
-      <LocationInput
-        formData={formData}
-        setFormData={setFormData}
-        inputClasses={inputClasses}
-      />
-    </label>
-    {formData.location.address && (
-      <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-        <div className="flex justify-between items-start mb-3">
-          <h3 className="font-medium text-sm">Selected Location</h3>
-          <button
-            type="button"
-            onClick={() => setFormData(prev => ({
-              ...prev,
-              location: {
-                city: '',
-                country: '',
-                address: ''
-              }
-            }))}
-            className="text-sm text-red-500 hover:text-red-700 transition-colors"
-          >
-            Clear location
-          </button>
-        </div>
-        <div className="space-y-2">
-          <p className="text-sm"><span className="font-medium">Address:</span> {formData.location.address}</p>
-          <p className="text-sm"><span className="font-medium">City:</span> {formData.location.city}</p>
-          <p className="text-sm"><span className="font-medium">Country:</span> {formData.location.country}</p>
-        </div>
-      </div>
-    )}
-  </div>
-</div>            {/* Description */}
+           {/* Location */}
+            <div className="space-y-6">
+              <h2 className="text-xl text-center font-semibold text-black pb-2">
+                Location
+              </h2>
+
+              <div className="space-y-4 relative">
+                <label className="block text-sm font-medium text-gray-700">
+                  Search Location<RequiredStar />
+                  <LocationInput
+                    formData={formData}
+                    setFormData={setFormData}
+                    inputClasses={inputClasses}
+                  />
+                </label>
+                {formData.location.address && (
+                  <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                    <div className="flex justify-between items-start mb-3">
+                      <h3 className="font-semibold">Selected Location</h3>
+                      <button
+                        type="button"
+                        onClick={() => setFormData(prev => ({
+                          ...prev,
+                          location: {
+                            city: '',
+                            country: '',
+                            address: ''
+                          }
+                        }))}
+                        className="text-sm text-red-500 hover:text-red-700 transition-colors"
+                      >
+                        Clear location
+                      </button>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-sm"><span className="font-medium">Address:</span> {formData.location.address}</p>
+                      <p className="text-sm"><span className="font-medium">City:</span> {formData.location.city}</p>
+                      <p className="text-sm"><span className="font-medium">Country:</span> {formData.location.country}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>            
+            
+            {/* Description */}
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Description<RequiredStar />

@@ -54,7 +54,7 @@ const LocationInput = ({ setFormData, inputClasses }: {
       type="text"
       value={display}
       onChange={(e) => setDisplay(e.target.value)}
-      placeholder="Search for a location..."
+      placeholder="Search for a street..."
       className={`${inputClasses} w-full`}
     />
   );
