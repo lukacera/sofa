@@ -7,7 +7,6 @@ import { EventFormData } from '@/app/types/EventForm';
 import { CldUploadButton, CloudinaryUploadWidgetInfo, CloudinaryUploadWidgetResults  } from 'next-cloudinary';
 import Image from 'next/image';
 import { LocationInput } from '../CreateEventComponents/LocationInput';
-import { UserType } from '@/app/types/User';
 import { APIProvider } from '@vis.gl/react-google-maps';
 
 interface EditEventModalProps {
@@ -134,6 +133,41 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
     setError(null);
   
     try {
+      // Validation for published events
+      if (event.status === 'published') {
+        // Check required fields
+        if (!formData.title?.trim()) {
+          throw new Error('Event title is required');
+        }
+  
+        if (!formData.description?.trim() || formData.description.length < 100) {
+          throw new Error('Description must be at least 100 characters');
+        }
+  
+        if (!formData.location.address || !formData.location.city || !formData.location.country) {
+          throw new Error('Complete location information is required');
+        }
+  
+        if (!formData.tags?.length) {
+          throw new Error('At least one tag is required');
+        }
+  
+        if (!formData.capacity || formData.capacity < 1) {
+          throw new Error('Valid capacity is required');
+        }
+  
+        if (!formData.date) {
+          throw new Error('Event date is required');
+        }
+  
+        // Validate date is in the future
+        const eventDate = new Date(dateValue + 'T' + timeValue);
+        const now = new Date();
+        if (eventDate < now) {
+          throw new Error('Event date must be in the future');
+        }
+      }
+  
       const dataToUpdate = {
         ...formData,
         date: new Date(dateValue + 'T' + timeValue).toISOString(),
@@ -158,7 +192,7 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
       setIsUpdating(false);
     }
   };
-
+  
   if (!isOpen) return null;
 
   const RequiredStar = () => (
