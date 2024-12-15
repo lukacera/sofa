@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import { notFound, useParams } from 'next/navigation';
-import { Clock, Heart, MapPin, TagIcon, Users, Pencil } from 'lucide-react';
+import { Clock, MapPin, TagIcon, Users, Pencil } from 'lucide-react';
 import { CldImage } from 'next-cloudinary';
 import { AIAnalysis } from '@/app/components/SingleEventComponents/AiAnalysis';
 import ConfirmationModal from '@/app/components/SingleEventComponents/EventRegistrationConfirmation';
@@ -20,7 +20,6 @@ export default function EventPage() {
  
  const [event, setEvent] = useState<EventType | null>(null);
  const [loading, setLoading] = useState(true);
- const [error, setError] = useState<string | null>(null);
  const [showModal, setShowModal] = useState(false);
  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
@@ -32,14 +31,14 @@ export default function EventPage() {
  useEffect(() => {
    async function fetchEvent() {
      try {
-       const response = await fetch(`${baseURL}/events/${params.id}`);
-       const data = await response.json();
-       if (!response.ok) throw new Error('Failed to fetch event');
-       setEvent(data);
+        const response = await fetch(`${baseURL}/events/${params.id}`);
+        const data = await response.json();
+        if (!response.ok) throw new Error('Failed to fetch event');
+        setEvent(data);
      } catch (err) {
-       setError(err instanceof Error ? err.message : 'Error fetching event');
+        console.error(err);
      } finally {
-       setLoading(false);
+        setLoading(false);
      }
    }
 

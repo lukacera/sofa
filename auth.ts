@@ -49,8 +49,14 @@ const authConfig: NextAuthConfig = {
         }
 
         try {
-          await connectToDB();
-          const user = await User.findOne({ email: credentials.email });
+          const response = await fetch(
+            `${process.env.NEXTAUTH_URL}/api/users/${credentials.email}`
+          );
+
+          if (!response.ok) {
+            return null;
+          }
+          const { user } = await response.json();
 
           if (!user) {
             return null;

@@ -1,11 +1,9 @@
 "use client"
 import React, { useEffect, useState } from 'react';
 import { ArrowUpRight, ChevronLeft, ChevronRight, Users } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { TagData, TagsResponse } from '@/app/types/Tags';
 
 const TopicPreview: React.FC<{tag: TagData}> = ({ tag }) => {
-  const router = useRouter();
   
   return ( 
     <button 

@@ -2,7 +2,6 @@ import Event from "@/app/schemas/Event";
 import { connectToDB } from "@/app/utils/connectWithDB";
 import { NextRequest, NextResponse } from "next/server";
 import { EventType } from '@/app/types/Event';
-import OpenAI from "openai"
 import User from "@/app/schemas/User";
 import { generateEventAnalysis } from "@/app/utils/generateEventAnalysis";
 
@@ -76,11 +75,11 @@ function validateEvent(event: EventType) {
     };
 }
 
-function removeNullFields<T>(data: T): Partial<T> {
+function removeNullFields<T extends Record<string, unknown>>(data: T) {
     return Object.fromEntries(
-        Object.entries(data).filter(([_, value]) => value !== null)
-    ) as Partial<T>;
-}
+        Object.entries(data).filter(([value]) => value !== null)
+    );
+ }
 
 export const POST = async (request: NextRequest) => {
     try {

@@ -6,8 +6,8 @@ import { APIProvider, useMapsLibrary } from "@vis.gl/react-google-maps";
 import { EventFormData } from "@/app/types/EventForm";
 
 const LocationInput = ({ setFormData, inputClasses }: {
-  formData: EventFormData;
-  setFormData: React.Dispatch<React.SetStateAction<EventFormData>>;
+  formData: Partial<EventFormData>;
+  setFormData: React.Dispatch<React.SetStateAction<Partial<EventFormData>>>;
   inputClasses: string;
  }) => {
   const places = useMapsLibrary('places');

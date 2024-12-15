@@ -2,8 +2,7 @@ import { EventFormData } from '@/app/types/EventForm';
 import { useMapsLibrary } from '@vis.gl/react-google-maps';
 import React, { useEffect, useRef, useState } from 'react'
 
-export // Location input component for Google Places Autocomplete
-const LocationInput = ({ setFormData, inputClasses }: {
+export const LocationInput = ({ setFormData, inputClasses }: {
   formData: EventFormData;
   setFormData: React.Dispatch<React.SetStateAction<EventFormData>>;
   inputClasses: string;
