@@ -1,52 +1,101 @@
+import React, { useState, useRef, useEffect } from 'react';
+import { X } from 'lucide-react';
 import { timezoneAbbreviations } from '@/app/lib/timezones';
 import { EventFormData } from '@/app/types/EventForm';
 import { toZonedTime, fromZonedTime } from 'date-fns-tz';
-import { useEffect, useState } from 'react';
-export function TimezoneInput({
-  formData,
-  setFormData,
-  inputClasses,
-}: {
+
+export const TimezoneInput: React.FC<{
   formData: EventFormData;
   setFormData: React.Dispatch<React.SetStateAction<EventFormData>>;
-  inputClasses: string;
-}) {
-  const [selectedTimezone, setSelectedTimezone] = useState('Europe/Berlin'); // Default to CET
+}> = ({ formData, setFormData }) => {
+  // State for managing the dropdown
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedTimezone, setSelectedTimezone] = useState('Europe/Berlin');
+  const [searchQuery, setSearchQuery] = useState('');
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Handle clicks outside the dropdown to close it
   useEffect(() => {
-    // Ensure all dates are converted to the selected timezone and then UTC
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Update dates when timezone changes
+  useEffect(() => {
     if (formData.date) {
-      const zonedTime = toZonedTime(new Date(formData.date), selectedTimezone); // Convert to the selected timezone
-      const utcTime = fromZonedTime(zonedTime, selectedTimezone); // Convert to UTC time
+      const zonedTime = toZonedTime(new Date(formData.date), selectedTimezone);
+      const utcTime = fromZonedTime(zonedTime, selectedTimezone);
 
       setFormData((prev) => ({
         ...prev,
-        date: utcTime.toISOString(), // Store in UTC
+        date: utcTime.toISOString(),
       }));
     }
   }, [formData.date, selectedTimezone, setFormData]);
 
-  const handleTimezoneChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedTimezone(e.target.value);
+  // Filter timezones based on search query
+  const filteredTimezones = Object.entries(timezoneAbbreviations).filter(([key, label]) =>
+    (label as string).toLowerCase().includes(searchQuery.toLowerCase()) ||
+    key.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleTimezoneSelect = (timezone: string) => {
+    setSelectedTimezone(timezone);
+    setIsOpen(false);
   };
 
   return (
-    <div>
-      <label htmlFor="timezone" className="block text-sm font-medium text-gray-700">
+    <div className="relative flex flex-col justify-end w-full" ref={dropdownRef}>
+      <label htmlFor="timezone" className="block text-sm font-medium text-gray-700 mb-3">
         Timezone<span className="text-accent ml-1">*</span>
       </label>
-      <select
-        id="timezone"
-        value={selectedTimezone}
-        onChange={handleTimezoneChange}
-        className={`${inputClasses} w-full`}
+      
+      <div 
+        className="px-4 py-2 bg-white rounded-t-lg border cursor-pointer flex justify-between items-center w-full"
+        onClick={() => setIsOpen(!isOpen)}
       >
-        {Object.entries(timezoneAbbreviations).map(([key, label]) => (
-          <option key={key} value={key}>
-            {label as string}
-          </option>
-        ))}
-      </select>
+        <span>{timezoneAbbreviations[selectedTimezone]}</span>
+        {isOpen && <X className="w-4 h-4 text-gray-500" onClick={(e) => {
+          e.stopPropagation();
+          setIsOpen(false);
+        }} />}
+      </div>
+      
+      {isOpen && (
+        <div className="absolute top-20 z-50 w-72 max-h-64 overflow-y-auto bg-white border-2 border-black/30 rounded-b-lg shadow-lg">
+          <div className="sticky top-0 bg-white p-2 border-b">
+            <input
+              type="text"
+              placeholder="Search timezone..."
+              className="w-full px-3 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+          
+          {filteredTimezones.map(([key, label]) => (
+            <div
+              key={key}
+              className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
+                selectedTimezone === key ? 'bg-gray-100' : ''
+              }`}
+              onClick={() => handleTimezoneSelect(key)}
+            >
+              <div className="font-medium">{label as string}</div>
+              <div className="text-sm text-gray-500">{key}</div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
-}
+};
+
+export default TimezoneInput;
