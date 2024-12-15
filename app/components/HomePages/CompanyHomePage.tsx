@@ -98,36 +98,36 @@ export default async function CompanyDashboard() {
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <div className="flex items-center justify-between">
+              <div className="flex justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-500">Past Events</p>
                   <p className="text-3xl font-bold text-gray-900 mt-2">{stats.pastEventsCount}</p>
                 </div>
-                <div className="h-12 w-12 bg-blue-50 rounded-full flex items-center justify-center">
+                <div>
                   <Calendar className="h-6 w-6 text-blue-600" />
                 </div>
               </div>
             </div>
 
             <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <div className="flex items-center justify-between">
+              <div className="flex justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-500">Draft Events</p>
                   <p className="text-3xl font-bold text-gray-900 mt-2">{stats.draftEventsCount}</p>
                 </div>
-                <div className="h-12 w-12 bg-gray-100 rounded-full flex items-center justify-center">
+                <div>
                   <FileEdit className="h-6 w-6 text-gray-600" />
                 </div>
               </div>
             </div>
 
             <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <div className="flex items-center justify-between">
+              <div className="flex justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-500">Total Attendees</p>
                   <p className="text-3xl font-bold text-gray-900 mt-2">{totalAttendees}</p>
                 </div>
-                <div className="h-12 w-12 bg-green-50 rounded-full flex items-center justify-center">
+                <div>
                   <Users className="h-6 w-6 text-green-600" />
                 </div>
               </div>
