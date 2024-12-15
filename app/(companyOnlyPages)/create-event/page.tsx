@@ -11,6 +11,7 @@ import { APIProvider } from '@vis.gl/react-google-maps';
 import EnhancedDescriptionInput from '@/app/components/CreateEventComponents/EnchacedDescriptionInput';
 import { ErrorDisplay } from '@/app/components/CreateEventComponents/ErrorDisplay';
 import { LocationInput } from '@/app/components/CreateEventComponents/LocationInput';
+import { TimezoneInput } from '@/app/components/CreateEventComponents/TimezoneInput';
 
 export default function CreateEventForm() {
   const {data: session, status} = useSession();
@@ -189,7 +190,7 @@ export default function CreateEventForm() {
 
   return (
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
-      <div className="w-[60%] mx-auto py-8 px-4 sm:px-6 lg:px-8">
+      <div className="w-[70%] mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-black">Create New Event</h1>
           <p className="mt-2 text-sm text-gray-600">
@@ -296,6 +297,7 @@ export default function CreateEventForm() {
                 />
               </div>
             </div>
+            <TimezoneInput formData={formData} setFormData={setFormData} inputClasses={inputClasses} />
           </div>
 
           <div className='flex flex-col gap-4'>
