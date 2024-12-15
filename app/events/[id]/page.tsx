@@ -59,6 +59,8 @@ export default function EventPage() {
    notFound();
  }
 
+ console.log("event date is", event.date);
+ console.log("event id is", event._id);
  return (
    <main className="w-[75%] mx-auto px-4 sm:px-6 lg:px-8 mt-10">
      <section>
@@ -109,14 +111,14 @@ export default function EventPage() {
                 <Clock size={18} className="text-gray-500" />
                 <div>
                   <p className="text-xs text-gray-500">Date</p>
-                  <time className="font-medium text-gray-900 text-sm">
+                  <span className="font-medium text-gray-900 text-sm">
                     {new Date(event.date).toLocaleDateString('en-US', {
                       weekday: 'long',
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric',
                     })}
-                  </time>
+                  </span>
                 </div>
               </div>
 

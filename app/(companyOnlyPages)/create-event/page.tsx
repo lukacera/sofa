@@ -12,6 +12,7 @@ import EnhancedDescriptionInput from '@/app/components/CreateEventComponents/Enc
 import { ErrorDisplay } from '@/app/components/CreateEventComponents/ErrorDisplay';
 import { LocationInput } from '@/app/components/CreateEventComponents/LocationInput';
 import { TimezoneInput } from '@/app/components/CreateEventComponents/TimezoneInput';
+import { toZonedTime } from 'date-fns-tz';
 
 export default function CreateEventForm() {
   const {data: session, status} = useSession();
@@ -47,6 +48,7 @@ export default function CreateEventForm() {
   const [isCreating, setIsCreating] = useState(false);
   const [isDrafting, setIsDrafting] = useState(false);
 
+  const [selectedTimezone, setSelectedTimezone] = useState('Europe/Berlin');
   // Separate state for date and time inputs
   const [dateValue, setDateValue] = useState(new Date().toISOString().split('T')[0]);
   const [timeValue, setTimeValue] = useState('13:00');
@@ -144,14 +146,23 @@ export default function CreateEventForm() {
     setError(null);
   
     try {
+      const localDate = new Date(formData.date);
+      const utcTime = toZonedTime(localDate, selectedTimezone);
+  
+      console.log("selected tiemezone is" + selectedTimezone);
+      console.log("UTC time is" + utcTime.toISOString());
+      // Create a new form data object with the UTC time
       const formDataToSend = new FormData();
       formDataToSend.append('image', formData.image as Blob);
       
       const restOfData = {
         ...formData,
         status: status,
-        image: undefined
+        image: undefined,
+        date: utcTime.toISOString()
       };
+
+      console.log(restOfData);
       formDataToSend.append('data', JSON.stringify(restOfData));
   
       const response = await fetch('/api/events', {
@@ -297,7 +308,9 @@ export default function CreateEventForm() {
                 />
               </div>
             </div>
-            <TimezoneInput formData={formData} setFormData={setFormData} inputClasses={inputClasses} />
+            <TimezoneInput 
+            selectedTimezone={selectedTimezone} setSelectedTimezone={setSelectedTimezone}
+            formData={formData} setFormData={setFormData} />
           </div>
 
           <div className='flex flex-col gap-4'>

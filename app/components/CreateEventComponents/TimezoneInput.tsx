@@ -2,15 +2,16 @@ import React, { useState, useRef, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { timezoneAbbreviations } from '@/app/lib/timezones';
 import { EventFormData } from '@/app/types/EventForm';
-import { toZonedTime, fromZonedTime } from 'date-fns-tz';
 
 export const TimezoneInput: React.FC<{
   formData: EventFormData;
   setFormData: React.Dispatch<React.SetStateAction<EventFormData>>;
-}> = ({ formData, setFormData }) => {
+  selectedTimezone: string;
+  setSelectedTimezone: React.Dispatch<React.SetStateAction<string>>;
+}> = ({ setFormData, selectedTimezone, setSelectedTimezone }) => {
+  
   // State for managing the dropdown
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedTimezone, setSelectedTimezone] = useState('Europe/Berlin');
   const [searchQuery, setSearchQuery] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -26,18 +27,10 @@ export const TimezoneInput: React.FC<{
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Update dates when timezone changes
+  // This one is actually unnecessary since setFormData is stable and won't change
   useEffect(() => {
-    if (formData.date) {
-      const zonedTime = toZonedTime(new Date(formData.date), selectedTimezone);
-      const utcTime = fromZonedTime(zonedTime, selectedTimezone);
-
-      setFormData((prev) => ({
-        ...prev,
-        date: utcTime.toISOString(),
-      }));
-    }
-  }, [formData.date, selectedTimezone, setFormData]);
+    console.log('Form data setter changed');
+  }, [setFormData]);
 
   // Filter timezones based on search query
   const filteredTimezones = Object.entries(timezoneAbbreviations).filter(([key, label]) =>
