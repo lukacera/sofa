@@ -35,7 +35,6 @@ export const TimezoneInput: React.FC<{
     setIsOpen(false);
   };
 
-  console.log(selectedTimezone)
   return (
     <div className="relative flex flex-col justify-end w-full" ref={dropdownRef}>
       <label htmlFor="timezone" className="block text-sm font-medium text-gray-700 mb-3">

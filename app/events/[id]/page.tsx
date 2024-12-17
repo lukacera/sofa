@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import { notFound, useParams } from 'next/navigation';
-import { Clock, MapPin, TagIcon, Users, Pencil } from 'lucide-react';
+import { Clock, MapPin, TagIcon, Users, Pencil, Calendar } from 'lucide-react';
 import { CldImage } from 'next-cloudinary';
 import { AIAnalysis } from '@/app/components/SingleEventComponents/AiAnalysis';
 import ConfirmationModal from '@/app/components/SingleEventComponents/EventRegistrationConfirmation';
@@ -59,8 +59,6 @@ export default function EventPage() {
    notFound();
  }
 
- console.log("event date is", event.date);
- console.log("event id is", event._id);
  return (
    <main className="w-[75%] mx-auto px-4 sm:px-6 lg:px-8 mt-10">
      <section>
@@ -108,7 +106,7 @@ export default function EventPage() {
             {/* Date and Location */}
             <div>
               <div className="flex items-center gap-2 p-2">
-                <Clock size={18} className="text-gray-500" />
+                <Calendar size={18} className="text-gray-500" />
                 <div>
                   <p className="text-xs text-gray-500">Date</p>
                   <span className="font-medium text-gray-900 text-sm">
@@ -127,13 +125,14 @@ export default function EventPage() {
                 <div>
                   <p className="text-xs text-gray-500">Time</p>
                   <time className="font-medium text-gray-900 text-sm">
-                    {new Date(event.date).toLocaleTimeString('en-US', {
-                      hour: 'numeric',
-                      minute: 'numeric',
-                      hour12: false,
-                      timeZoneName: 'longGeneric'
-                    })}
-                  </time>
+                  {new Date(event.date).toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false,
+                    timeZone: event.timezone || 'UTC',
+                    timeZoneName: 'long'
+                  })}
+                  </time>                
                 </div>
               </div>
               

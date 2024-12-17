@@ -95,7 +95,6 @@ export const POST = async (request: NextRequest) => {
         // Remove null fields from the event data
         eventData = removeNullFields(eventData);
 
-        console.log(eventData)
         // Validate the event data
         const { isValid, errors } = validateEvent(eventData as EventType);
 

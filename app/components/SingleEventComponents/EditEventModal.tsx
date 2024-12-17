@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { X, AlertCircle, Loader2 } from 'lucide-react';
+import { X, AlertCircle, Loader2, ImagePlus } from 'lucide-react';
 import { TimePicker } from '@/app/components/CreateEventComponents/TimePicker';
 import { TagInput } from '@/app/components/CreateEventComponents/TagsInput';
 import { EventType } from '@/app/types/Event';
@@ -416,19 +416,33 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
               <CldUploadButton
                 uploadPreset="sofa ai"
                 onSuccess={handleImageUpload}
-                className="w-full p-3 border-2 border-dashed rounded-lg text-center hover:bg-gray-50 transition-colors"
+                className="w-full p-4 border-2 border-dashed rounded-lg 
+                hover:border-secondary hover:bg-secondary/5 transition-all duration-300"
               >
-                <div className="flex flex-col items-center gap-2">
-                  <Image
-                    src={formData.imagePreview ?? ""}
-                    alt="Event preview"
-                    height={128}
-                    width={128}
-                    className="object-cover rounded-lg mb-2"
-                  />
-                  <span className="text-sm text-gray-600">
-                    Click to upload new image
-                  </span>
+                <div className="flex flex-col items-center gap-3">
+                  {formData.imagePreview ? (
+                    <div className="relative w-full aspect-video max-w-lg mx-auto overflow-hidden rounded-lg shadow-md">
+                      <Image
+                        src={formData.imagePreview}
+                        alt="Event preview"
+                        fill
+                        className="object-cover transition-transform duration-300 hover:scale-105"
+                        priority
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center gap-2 py-8">
+                      <div className="p-4 bg-secondary/10 rounded-full">
+                        <ImagePlus size={24} className="text-secondary" />
+                      </div>
+                      <span className="text-sm font-medium text-gray-700">
+                        Click to upload event image
+                      </span>
+                      <span className="text-xs text-gray-500">
+                        Recommended size: 1920x1080px
+                      </span>
+                    </div>
+                  )}
                 </div>
               </CldUploadButton>
             </div>

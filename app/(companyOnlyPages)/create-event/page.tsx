@@ -42,13 +42,13 @@ export default function CreateEventForm() {
     organizer: '',
     status: 'published',
     tags: [],
-    imagePreview: null
+    imagePreview: null,
+    timezone: 'Europe/Berlin'
   });
 
   const [isCreating, setIsCreating] = useState(false);
   const [isDrafting, setIsDrafting] = useState(false);
 
-  const [selectedTimezone, setSelectedTimezone] = useState('Europe/Berlin');
   // Separate state for date and time inputs
   const [dateValue, setDateValue] = useState(new Date().toISOString().split('T')[0]);
   const [timeValue, setTimeValue] = useState('13:00');
@@ -147,10 +147,8 @@ export default function CreateEventForm() {
   
     try {
       const localDate = new Date(formData.date);
-      const utcTime = toZonedTime(localDate, selectedTimezone);
+      const utcTime = toZonedTime(localDate, formData.timezone);
   
-      console.log("selected tiemezone is" + selectedTimezone);
-      console.log("UTC time is" + utcTime.toISOString());
       // Create a new form data object with the UTC time
       const formDataToSend = new FormData();
       formDataToSend.append('image', formData.image as Blob);
@@ -162,7 +160,6 @@ export default function CreateEventForm() {
         date: utcTime.toISOString()
       };
 
-      console.log(restOfData);
       formDataToSend.append('data', JSON.stringify(restOfData));
   
       const response = await fetch('/api/events', {
@@ -308,9 +305,9 @@ export default function CreateEventForm() {
                 />
               </div>
             </div>
-            <TimezoneInput 
-            selectedTimezone={selectedTimezone} setSelectedTimezone={setSelectedTimezone}
-            formData={formData} setFormData={setFormData} />
+            <TimezoneInput selectedTimezone={formData.timezone} 
+              setSelectedTimezone={(timezone) => setFormData({ ...formData, timezone })}
+            />
           </div>
 
           <div className='flex flex-col gap-4'>
