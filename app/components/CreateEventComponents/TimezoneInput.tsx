@@ -1,14 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { timezoneAbbreviations } from '@/app/lib/timezones';
-import { EventFormData } from '@/app/types/EventForm';
 
 export const TimezoneInput: React.FC<{
-  formData: EventFormData;
-  setFormData: React.Dispatch<React.SetStateAction<EventFormData>>;
   selectedTimezone: string;
-  setSelectedTimezone: React.Dispatch<React.SetStateAction<string>>;
-}> = ({ setFormData, selectedTimezone, setSelectedTimezone }) => {
+  setSelectedTimezone: (prevState: string) => string;
+}> = ({ selectedTimezone, setSelectedTimezone }) => {
   
   // State for managing the dropdown
   const [isOpen, setIsOpen] = useState(false);
@@ -26,11 +23,6 @@ export const TimezoneInput: React.FC<{
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
-  // This one is actually unnecessary since setFormData is stable and won't change
-  useEffect(() => {
-    console.log('Form data setter changed');
-  }, [setFormData]);
 
   // Filter timezones based on search query
   const filteredTimezones = Object.entries(timezoneAbbreviations).filter(([key, label]) =>
