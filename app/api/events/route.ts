@@ -263,7 +263,6 @@ export const GET = async (request: NextRequest): Promise<NextResponse<EventsResp
         .skip(skip)
         .limit(limit);
         
-        
         return NextResponse.json({
             events,
             pagination: {

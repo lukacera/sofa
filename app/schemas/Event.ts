@@ -72,6 +72,10 @@ export const EventSchema = new Schema<EventType>({
       ref: 'User'
     }],
     default: []
+  },
+  timezone: {
+    type: String,
+    default: 'Europe/Berlin'
   }
 }, {
   timestamps: true 

@@ -4,10 +4,12 @@ import { TimePicker } from '@/app/components/CreateEventComponents/TimePicker';
 import { TagInput } from '@/app/components/CreateEventComponents/TagsInput';
 import { EventType } from '@/app/types/Event';
 import { EventFormData } from '@/app/types/EventForm';
-import { CldUploadButton, CloudinaryUploadWidgetInfo, CloudinaryUploadWidgetResults  } from 'next-cloudinary';
+import { CldUploadButton, CloudinaryUploadWidgetInfo, CloudinaryUploadWidgetResults } from 'next-cloudinary';
 import Image from 'next/image';
 import { LocationInput } from '../CreateEventComponents/LocationInput';
 import { APIProvider } from '@vis.gl/react-google-maps';
+import { TimezoneInput } from '@/app/components/CreateEventComponents/TimezoneInput';
+import { toZonedTime } from 'date-fns-tz';
 
 interface EditEventModalProps {
   isOpen: boolean;
@@ -31,9 +33,10 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
     status: event.status,
     imagePreview: event.image,
     image: new File([], ''),
-    organizer: event.organizer._id ?? ''
+    organizer: event.organizer._id ?? '',
+    timezone: event.timezone
   });
-  console.log(formData)
+  
   const handleImageUpload = async (results: CloudinaryUploadWidgetResults) => {
     try {
       if (results.info instanceof Object) {
@@ -94,7 +97,6 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
   }, [formData.date]);
 
   const handlePublish = async (e: React.FormEvent<HTMLFormElement>) => {
-   
     try {
       e.preventDefault();
       setIsPublishing(true);
@@ -103,7 +105,10 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
         setError("Please add at least one tag");
         return;
       }
-      // Simple PATCH request to update status
+
+      const localDate = new Date(dateValue + 'T' + timeValue);
+      const utcTime = toZonedTime(localDate, formData.timezone!);
+
       const response = await fetch(`/api/events/${event._id}`, {
         method: 'PATCH',
         headers: {
@@ -111,8 +116,9 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
         },
         body: JSON.stringify({ 
           ...formData,
-          status: 'published'
-         })
+          status: 'published',
+          date: utcTime.toISOString()
+        })
       });
 
       if (!response.ok) throw new Error('Failed to publish event');
@@ -126,16 +132,13 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
     }
   };
 
-  // Handle updating event details
   const handleUpdate = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setIsUpdating(true);
     setError(null);
   
     try {
-      // Validation for published events
       if (event.status === 'published') {
-        // Check required fields
         if (!formData.title?.trim()) {
           throw new Error('Event title is required');
         }
@@ -160,17 +163,19 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
           throw new Error('Event date is required');
         }
   
-        // Validate date is in the future
         const eventDate = new Date(dateValue + 'T' + timeValue);
         const now = new Date();
         if (eventDate < now) {
           throw new Error('Event date must be in the future');
         }
       }
+
+      const localDate = new Date(dateValue + 'T' + timeValue);
+      const utcTime = toZonedTime(localDate, formData.timezone!);
   
       const dataToUpdate = {
         ...formData,
-        date: new Date(dateValue + 'T' + timeValue).toISOString(),
+        date: utcTime.toISOString(),
         image: formData.imagePreview
       };
   
@@ -221,12 +226,10 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
           </div>
           <form onSubmit={handlePublish}
            className="p-6 space-y-8">
-            {/* Basic Information */}
             <div className="space-y-6">
               <h2 className="text-xl font-semibold text-black text-center">Basic Information</h2>
       
               <div className="space-y-4">
-                {/* Title */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     Event Title<RequiredStar />
@@ -239,7 +242,6 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
                     required
                   />
                 </div>
-                {/* Type, Date, Time */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div>
                     <label htmlFor="type" className="block text-sm font-medium text-gray-700">
@@ -271,7 +273,7 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
                       onChange={(e) => {
                         const value = e.target.value;
                         if (value === '') {
-                          setFormData({ ...formData, capacity: 100 }); // Reset to default
+                          setFormData({ ...formData, capacity: 100 });
                           return;
                         }
       
@@ -325,6 +327,12 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
                 </div>
               </div>
             </div>
+
+            <TimezoneInput 
+              selectedTimezone={formData.timezone!}
+              setSelectedTimezone={(timezone) => setFormData({ ...formData, timezone })}
+            />
+
             {/* Tags */}
             <div className="space-y-4">
               <label className="block text-sm font-medium text-gray-700">

@@ -4,7 +4,7 @@ import { timezoneAbbreviations } from '@/app/lib/timezones';
 
 export const TimezoneInput: React.FC<{
   selectedTimezone: string;
-  setSelectedTimezone: (prevState: string) => string;
+  setSelectedTimezone: (timezone: string) => void;
 }> = ({ selectedTimezone, setSelectedTimezone }) => {
   
   // State for managing the dropdown
@@ -35,6 +35,7 @@ export const TimezoneInput: React.FC<{
     setIsOpen(false);
   };
 
+  console.log(selectedTimezone)
   return (
     <div className="relative flex flex-col justify-end w-full" ref={dropdownRef}>
       <label htmlFor="timezone" className="block text-sm font-medium text-gray-700 mb-3">

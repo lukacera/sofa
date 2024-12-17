@@ -52,6 +52,10 @@ export async function PATCH(
     await connectToDB();
     
     const { _id } = await params;
+// Add this logging
+console.log('Event Schema:', Event.schema.obj);
+// To see paths and options
+console.log('Event Schema Paths:', Event.schema.paths);
 
     const data = await request.json();
 
@@ -77,12 +81,14 @@ export async function PATCH(
       image: data.imagePreview,
       updatedAt: new Date()
     };
-    
+
     // Include AiAnalysisText only if it's not null
     if (AiAnalysisText) {
       updateData.aiAnalysis = AiAnalysisText;
     }
     
+    console.log(updateData);
+
     const updatedEvent = await Event.findByIdAndUpdate(
       _id,
       { $set: updateData },
@@ -91,7 +97,7 @@ export async function PATCH(
         runValidators: true
       }
     ).populate("organizer").populate("attendees");
-    
+
     if (!updatedEvent) {
         return NextResponse.json(
             {

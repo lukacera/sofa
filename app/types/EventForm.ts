@@ -22,4 +22,5 @@ export interface EventFormData {
     status: 'draft' | 'published' | 'cancelled' | 'finished';
     tags: string[];
     imagePreview: string | null | undefined;
+    timezone: string
 }

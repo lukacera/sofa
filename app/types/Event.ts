@@ -20,4 +20,5 @@ export type EventType = {
     createdAt: Date;
     updatedAt: Date;
     attendees: UserType[];
+    timezone: string;
 }
