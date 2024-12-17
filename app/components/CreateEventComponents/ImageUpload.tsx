@@ -51,7 +51,7 @@ export default function ImageUpload({ setFormData, inputClasses }: ImageUploadPr
     <>
       <div className="space-y-4">
         <label className="block text-sm font-medium text-gray-700">
-          Event Image<span className="text-accent ml-1">*</span>
+          Event Image
         </label>
 
         {previewUrl ? (

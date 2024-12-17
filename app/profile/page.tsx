@@ -1,15 +1,38 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Calendar, Settings, Pencil } from 'lucide-react'
 import EditProfile from '../components/MyProfileComponents/EditProfile'
 import { useSession } from 'next-auth/react'
 import { EventList } from '../components/MyProfileComponents/ProfileEventList'
+import { useSearchParams } from 'next/navigation'
 
-type TabType = 'personal' | 'events' | 'security';
+type TabType = 'personal' | 'events' | 'drafts';
 
 export default function Page() {
   const { data: session } = useSession();
+  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<TabType>('personal');
+
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    
+    switch(tabParam) {
+      case 'created-events':
+        setActiveTab('events');
+        break;
+      case 'personal':
+        setActiveTab('personal');
+        break; 
+      case 'drafts':
+        if(session?.user.role === "company") {
+          setActiveTab('drafts');
+        }
+        break;
+      default:
+        setActiveTab('personal');
+    }
+   }, [searchParams, session?.user.role]);
+
   const tabs = [
     {
       id: 'personal',

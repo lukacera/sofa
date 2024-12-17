@@ -129,9 +129,6 @@ export default function CreateEventForm() {
           validationErrors.push("Complete location information is required");
         if (!formData.tags || formData.tags.length === 0) 
           validationErrors.push("At least one tag is required");
-        if (!formData.image || formData.image instanceof File && formData.image.size === 0) 
-          validationErrors.push("Event image is required");
-        
         // If there are validation errors, show them and stop submission
         if (validationErrors.length > 0) {
           setError(validationErrors.join('\n'));
@@ -172,8 +169,9 @@ export default function CreateEventForm() {
         throw new Error(errorData.message || 'Failed to create event');
       }
   
+      console.log("pushing to profile");
       // Only redirect on successful submission
-      router.push('/profile');
+      router.push('/profile?tab=created-events');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create event');
       console.error('Failed to create event:', err);
@@ -198,7 +196,7 @@ export default function CreateEventForm() {
 
   return (
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
-      <div className="w-[70%] mx-auto py-8 px-4 sm:px-6 lg:px-8">
+      <div className="w-[90%] md:w-[75%] mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-black">Create New Event</h1>
           <p className="mt-2 text-sm text-gray-600">
