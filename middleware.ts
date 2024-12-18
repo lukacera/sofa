@@ -6,9 +6,14 @@ export default auth(async (req) => {
     const isPublicPath = publicPaths.some(path => 
         req.nextUrl.pathname.startsWith(path)
     )
-    
+    const isApiPath = req.nextUrl.pathname.startsWith('/api');
+    console.log("d")
     const session = req.auth
-    
+    console.log('Session:', session)
+    // API Protection
+    if (isApiPath && !session) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
     if (req.nextUrl.pathname === '/login' && session) {
         return NextResponse.redirect(new URL('/', req.url))
     }
@@ -43,5 +48,5 @@ export default auth(async (req) => {
 })
 
 export const config = {
-   matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']
-}
+    matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'], // Includes `/api`
+};
