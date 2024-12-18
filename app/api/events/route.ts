@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { EventType } from '@/app/types/Event';
 import User from "@/app/schemas/User";
 import { generateEventAnalysis } from "@/app/utils/generateEventAnalysis";
+import { auth } from '../../../auth'
 
 function validateEvent(event: EventType) {
     const errors = [];
@@ -81,10 +82,16 @@ function removeNullFields<T extends Record<string, unknown>>(data: T) {
     );
  }
 
-export const POST = async (request: NextRequest) => {
+export const POST = auth(async (request) => {
     try {
+        const session = request.auth
+        if (!session) {
+            return NextResponse.json(
+                { message: "Unauthorized" },
+                { status: 401 }
+            );
+        }
         await connectToDB();
-
         // Get FormData from the request
         const formData = await request.formData();
         
@@ -165,7 +172,7 @@ export const POST = async (request: NextRequest) => {
             { status: 500 }
         );
     }
-};
+});
 
 interface IEvent extends Document {
     description: string;
