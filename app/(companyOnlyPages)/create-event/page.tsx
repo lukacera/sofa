@@ -168,10 +168,9 @@ export default function CreateEventForm() {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Failed to create event');
       }
-  
-      console.log("pushing to profile");
+
       // Only redirect on successful submission
-      router.push('/profile?tab=created-events');
+      return isCreating ? router.push('/profile?tab=created-events') : router.push('/profile?tab=drafts');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create event');
       console.error('Failed to create event:', err);
