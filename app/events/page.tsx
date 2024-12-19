@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, Suspense } from 'react'
 import { Search, SlidersHorizontal, X } from 'lucide-react'
 import { EventCard } from '../components/HomePageComponents/EventCard'
 import { EventType } from '../types/Event'
@@ -18,7 +18,7 @@ interface PaginationData {
   pages: number
 }
 
-export default function EventsPage() {
+function EventsPageContent() {
   const [events, setEvents] = useState<EventType[]>([])
   const [loading, setLoading] = useState(true)
   const [pagination, setPagination] = useState<PaginationData>({
@@ -191,7 +191,7 @@ export default function EventsPage() {
     <main className="container mx-auto px-4 py-10 max-w-7xl">
       <div className="mb-5">
         <h1 className="text-4xl font-bold text-center mb-8">Events</h1>
-        
+    
         <div className="space-y-4">
           {/* Search and filters section */}
           <div className="flex gap-4">
@@ -213,7 +213,6 @@ export default function EventsPage() {
               Filters
             </button>
           </div>
-
           {/* Advanced filters section */}
           {showFilters && (
             <div className="p-6 bg-white rounded-lg shadow-sm">
@@ -222,13 +221,13 @@ export default function EventsPage() {
                 <div className="space-y-4">
                   <h2 className="font-medium text-gray-900">Location</h2>
                   <div className="space-y-3">
-                    <LocationDropdown 
+                    <LocationDropdown
                       value={country}
                       onChange={setCountry}
                       options={countries}
                       type="country"
                     />
-                    <LocationDropdown 
+                    <LocationDropdown
                       value={city}
                       onChange={setCity}
                       options={cities}
@@ -236,7 +235,6 @@ export default function EventsPage() {
                     />
                   </div>
                 </div>
-
                 {/* Filters Column */}
                 <div className="space-y-4">
                   <h2 className="font-medium text-gray-900">Filters</h2>
@@ -254,7 +252,6 @@ export default function EventsPage() {
                       </span>
                       {isTagDropdownOpen ? <ArrowUpIcon size={18} /> : <ArrowDownIcon size={18} />}
                     </button>
-
                     {isTagDropdownOpen && (
                       <div className="absolute z-20 w-full mt-1 py-1 bg-white border rounded-lg shadow-lg max-h-60 overflow-auto">
                         {tags.map(tag => (
@@ -274,11 +271,10 @@ export default function EventsPage() {
                       </div>
                     )}
                   </div>
-
                   {/* Show finished events toggle */}
                   <label className="flex items-center gap-3 hover:cursor-pointer p-1">
-                    <input 
-                      type="checkbox" 
+                    <input
+                      type="checkbox"
                       checked={showFinishedEvents}
                       onChange={(e) => setShowFinishedEvents(e.target.checked)}
                       className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
@@ -287,9 +283,9 @@ export default function EventsPage() {
                   </label>
                 </div>
               </div>
-            </div>          
+            </div>
           )}
-          
+    
           {/* Selected tags display */}
           {selectedTags.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-2">
@@ -311,14 +307,14 @@ export default function EventsPage() {
           )}
         </div>
       </div>
-      
+    
       {/* Results section */}
       <div className='flex flex-col gap-4'>
         <div className='flex justify-between items-center'>
           <p className='text-gray-500 pt-8'>
-            {pagination.total} {pagination.total === 1 ? "event" : "events"} found 
+            {pagination.total} {pagination.total === 1 ? "event" : "events"} found
           </p>
-          
+    
           {/* Sort dropdown */}
           <div className="flex flex-col gap-[2px]">
             <span className="text-sm text-gray-600">Sort by:</span>
@@ -334,7 +330,6 @@ export default function EventsPage() {
             </select>
           </div>
         </div>
-
         {/* Events grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {events.map((event) => (
@@ -342,7 +337,6 @@ export default function EventsPage() {
           ))}
         </div>
       </div>
-  
       {/* Pagination */}
       {pagination.pages > 1 && (
         <div className="flex justify-center gap-2 mt-8">
@@ -353,7 +347,7 @@ export default function EventsPage() {
           >
             Previous
           </button>
-          
+    
           {Array.from({ length: pagination.pages }, (_, i) => i + 1).map((pageNum) => (
             <button
               key={pageNum}
@@ -367,7 +361,7 @@ export default function EventsPage() {
               {pageNum}
             </button>
           ))}
-          
+    
           <button
             onClick={() => handlePageChange(pagination.page + 1)}
             disabled={pagination.page === pagination.pages}
@@ -377,7 +371,6 @@ export default function EventsPage() {
           </button>
         </div>
       )}
-  
       {/* No results message */}
       {events.length === 0 && !loading && (
         <div className="text-center py-12">
@@ -386,4 +379,12 @@ export default function EventsPage() {
       )}
     </main>
   )
+}
+
+export default function EventsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div></div>}>
+      <EventsPageContent />
+    </Suspense>
+  );
 }

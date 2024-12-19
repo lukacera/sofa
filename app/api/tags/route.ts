@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectToDB } from "@/app/utils/connectWithDB";
 import Event from "@/app/schemas/Event";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   try {
     await connectToDB();

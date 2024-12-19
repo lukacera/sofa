@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Suspense } from 'react'
 import { Calendar, Settings, Pencil } from 'lucide-react'
 import EditProfile from '../components/MyProfileComponents/EditProfile'
 import { useSession } from 'next-auth/react'
@@ -8,7 +8,7 @@ import { useSearchParams } from 'next/navigation'
 
 type TabType = 'personal' | 'events' | 'drafts';
 
-export default function Page() {
+function ProfilePageContent() {
   const { data: session } = useSession();
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<TabType>('personal');
@@ -85,4 +85,12 @@ export default function Page() {
       </div>
     </main>
   )
+}
+
+export default function ProfilePage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div></div>}>
+      <ProfilePageContent />
+    </Suspense>
+  );
 }

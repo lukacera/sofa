@@ -58,12 +58,12 @@ const LocationInput = ({ setFormData, inputClasses }: {
   );
  };
 function CitySearchInner() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<Partial<EventFormData>>({
     location: { city: "", country: "", address: "" },
   });
 
   const handleSubmit = () => {
-    if (formData.location.city) {
+    if (formData.location?.city) {
       window.location.href = `/events?city=${encodeURIComponent(formData.location.city)}`;      
     }
   };
@@ -83,7 +83,7 @@ function CitySearchInner() {
             setFormData={setFormData}
             inputClasses="border-2 border-gray-200 rounded-xl px-5 py-3 text-lg placeholder:text-gray-400 hover:border-gray-300 focus:outline-none focus:border-secondary focus:ring-2 focus:ring-secondary/20"
           />
-          {formData.location.city && (
+          {formData.location?.city && (
             <button
               onClick={handleSubmit}
               className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-secondary rounded-lg text-white hover:bg-secondary/90 transition-all duration-200"
