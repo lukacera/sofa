@@ -5,7 +5,6 @@ import { Clock, MapPin, TagIcon, Users, Pencil, Calendar } from 'lucide-react';
 import { CldImage } from 'next-cloudinary';
 import { AIAnalysis } from '@/app/components/SingleEventComponents/AiAnalysis';
 import ConfirmationModal from '@/app/components/SingleEventComponents/EventRegistrationConfirmation';
-import { baseURL } from '@/app/constants/apiURL';
 import { EventType } from '@/app/types/Event';
 import { useSession } from 'next-auth/react';
 import AnimatedEditButton from '@/app/components/SingleEventComponents/AnimatedEditButton';
@@ -31,7 +30,7 @@ export default function EventPage() {
  useEffect(() => {
    async function fetchEvent() {
      try {
-        const response = await fetch(`${baseURL}/events/${params.id}`);
+        const response = await fetch(`/api/events/${params.id}`);
         const data = await response.json();
         if (!response.ok) throw new Error('Failed to fetch event');
         setEvent(data);

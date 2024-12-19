@@ -24,7 +24,7 @@ interface AIInsightsResponse {
 
 async function getHostedEvents(email: string): Promise<HostedEventsResponse> {
  try {
-   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/eventsStats/${email}`, {
+   const response = await fetch(`/api/users/eventsStats/${email}`, {
      cache: 'no-store'
    });
    
@@ -52,7 +52,7 @@ async function getHostedEvents(email: string): Promise<HostedEventsResponse> {
 
 const getAIInsights = async (email: string): Promise<AIInsightsResponse> => {
  try {
-   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/aiInsights/${email}`);
+   const response = await fetch(`/api/users/aiInsights/${email}`);
    
    if (!response.ok) {
      throw new Error('Failed to fetch hosted events');
