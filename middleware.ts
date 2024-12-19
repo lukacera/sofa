@@ -26,8 +26,7 @@ export default auth(async (req) => {
     // Only check DB for authenticated users on protected paths
     if (!isPublicPath && session) {
         try {
-            const baseUrl = req.nextUrl.origin
-            const response = await fetch(`${baseUrl}/api/users/${session.user.email}`)
+            const response = await fetch(`/api/users/${session.user.email}`)
             const data = await response.json()
             if (!data.user) {
                 await signOut()
