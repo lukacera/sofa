@@ -10,31 +10,32 @@ export default auth(async (req) => {
     const session = req.auth
 
     if (req.nextUrl.pathname === '/login' && session) {
-        return NextResponse.redirect(new URL('/', req.url))
+        return NextResponse.redirect(new URL('/', req.nextUrl.origin))
     }
 
     // Root path redirect
     if (req.nextUrl.pathname === '/') {
-        return NextResponse.redirect(new URL('/home', req.url))
+        return NextResponse.redirect(new URL('/home', req.nextUrl.origin))
     }
     
     // If on protected path and not authenticated, redirect to login
     if (!isPublicPath && !session) {
-        return NextResponse.redirect(new URL('/login', req.url))
+        return NextResponse.redirect(new URL('/login', req.nextUrl.origin))
     }
 
     // Only check DB for authenticated users on protected paths
     if (!isPublicPath && session) {
         try {
-            const response = await fetch(`/api/users/${session.user.email}`)
+            const baseUrl = req.nextUrl.origin
+            const response = await fetch(`${baseUrl}/api/users/${session.user.email}`)
             const data = await response.json()
             if (!data.user) {
                 await signOut()
-                return NextResponse.redirect(new URL('/login', req.url))
+                return NextResponse.redirect(new URL('/login', req.nextUrl.origin))
             }
         } catch (error) {
             console.error('Session check failed:', error)
-            return NextResponse.redirect(new URL('/login', req.url))
+            return NextResponse.redirect(new URL('/login', req.nextUrl.origin))
         }
     }
 
