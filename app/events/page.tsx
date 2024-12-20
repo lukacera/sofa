@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, Suspense } from 'react'
 import { Search, SlidersHorizontal, X } from 'lucide-react'
 import { EventCard } from '../components/HomePageComponents/EventCard'
 import { EventType } from '../types/Event'
@@ -145,10 +145,10 @@ function EventsPageContent() {
         if (selectedTags.length > 0) {
           queryParams.set('tags', selectedTags.join(','))
         }
-        console.log("fetcing...")
+
         const response = await fetch(`/api/events?${queryParams.toString()}`)
         const data = await response.json()
-        console.log("this is data", data)        
+        
         setEvents(data.events)
         setPagination(data.pagination)
       } catch (error) {
@@ -383,6 +383,8 @@ function EventsPageContent() {
 
 export default function EventsPage() {
   return (
-    <EventsPageContent />
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div></div>}>
+      <EventsPageContent />
+    </Suspense>
   );
 }
