@@ -210,7 +210,7 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
   shadow-sm focus:border-blue-500 focus:ring-blue-500 p-4`;
 
   return (
-    <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
+    <APIProvider apiKey={process.env.GOOGLE_MAPS_API_KEY!}>
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
         <div className="bg-white rounded-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
           <div className="p-6 border-b sticky top-0 bg-white z-10">

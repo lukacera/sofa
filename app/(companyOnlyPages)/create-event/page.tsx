@@ -194,7 +194,7 @@ export default function CreateEventForm() {
     shadow-sm focus:border-blue-500 focus:ring-blue-500 p-4`;
 
   return (
-    <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
+    <APIProvider apiKey={process.env.GOOGLE_MAPS_API_KEY!}>
       <div className="w-[90%] md:w-[75%] mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-black">Create New Event</h1>
