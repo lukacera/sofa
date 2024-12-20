@@ -145,10 +145,10 @@ function EventsPageContent() {
         if (selectedTags.length > 0) {
           queryParams.set('tags', selectedTags.join(','))
         }
-
+        console.log("fetcing...")
         const response = await fetch(`/api/events?${queryParams.toString()}`)
         const data = await response.json()
-        
+        console.log("this is data", data)        
         setEvents(data.events)
         setPagination(data.pagination)
       } catch (error) {
