@@ -55,7 +55,7 @@ export default function EditProfile() {
                   description: formData.bio
                 }
               });
-            
+            window.location.reload();
         } catch (error) {
             console.error('Error updating profile:', error);
             // Could add an error notification here
