@@ -52,10 +52,6 @@ export async function PATCH(
     await connectToDB();
     
     const { _id } = await params;
-// Add this logging
-console.log('Event Schema:', Event.schema.obj);
-// To see paths and options
-console.log('Event Schema Paths:', Event.schema.paths);
 
     const data = await request.json();
 
@@ -86,8 +82,6 @@ console.log('Event Schema Paths:', Event.schema.paths);
     if (AiAnalysisText) {
       updateData.aiAnalysis = AiAnalysisText;
     }
-    
-    console.log(updateData);
 
     const updatedEvent = await Event.findByIdAndUpdate(
       _id,
