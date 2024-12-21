@@ -98,7 +98,7 @@ export const EventList = ({ type, gridCols = 1, showHeader = true }: EventListPr
   return (
     <div className="mt-10">
       {showHeader && <h2 className="text-xl font-semibold mb-6">{title}</h2>}
-      <div className={`grid grid-cols-${gridCols} gap-6`}>
+      <div className={`grid grid-cols-1 lg:grid-cols-${gridCols} gap-6`}>
         {events.map(event => <EventCard className="h-[20rem]" event={event} key={event._id} />)}
       </div>
     </div>

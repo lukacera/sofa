@@ -1,3 +1,4 @@
+"use client"
 interface LocationDropdownProps {
     value: string;
     onChange: (value: string) => void;

@@ -59,9 +59,9 @@ function ProfilePageContent() {
   }
   
   return (
-    <main className='w-[70%] mx-auto mt-20'>
+    <main className='w-[90%] lg:w-[70%] mx-auto mt-20'>
       <h1 className='font-bold text-3xl'>Profile Settings</h1>
-      <div className='flex gap-20'>
+      <div className='flex flex-col lg:flex-row gap-10 lg:gap-20'>
         <ul className='mt-10 space-y-4 text-nowrap'>
           {tabs.map((tab) => (
             <li

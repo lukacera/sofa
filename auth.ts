@@ -1,8 +1,6 @@
 import NextAuth, { NextAuthConfig } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import { connectToDB } from "./app/utils/connectWithDB";
-import User from "./app/schemas/User";
 
 declare module "next-auth" {
   interface Session {
@@ -36,6 +34,7 @@ declare module "next-auth" {
 }
 
 const authConfig: NextAuthConfig = {
+  trustHost: true,
   providers: [
     CredentialsProvider({
       name: "credentials",

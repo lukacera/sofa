@@ -3,6 +3,7 @@ import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import ClientRootLayout from "./components/ClientRootLayout";
+import { Suspense } from "react";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -33,7 +34,10 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${plusJakarta.variable}`}>
       <body className={`${inter.className} min-h-screen flex flex-col bg-mainWhite`}>
         <SessionProvider>
-          <ClientRootLayout>{children}</ClientRootLayout>
+          {/* Add Suspense here with a fallback UI */}
+          <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+            <ClientRootLayout>{children}</ClientRootLayout>
+          </Suspense>
         </SessionProvider>
       </body>
     </html>

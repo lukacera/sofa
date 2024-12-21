@@ -1,12 +1,12 @@
 "use client"
 
-import { useState, useEffect, useRef, Suspense } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Search, SlidersHorizontal, X } from 'lucide-react'
 import { EventCard } from '../components/HomePageComponents/EventCard'
 import { EventType } from '../types/Event'
 import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react'
 import { LocationDropdown } from '../components/EventsPageComponents/LocationDropdown'
-import { useSearchParams } from 'next/navigation'
+// import { useSearchParams } from 'next/navigation'
 import { TagData } from '../types/Tags'
 
 type SortOption = 'date-asc' | 'date-desc' | 'capacity-asc' | 'capacity-desc';
@@ -49,9 +49,8 @@ function EventsPageContent() {
   const [debouncedCity, setDebouncedCity] = useState('')
   
   // Refs and hooks
-  const searchParams = useSearchParams()
+  // const searchParams = useSearchParams()
   const dropdownRef = useRef<HTMLDivElement>(null)
-  const isInitialMount = useRef(true)
 
   // Initialize data and handle URL parameters
   useEffect(() => {
@@ -75,18 +74,18 @@ function EventsPageContent() {
         setCities(citiesData.cities);
 
         // Handle URL parameters if present
-        const cityFromUrl = searchParams.get('city')
-        const tagFromUrl = searchParams.get('tag')
+        // const cityFromUrl = searchParams.get('city')
+        // const tagFromUrl = searchParams.get('tag')
     
-        if (cityFromUrl) setCity(cityFromUrl)
-        if (tagFromUrl) setSelectedTags([tagFromUrl])
+        // if (cityFromUrl) setCity(cityFromUrl)
+        // if (tagFromUrl) setSelectedTags([tagFromUrl])
       } catch (error) {
         console.error('Error initializing data:', error);
       }
     }
 
     initializeData();
-  }, [searchParams]);
+  }, []);
 
   // Handle clicks outside the tag dropdown
   useEffect(() => {
@@ -118,13 +117,8 @@ function EventsPageContent() {
 
   // Fetch events based on filters
   useEffect(() => {
-    // Skip initial fetch to prevent double-fetching
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return;
-    }
-
     async function fetchEvents() {
+      console.log('Fetching events...')
       try {
         setLoading(true)
         const queryParams = new URLSearchParams({
@@ -179,13 +173,13 @@ function EventsPageContent() {
   }
 
   // Loading state
-  if (loading && pagination.page === 1) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    )
-  }
+  // if (loading && pagination.page === 1) {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center">
+  //       <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+  //     </div>
+  //   )
+  // }
 
   return (
     <main className="container mx-auto px-4 py-10 max-w-7xl">
@@ -383,8 +377,8 @@ function EventsPageContent() {
 
 export default function EventsPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div></div>}>
+    // <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div></div>}>
       <EventsPageContent />
-    </Suspense>
+    // </Suspense>
   );
 }

@@ -59,10 +59,9 @@ export default function EventPage() {
  }
 
  return (
-   <main className="w-[75%] mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+   <main className="w-[90%] xl:w-[75%] mx-auto mt-10">
      <section>
        <div className="grid lg:grid-cols-[40%_50%] gap-6">
-         {/* Left Column */}
          <div className="flex flex-col h-full">
            {/* Title and Actions */}
            <div className="space-y-4">
@@ -192,21 +191,21 @@ export default function EventPage() {
          </div>
 
          {/* Right Column */}
-         <div className="flex flex-col h-full gap-5">
+         <div className="flex flex-col gap-5 ml-10">
            {/* Image Container */}
-           <div className="relative flex-grow">
-             <div className="absolute inset-0 w-[95%] ml-auto">
-               <div className="relative h-full w-full rounded-xl overflow-hidden shadow-md">
-                 <CldImage
-                   alt={`${event.title} cover image`}
-                   src={event.image}
-                   fill
-                   priority
-                   className="object-cover transition-transform duration-700 group-hover:scale-105"
-                 />
-               </div>
-             </div>
-           </div>
+           <div className="w-full h-auto">
+    <div className="w-full rounded-2xl overflow-hidden shadow-lg">
+      <div className="relative aspect-[3/2]">
+        <CldImage
+          alt={`${event.title} cover image`}
+          src={event.image}
+          fill
+          priority
+          className="object-cover transition-transform duration-700 hover:scale-105"
+        />
+      </div>
+    </div>
+  </div>
 
            {/* Attendees Section */}
            <div className="flex justify-center gap-2 mt-4">
