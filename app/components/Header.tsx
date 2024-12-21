@@ -75,17 +75,20 @@ export default function Header() {
                   <div className="relative hidden md:block">
                     <button
                       onClick={() => setMenuOpen(!menuOpen)}
-                      className="flex items-center space-x-2 focus:outline-none"
+                      className="flex items-center space-x-2 focus:outline-none w-full"
                     >
-                      <CldImage
-                        src={session.user?.image ?? "https://res.cloudinary.com/dluypaeie/image/upload/v1732538732/Avatars_Circles_Glyph_Style_nrein3.jpg"}
-                        alt="Profile"
-                        width={40}
-                        height={40}
-                        className="rounded-full ring-2 ring-white/30 hover:ring-white/50 transition-all"
-                      />
+                      <div className="w-10 aspect-square rounded-full relative">
+                        <CldImage
+                          src={session.user?.image ?? "https://res.cloudinary.com/dluypaeie/image/upload/v1732538732/Avatars_Circles_Glyph_Style_nrein3.jpg"}
+                          alt="Profile"
+                          fill
+                          className="rounded-full ring-2 ring-white/30 hover:ring-white/50 transition-all"
+                        />
+                      </div>
                       <ChevronDown
-                        className={`w-4 h-4 text-white transition-transform duration-200 ${menuOpen ? "rotate-180" : ""}`}
+                        className={`w-4 h-4 text-white transition-transform 
+                          duration-200 ${menuOpen ? "rotate-180" : ""}
+                        `}
                       />
                     </button>
 
