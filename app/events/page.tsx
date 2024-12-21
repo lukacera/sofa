@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, Suspense } from 'react'
 import { Search, SlidersHorizontal, X } from 'lucide-react'
 import { EventCard } from '../components/HomePageComponents/EventCard'
 import { EventType } from '../types/Event'
@@ -325,6 +325,11 @@ function EventsPageContent() {
           </div>
         </div>
         {/* Events grid */}
+        {loading && pagination.page === 1 && (
+          <div className="min-h-[15rem] flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
+        )}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {events.map((event) => (
             <EventCard key={event._id} event={event} className='max-h-[15rem]' />
@@ -377,8 +382,8 @@ function EventsPageContent() {
 
 export default function EventsPage() {
   return (
-    // <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div></div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div></div>}>
       <EventsPageContent />
-    // </Suspense>
+    </Suspense>
   );
 }
