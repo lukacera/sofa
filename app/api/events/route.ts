@@ -118,7 +118,7 @@ export const POST = auth(async (request) => {
 
         // Handle image upload to Cloudinary
         let imageUrl = "";
-        if (imageFile) {
+        if (imageFile && imageFile.size > 0) {
             const uploadFormData = new FormData();
             uploadFormData.append('file', imageFile);
             const response = await fetch('/api/upload', {
