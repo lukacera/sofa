@@ -28,6 +28,7 @@ export async function GET(
             }
         });
 
+        console.log(user)
         if (!user) {
             return NextResponse.json(
                 {

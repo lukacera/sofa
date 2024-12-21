@@ -82,7 +82,8 @@ export default function Header() {
                           src={session.user?.image ?? "https://res.cloudinary.com/dluypaeie/image/upload/v1732538732/Avatars_Circles_Glyph_Style_nrein3.jpg"}
                           alt="Profile"
                           fill
-                          className="rounded-full ring-2 ring-white/30 hover:ring-white/50 transition-all"
+                          className="rounded-full ring-2 ring-white/30 
+                          hover:ring-white/50 transition-all object-cover"
                         />
                       </div>
                       <ChevronDown
