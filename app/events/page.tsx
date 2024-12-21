@@ -6,7 +6,7 @@ import { EventCard } from '../components/HomePageComponents/EventCard'
 import { EventType } from '../types/Event'
 import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react'
 import { LocationDropdown } from '../components/EventsPageComponents/LocationDropdown'
-// import { useSearchParams } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { TagData } from '../types/Tags'
 
 type SortOption = 'date-asc' | 'date-desc' | 'capacity-asc' | 'capacity-desc';
@@ -49,13 +49,27 @@ function EventsPageContent() {
   const [debouncedCity, setDebouncedCity] = useState('')
   
   // Refs and hooks
-  // const searchParams = useSearchParams()
+  const router = useRouter()
+  const pathname = usePathname()
   const dropdownRef = useRef<HTMLDivElement>(null)
+
+  // Function to get URL parameters
+  const getInitialParams = () => {
+    if (typeof window === 'undefined') return {}
+    
+    const params = new URLSearchParams(window.location.search)
+    return {
+      city: params.get('city') || '',
+      tag: params.get('tag') || ''
+    }
+  }
 
   // Initialize data and handle URL parameters
   useEffect(() => {
     async function initializeData() {
       try {
+        const { city: cityFromUrl, tag: tagFromUrl } = getInitialParams()
+
         // Fetch all initial data in parallel
         const [tagsRes, countriesRes, citiesRes] = await Promise.all([
           fetch('/api/tags'),
@@ -73,12 +87,9 @@ function EventsPageContent() {
         setCountries(countriesData.countries);
         setCities(citiesData.cities);
 
-        // Handle URL parameters if present
-        // const cityFromUrl = searchParams.get('city')
-        // const tagFromUrl = searchParams.get('tag')
-    
-        // if (cityFromUrl) setCity(cityFromUrl)
-        // if (tagFromUrl) setSelectedTags([tagFromUrl])
+        // Set initial values from URL
+        if (cityFromUrl) setCity(cityFromUrl)
+        if (tagFromUrl) setSelectedTags([tagFromUrl])
       } catch (error) {
         console.error('Error initializing data:', error);
       }
@@ -86,6 +97,19 @@ function EventsPageContent() {
 
     initializeData();
   }, []);
+
+  // Update URL when filters change
+  useEffect(() => {
+    const params = new URLSearchParams()
+    
+    if (city) params.set('city', city)
+    if (selectedTags.length > 0) params.set('tag', selectedTags[0])
+    
+    const queryString = params.toString()
+    const newUrl = queryString ? `${pathname}?${queryString}` : pathname
+    
+    router.replace(newUrl, { scroll: false })
+  }, [city, selectedTags, pathname, router])
 
   // Handle clicks outside the tag dropdown
   useEffect(() => {
@@ -118,7 +142,6 @@ function EventsPageContent() {
   // Fetch events based on filters
   useEffect(() => {
     async function fetchEvents() {
-      console.log('Fetching events...')
       try {
         setLoading(true)
         const queryParams = new URLSearchParams({
@@ -172,14 +195,6 @@ function EventsPageContent() {
     setPagination(prev => ({ ...prev, page: newPage }))
   }
 
-  // Loading state
-  // if (loading && pagination.page === 1) {
-  //   return (
-  //     <div className="min-h-screen flex items-center justify-center">
-  //       <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-  //     </div>
-  //   )
-  // }
 
   return (
     <main className="container mx-auto px-4 py-10 max-w-7xl">

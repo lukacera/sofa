@@ -5,17 +5,11 @@ import { Calendar } from 'lucide-react';
 import Link from 'next/link';
 import { auth } from '@/auth';
 import { EventType } from '@/app/types/Event';
-import { headers } from 'next/headers';
 import CitySearch from '../HomePageComponents/CitySearch';
 
 async function getUpcomingEvents(email: string): Promise<EventType[]> {
-  const headersList = headers();
-  const host = (await headersList).get('host');
-  const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
-  
-  const url = `${protocol}://${host}/api/users/upcomingEvents/${email}`;
-  
-  const response = await fetch(url, {
+  const apiURL = process.env.NEXT_PUBLIC_API_URL;
+  const response = await fetch(`${apiURL}/users/upcomingEvents/${email}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
