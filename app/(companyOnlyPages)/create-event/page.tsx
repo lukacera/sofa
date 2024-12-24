@@ -19,11 +19,12 @@ export default function CreateEventForm() {
 
   const now = new Date();
   const minutes = now.getMinutes();
-  const roundedMinutes = Math.ceil(minutes / 30) * 30;
+  const roundedMinutes = Math.ceil(minutes / 30) * 90 ;
   now.setMinutes(roundedMinutes);
   now.setSeconds(0);
   now.setMilliseconds(0);
 
+  console.log(now)
   // Initialize form state
   const [formData, setFormData] = useState<EventFormData>({
     title: null,
@@ -47,10 +48,17 @@ export default function CreateEventForm() {
   const [isCreating, setIsCreating] = useState(false);
   const [isDrafting, setIsDrafting] = useState(false);
 
-  // Separate state for date and time inputs
   const [dateValue, setDateValue] = useState(new Date().toISOString().split('T')[0]);
-  const [timeValue, setTimeValue] = useState('13:00');
-  
+  const formattedTime = now
+  .toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  })
+  .padStart(5, '0'); // Ensure format "HH:mm"
+
+  const [timeValue, setTimeValue] = useState(formattedTime);  
+
   // Update organizer when session is available
   useEffect(() => {
     if (status === 'authenticated' && session?.user?.id) {

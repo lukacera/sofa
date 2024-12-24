@@ -7,7 +7,7 @@ export const TimePicker: React.FC<{
   dateValue: string;
 }> = ({dateValue, handleDateChange, timeValue}) => {
 
-  const [selectedTime, setSelectedTime] = useState('12:30');
+  const [selectedTime, setSelectedTime] = useState(timeValue);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
