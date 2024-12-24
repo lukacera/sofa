@@ -7,10 +7,11 @@ export const handleSubmit = async (
     e: FormEvent<HTMLFormElement>, 
     status: 'draft' | 'published' | 'cancelled' | 'finished',
     formData: EventFormData,
-    setError: (error: string | null) => void,
+    setError: (error: string | null) => void, 
     setIsCreating: (isCreating: boolean) => void,
     setIsDrafting: (isDrafting: boolean) => void,
     isCreating: boolean,
+    isDrafting: boolean,
     router: AppRouterInstance
 ) => {
     e.preventDefault();
@@ -38,6 +39,7 @@ export const handleSubmit = async (
     if (status === 'draft') setIsDrafting(true);
     else setIsCreating(true);
   
+    console.log("is creating", isCreating);
     setError(null);
   
     try {
@@ -67,6 +69,7 @@ export const handleSubmit = async (
         throw new Error(errorData.message || 'Failed to create event');
       }
 
+      console.log(isCreating ? 'Event created successfully' : 'Event saved as draft');
       // Only redirect on successful submission
       return isCreating ? router.push('/profile?tab=created-events') : router.push('/profile?tab=drafts');
     } catch (err) {

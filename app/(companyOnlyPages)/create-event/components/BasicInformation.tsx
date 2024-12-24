@@ -36,7 +36,6 @@ export default function BasicInformation ({formData, setFormData, inputClasses, 
       setFormData({ ...formData, date: dateObj.toISOString() });
     };
   
-    console.log(formData);
     // Handle capacity input changes with validation
     const handleCapacityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;

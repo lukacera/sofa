@@ -14,7 +14,8 @@ export async function GET(
         .populate({
             path: "eventsCreated",
             match: { status: "draft" }
-        });
+        })
+        .sort({ createdAt: 1 })
 
         return NextResponse.json({
             data: user?.eventsCreated || []

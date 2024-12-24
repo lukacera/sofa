@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, FormEvent, useRef, useEffect } from 'react';
+import React, { useState, FormEvent, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import ImageUpload from '@/app/components/CreateEventComponents/ImageUpload';
 import { EventFormData } from '@/app/types/EventForm';
@@ -74,14 +74,12 @@ export default function CreateEventForm() {
     }
   }, [formData.date]);
 
-
   // Form submission state and handler
   const [error, setError] = useState<string | null>(null);
 
   const RequiredStar = () => (
     <span className="text-accent ml-1">*</span>
   );
-
 
   const inputClasses = `mt-1 block p-3
     border-b border-gray-200 focus:border-black focus:ring-0 focus:outline-none`;
@@ -99,7 +97,7 @@ export default function CreateEventForm() {
         </div>
 
         <form onSubmit={(e) => 
-        handleSubmit(e, formData.status, formData, setError, setIsCreating,setIsDrafting, isCreating, router)}
+        handleSubmit(e, formData.status, formData, setError, setIsCreating,setIsDrafting, isCreating, isDrafting, router)}
         className="bg-white p-6 rounded-xl shadow-sm space-y-10">
           
           <BasicInformation 
@@ -180,9 +178,7 @@ export default function CreateEventForm() {
             isCreating={isCreating}
             isDrafting={isDrafting}
             onSave={(status, e) => 
-              handleSubmit(e as FormEvent<HTMLFormElement>, status, formData, 
-                setError, setIsCreating, setIsDrafting, isCreating, router
-              )}
+              handleSubmit(e as FormEvent<HTMLFormElement>, formData.status, formData, setError, setIsCreating,setIsDrafting, isCreating, isDrafting, router)}
           />
         </form>
       </div>

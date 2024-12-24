@@ -27,6 +27,7 @@ export const EventList = ({ type, gridCols = 1, showHeader = true }: EventListPr
 
   const endpoint = isHosted ? 'hostedEvents' : isAttended ? 'attendedEvents' : 'drafts'
 
+  console.log("endpoint", endpoint)
   useEffect(() => {
     async function fetchEvents() {
       if (!session?.user?.email) return
