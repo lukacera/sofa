@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { AlertCircle, X } from 'lucide-react';
 interface ErrorDisplayProps {
   error: string | null;
@@ -8,7 +8,11 @@ interface ErrorDisplayProps {
 
 export const ErrorDisplay = ({ error, onDismiss }: ErrorDisplayProps) => {
     const [isVisible, setIsVisible] = useState(true);
-  
+
+    useEffect(() => {
+      if (error) setIsVisible(true);
+    }, [error]);
+    
     if (!error || !isVisible) return null;
   
     const handleDismiss = () => {

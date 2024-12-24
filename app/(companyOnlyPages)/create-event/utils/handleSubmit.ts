@@ -75,8 +75,5 @@ export const handleSubmit = async (
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create event');
       console.error('Failed to create event:', err);
-    } finally {
-      setIsCreating(false);
-      setIsDrafting(false);
     }
   };
