@@ -120,17 +120,32 @@ export default function EventPage() {
 
               <div className="flex items-center gap-2 p-2">
                 <Clock size={18} className="text-gray-500" />
-                <div>
-                  <p className="text-xs text-gray-500">Time</p>
-                  <time className="font-medium text-gray-900 text-sm">
-                  {new Date(event.date).toLocaleTimeString('en-US', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: false,
-                    timeZone: event.timezone || 'UTC',
-                    timeZoneName: 'long'
-                  })}
-                  </time>                
+                <div className='space-y-1'>
+                  <div>
+                    <p className="text-xs text-gray-500">Time</p>
+                    <time className="font-medium text-gray-900 text-sm">
+                    {new Date(event.date).toLocaleTimeString('en-US', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: false,
+                      timeZone: event.timezone || 'UTC',
+                      timeZoneName: 'long'
+                    })}
+                    </time>
+                  </div>
+                  <p className='text-xs flex gap-1 text-gray-500'>
+                    <span>In your local time:</span>
+                    <span className='font-medium text-gray-900'>
+                        {new Date(event.date).toLocaleString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false
+                        })}
+                    </span>
+                  </p>
                 </div>
               </div>
               
@@ -165,7 +180,7 @@ export default function EventPage() {
            </div>
 
            {/* AI Analysis or Publish CTA */}
-           <div className="flex-grow">
+           <div className="flex-grow mt-5">
              {event.status === "draft" ? (
                <div className="border-dashed border-gray-200 text-center">
                  <h3 className="font-semibold">
