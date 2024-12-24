@@ -24,7 +24,6 @@ export default function CreateEventForm() {
   now.setSeconds(0);
   now.setMilliseconds(0);
 
-  console.log(now)
   // Initialize form state
   const [formData, setFormData] = useState<EventFormData>({
     title: null,
@@ -71,16 +70,24 @@ export default function CreateEventForm() {
   
   // Sync date/time values with form data
   useEffect(() => {
-    if (formData.date) {
-      const date = new Date(formData.date);
-      setDateValue(date.toISOString().split('T')[0]);
-      setTimeValue(date.toLocaleTimeString('en-US', { 
-        hour: '2-digit', 
-        minute: '2-digit',
-        hour12: false 
-      }));
-    }
-  }, [formData.date]);
+    const date = new Date(formData.date);
+    
+    // Ensure the time is properly parsed as well
+    const [hours, minutes] = timeValue.split(':').map(Number);
+    
+    date.setHours(hours, minutes, 0, 0); // Set hours and minutes explicitly
+    
+    setDateValue(date.toISOString().split('T')[0]);
+    setTimeValue(date.toLocaleTimeString('en-US', { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      hour12: false 
+    }));
+  }, [formData.date, timeValue]);
+
+  useEffect(() => {
+    console.log(formData.date)
+  }, [formData.date])
 
   // Form submission state and handler
   const [error, setError] = useState<string | null>(null);
@@ -105,9 +112,18 @@ export default function CreateEventForm() {
         </div>
 
         <form onSubmit={(e) => 
-        handleSubmit(e, formData.status, formData, setError, setIsCreating,setIsDrafting, isCreating, isDrafting, router)}
-        className="bg-white p-6 rounded-xl shadow-sm space-y-10">
-          
+            handleSubmit({
+              e: e as FormEvent<HTMLFormElement>,
+              formData: formData,
+              status: formData.status,
+              setError: setError,
+              setIsCreating: setIsCreating,
+              isCreating: isCreating,
+              router: router,
+              setIsDrafting: setIsDrafting,
+            })        
+          } className="bg-white p-6 rounded-xl shadow-sm space-y-10"
+        >
           <BasicInformation 
             formData={formData} 
             setFormData={setFormData} 
@@ -185,8 +201,19 @@ export default function CreateEventForm() {
           <SaveButtons 
             isCreating={isCreating}
             isDrafting={isDrafting}
-            onSave={(status, e) => 
-              handleSubmit(e as FormEvent<HTMLFormElement>, formData.status, formData, setError, setIsCreating,setIsDrafting, isCreating, isDrafting, router)}
+            setFormData={setFormData}
+             onSave={(status, e) => 
+             handleSubmit({
+                e: e as FormEvent<HTMLFormElement>,
+                formData: formData,
+                status: status,
+                setError: setError,
+                setIsCreating: setIsCreating,
+                isCreating: isCreating,
+                router: router,
+                setIsDrafting: setIsDrafting,
+              })
+            } 
           />
         </form>
       </div>

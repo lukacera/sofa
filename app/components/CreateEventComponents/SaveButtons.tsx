@@ -1,15 +1,18 @@
-import React, { FormEvent } from 'react';
-
+import React, { Dispatch, FormEvent, SetStateAction } from 'react';
+import { EventFormData } from '@/app/types/EventForm';
 interface SaveOptionsProps {
   isDrafting: boolean;
   isCreating: boolean;
   onSave: (status: 'draft' | 'published', e: FormEvent) => void;
+  setFormData: Dispatch<SetStateAction<EventFormData>>;
 }
 
-export function SaveButtons({ isCreating, isDrafting, onSave }: SaveOptionsProps) {
+export function SaveButtons({ isCreating, isDrafting, onSave, setFormData }: SaveOptionsProps) {
 
   const handleClick = (status: 'draft' | 'published', e: FormEvent) => {
     e.preventDefault();
+    setFormData((prev) => ({ ...prev, status }));
+    console.log("Status", status);
     onSave(status, e);
   };
 

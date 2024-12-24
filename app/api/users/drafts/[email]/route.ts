@@ -13,9 +13,12 @@ export async function GET(
         const user = await User.findOne({ email })
         .populate({
             path: "eventsCreated",
-            match: { status: "draft" }
+            match: { status: "draft" },
+            options: { 
+                sort: { createdAt: -1 },
+                strictPopulate: false
+            }
         })
-        .sort({ createdAt: 1 })
 
         return NextResponse.json({
             data: user?.eventsCreated || []

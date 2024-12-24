@@ -3,17 +3,20 @@ import { toZonedTime } from "date-fns-tz";
 import { FormEvent } from "react";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
-export const handleSubmit = async (
-    e: FormEvent<HTMLFormElement>, 
-    status: 'draft' | 'published' | 'cancelled' | 'finished',
-    formData: EventFormData,
-    setError: (error: string | null) => void, 
-    setIsCreating: (isCreating: boolean) => void,
-    setIsDrafting: (isDrafting: boolean) => void,
-    isCreating: boolean,
-    isDrafting: boolean,
-    router: AppRouterInstance
-) => {
+interface SubmitProps {
+  e: FormEvent<HTMLFormElement>;
+  status: 'draft' | 'published' | 'cancelled' | 'finished';
+  formData: EventFormData;
+  setError: (error: string | null) => void;
+  setIsCreating: (isCreating: boolean) => void;
+  setIsDrafting: (isDrafting: boolean) => void;
+  isCreating: boolean;
+  router: AppRouterInstance;
+}
+
+export const handleSubmit = async (props: SubmitProps) => {
+
+    const { e, status, formData, setError, setIsCreating, setIsDrafting, isCreating, router } = props; 
     e.preventDefault();
   
     // Validation checks
@@ -39,7 +42,6 @@ export const handleSubmit = async (
     if (status === 'draft') setIsDrafting(true);
     else setIsCreating(true);
   
-    console.log("is creating", isCreating);
     setError(null);
   
     try {
@@ -69,11 +71,13 @@ export const handleSubmit = async (
         throw new Error(errorData.message || 'Failed to create event');
       }
 
-      console.log(isCreating ? 'Event created successfully' : 'Event saved as draft');
       // Only redirect on successful submission
       return isCreating ? router.push('/profile?tab=created-events') : router.push('/profile?tab=drafts');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create event');
       console.error('Failed to create event:', err);
+    } finally {
+      setIsCreating(false);
+      setIsDrafting(false);
     }
   };
