@@ -64,7 +64,6 @@ export default function Header() {
           <div className="w-[140px] flex items-center justify-end space-x-4">
             {isLoading ? (
               <div className="flex items-center space-x-4 relative">
-                <div className="md:block hidden absolute top-1 -left-44 w-[10rem] h-9 bg-accent/40 animate-pulse rounded-lg"></div>
                 <div className="w-10 h-10 rounded-full bg-gray-300/60 animate-pulse md:block hidden"></div>
                 <div className="w-4 h-4 bg-gray-300/60 animate-pulse md:block hidden"></div>
               </div>

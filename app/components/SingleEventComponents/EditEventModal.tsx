@@ -9,7 +9,7 @@ import Image from 'next/image';
 import { LocationInput } from '../CreateEventComponents/LocationInput';
 import { APIProvider } from '@vis.gl/react-google-maps';
 import { TimezoneInput } from '@/app/components/CreateEventComponents/TimezoneInput';
-import { toZonedTime } from 'date-fns-tz';
+import { toZonedTime, fromZonedTime } from 'date-fns-tz';
 
 interface EditEventModalProps {
   isOpen: boolean;
@@ -21,7 +21,7 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
   const [formData, setFormData] = useState<EventFormData>({
     title: event.title,
     description: event.description,
-    date: new Date(event.date).toISOString(),
+    date: fromZonedTime(new Date(event.date), event.timezone).toISOString(),
     location: {
       city: event.location.city,
       country: event.location.country,
@@ -85,21 +85,33 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
   };
 
   useEffect(() => {
-    if (formData.date) {
-      const date = new Date(formData.date);
-      setDateValue(date.toISOString().split('T')[0]);
-      setTimeValue(date.toLocaleTimeString('en-US', { 
-        hour: '2-digit', 
-        minute: '2-digit',
-        hour12: false 
-      }));
-    }
-  }, [formData.date]);
+    const date = new Date(formData.date);
+    
+    // Ensure the time is properly parsed as well
+    const [hours, minutes] = timeValue.split(':').map(Number);
+    
+    date.setHours(hours, minutes, 0, 0); // Set hours and minutes explicitly
+    
+    console.log(date)
+    console.log("Date value:", date.toISOString().split('T')[0]);
+    setDateValue(date.toISOString().split('T')[0]);
+    console.log("Time value:", date.toLocaleTimeString('en-US', { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      hour12: false 
+    }))
+    setTimeValue(date.toLocaleTimeString('en-US', { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      hour12: false 
+    }));
+  }, [formData.date, timeValue]);
+  
 
-  const handlePublish = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleUpdate = async (e: React.FormEvent<HTMLButtonElement>) => {
     try {
       e.preventDefault();
-      setIsPublishing(true);
+      setIsUpdating(true);
       setError(null);
       if (!formData.tags?.length) {
         setError("Please add at least one tag");
@@ -116,7 +128,7 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
         },
         body: JSON.stringify({ 
           ...formData,
-          status: 'published',
+          status: 'draft',
           date: utcTime.toISOString()
         })
       });
@@ -128,13 +140,13 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to publish event');
     } finally {
-      setIsPublishing(false);
+      setIsUpdating(false);
     }
   };
 
-  const handleUpdate = async (e: React.FormEvent<HTMLButtonElement>) => {
+  const handlePublish = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsUpdating(true);
+    setIsPublishing(true);
     setError(null);
   
     try {
@@ -165,6 +177,8 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
   
         const eventDate = new Date(dateValue + 'T' + timeValue);
         const now = new Date();
+        console.log("Event date:", eventDate);
+        console.log("Now:", now);
         if (eventDate < now) {
           throw new Error('Event date must be in the future');
         }
@@ -190,11 +204,11 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
       if (!response.ok) throw new Error('Failed to update event');
   
       onClose();
-      window.location.reload();
+      // window.location.reload();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update event');
     } finally {
-      setIsUpdating(false);
+      setIsPublishing(false);
     }
   };
   
