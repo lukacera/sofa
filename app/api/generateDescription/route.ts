@@ -40,8 +40,7 @@ export async function POST(request: Request) {
           content: prompt
         }
       ],
-      temperature: 0.7,
-      max_tokens: 120
+      temperature: 0.7
     });
 
     const richenDescriptipn = response.choices[0].message.content;

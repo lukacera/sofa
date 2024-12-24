@@ -75,7 +75,7 @@ export default function EnhancedDescriptionInput({
   };
 
   const enhanceDescription = async () => {
-    if (!formData.title?.trim() || !formData.tags.length || !formData.location.city) {
+    if (!formData.title?.trim() || !formData.location) {
       setError("Please enter all previous event data first");
       return;
     }
@@ -98,7 +98,7 @@ export default function EnhancedDescriptionInput({
         body: JSON.stringify({
           title: formData.title,
           eventType: formData.type,
-          description: formData.description,
+          description: formData.description
         }),
       });
 
