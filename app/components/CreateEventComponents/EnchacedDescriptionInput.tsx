@@ -113,6 +113,8 @@ export default function EnhancedDescriptionInput({
     }
   };
 
+  const isInvalidDescription = error || !formData.description || formData.description.length < 100;
+
   return (
     <div className="space-y-2">
       <div className="flex justify-between items-center">
@@ -183,15 +185,18 @@ export default function EnhancedDescriptionInput({
       />
 
       <div className="flex justify-between items-start">
-        <p className={`text-sm ${error ? "text-red-500" : "text-gray-500"}`}>
-          {error ||
-            (formData.description
-              ? `${formData.description.length} / 1000 characters ${
+        <p className={`text-sm ${error || isInvalidDescription ? "text-red-500" : "text-gray-500"}`}>
+          {error || (formData.description
+              ? 
+              `${formData.description.length} / 1000 characters ${
                   formData.description.length < 100
                     ? `(${100 - formData.description.length} more needed)`
                     : ""
                 }`
-              : "0 / 1000 characters (100 more needed)")}
+              : 
+              "0 / 1000 characters (100 more needed)"
+              )
+          }
         </p>
         {formData.description && formData.description.length > 0 && (
           <p className="text-sm text-gray-500">

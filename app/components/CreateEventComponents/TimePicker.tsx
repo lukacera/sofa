@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, ChevronDown } from 'lucide-react';
 
 export const TimePicker: React.FC<{
   timeValue: string;
@@ -51,11 +51,20 @@ export const TimePicker: React.FC<{
         Time<span className="text-accent ml-1">*</span>
       </label>
       <div 
-        className="px-4 py-2 bg-white rounded-t-lg border cursor-pointer flex justify-between items-center w-full"
+        className={`px-4 py-2 bg-white rounded-t-lg border cursor-pointer flex justify-between items-center w-full hover:border-gray-400 transition-colors ${isOpen ? 'border-gray-400' : ''}`}
         onClick={() => setIsOpen(!isOpen)}
       >
         <span>{selectedTime}</span>
-        {isOpen && <X className="w-4 h-4 text-gray-500 absolute right-2" onClick={() => setIsOpen(false)} />}
+        <div className="flex items-center">
+          {isOpen ? (
+            <X className="w-4 h-4 text-gray-500" onClick={(e) => {
+              e.stopPropagation();
+              setIsOpen(false);
+            }} />
+          ) : (
+            <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+          )}
+        </div>
       </div>
       
       {isOpen && (

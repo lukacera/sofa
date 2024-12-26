@@ -223,6 +223,8 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
   const textareaClasses = `mt-2 w-full rounded-md border-gray-300 border
   shadow-sm focus:border-blue-500 focus:ring-blue-500 p-4`;
 
+  const isInvalidDescription = error || !formData.description || formData.description.length < 100;
+
   return (
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -414,8 +416,7 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
                 required
               />
               <p className={`text-sm mt-1
-                ${formData.description && (formData.description.length < 100 || formData.description.length === 1000) ?
-                'text-red-500' : 'text-gray-500'}`}>
+                ${isInvalidDescription ? 'text-red-500' : 'text-gray-500'}`}>
                 {formData.description ?
                   `${formData.description.length} / 1000 characters ${formData.description.length < 100 ?
                     `(${100 - formData.description.length} more needed)` : ''}` :

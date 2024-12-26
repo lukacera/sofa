@@ -84,22 +84,22 @@ export default function EventPage() {
                </div>
              </div>
 
-             {/* Organizer */}
-             <div className="flex items-center gap-3 p-2">
-               <div className="relative w-10 aspect-square rounded-full overflow-hidden ring-1 ring-gray-200">
-                 <CldImage
-                   alt={`${event.organizer.name} profile`}
-                   src={event.organizer.image || event.image}
-                   fill
-                   priority
-                   className="object-cover"
-                 />
-               </div>
-               <div>
-                 <p className="text-xs text-gray-500">Organized by</p>
-                 <h3 className="font-medium text-gray-900">{event.organizer.name}</h3>
-               </div>
-             </div>
+            {/* Organizer */}
+            <div className="flex items-center gap-3 p-2">
+              <div className="relative w-10 aspect-square rounded-full overflow-hidden ring-1 ring-gray-200">
+                <CldImage
+                  alt={`${event.organizer.name} profile`}
+                  src={event.organizer.image || event.image}
+                  fill
+                  priority
+                  className="object-cover"
+                />
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Organized by</p>
+                <h3 className="font-medium text-gray-900">{event.organizer.name}</h3>
+              </div>
+            </div>
 
             {/* Date and Location */}
             <div>
@@ -206,21 +206,21 @@ export default function EventPage() {
          </div>
 
          {/* Right Column */}
-         <div className="flex flex-col gap-5 ml-10">
+         <div className="flex flex-col gap-5 lg:ml-10">
            {/* Image Container */}
-           <div className="w-full h-auto">
-    <div className="w-full rounded-2xl overflow-hidden shadow-lg">
-      <div className="relative aspect-[3/2]">
-        <CldImage
-          alt={`${event.title} cover image`}
-          src={event.image}
-          fill
-          priority
-          className="object-cover transition-transform duration-700 hover:scale-105"
-        />
-      </div>
-    </div>
-  </div>
+          <div className="w-full h-auto">
+            <div className="w-full rounded-2xl overflow-hidden shadow-lg">
+              <div className="relative aspect-[3/2]">
+                <CldImage
+                  alt={`${event.title} cover image`}
+                  src={event.image}
+                  fill
+                  priority
+                  className="object-cover transition-transform duration-700 hover:scale-105"
+                />
+              </div>
+            </div>
+          </div>
 
            {/* Attendees Section */}
            <div className="flex justify-center gap-2 mt-4">
