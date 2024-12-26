@@ -36,7 +36,6 @@ export default function EventForm({
     Buttons,
     onSubmit
 }: EventFormProps) {
-
     return (
       <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
           <form onSubmit={onSubmit} className="bg-white p-6 space-y-10"

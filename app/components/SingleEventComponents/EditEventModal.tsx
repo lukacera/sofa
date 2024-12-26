@@ -66,10 +66,6 @@ useEffect(() => {
       e.preventDefault();
       setIsUpdating(true);
       setError(null);
-      if (!formData.tags?.length) {
-        setError("Please add at least one tag");
-        return;
-      }
 
       const localDate = new Date(dateValue + 'T' + timeValue);
       const utcTime = toZonedTime(localDate, formData.timezone!);
@@ -130,8 +126,6 @@ useEffect(() => {
   
         const eventDate = new Date(dateValue + 'T' + timeValue);
         const now = new Date();
-        console.log("Event date:", eventDate);
-        console.log("Now:", now);
         if (eventDate < now) {
           throw new Error('Event date must be in the future');
         }

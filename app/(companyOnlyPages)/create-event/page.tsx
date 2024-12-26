@@ -79,10 +79,6 @@ export default function CreateEventForm() {
     }));
   }, [formData.date, timeValue]);
 
-  useEffect(() => {
-    console.log(formData.date)
-  }, [formData.date])
-
   // Form submission state and handler
   const [error, setError] = useState<string | null>(null);
 

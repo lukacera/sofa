@@ -10,14 +10,12 @@ interface SubmitProps {
   setError: (error: string | null) => void;
   setIsCreating: (isCreating: boolean) => void;
   setIsDrafting: (isDrafting: boolean) => void;
-  isCreating: boolean;
   router: AppRouterInstance;
 }
 
 export const handleSubmit = async (props: SubmitProps) => {
 
-    const { e, status, formData, setError, setIsCreating, setIsDrafting, isCreating, router } = props; 
-    console.log(props)
+    const { e, status, formData, setError, setIsCreating, setIsDrafting, router } = props; 
     e.preventDefault();
   
     // Validation checks
@@ -41,12 +39,10 @@ export const handleSubmit = async (props: SubmitProps) => {
         }
     }
     
-    console.log("Status is", status)
     // Set loading state based on status
     if (status === 'draft') setIsDrafting(true);
     else setIsCreating(true);
   
-    console.log("is creating", isCreating)
     setError(null);
   
     try {
@@ -82,7 +78,6 @@ export const handleSubmit = async (props: SubmitProps) => {
       setError(err instanceof Error ? err.message : 'Failed to create event');
       console.error('Failed to create event:', err);
     } finally {
-      console.log("finally")
       setIsCreating(false);
       setIsDrafting(false);
     }

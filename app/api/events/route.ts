@@ -121,7 +121,8 @@ export const POST = auth(async (request) => {
         if (imageFile && imageFile.size > 0) {
             const uploadFormData = new FormData();
             uploadFormData.append('file', imageFile);
-            const response = await fetch('/api/upload', {
+            const apiURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+            const response = await fetch(`${apiURL}/upload`, {
                 method: 'POST',
                 body: uploadFormData
             });

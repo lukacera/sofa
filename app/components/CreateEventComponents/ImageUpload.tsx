@@ -9,9 +9,9 @@ interface ImageUploadProps {
   inputClasses: string;
 }
 
-export default function ImageUpload({ setFormData, inputClasses }: ImageUploadProps) {
+export default function ImageUpload({ setFormData, inputClasses, formData }: ImageUploadProps) {
   const [error, setError] = useState<string>('');
-  const [previewUrl, setPreviewUrl] = useState<string>('');
+  const [previewUrl, setPreviewUrl] = useState<string>(formData.imagePreview || '');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
