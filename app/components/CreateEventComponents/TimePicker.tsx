@@ -5,7 +5,9 @@ export const TimePicker: React.FC<{
   timeValue: string;
   handleDateChange: (date: string, time: string) => void;
   dateValue: string;
-}> = ({dateValue, handleDateChange, timeValue}) => {
+  timezone: string;
+}> = ({dateValue, handleDateChange, timeValue, timezone}) => {
+
   const [selectedTime, setSelectedTime] = useState(timeValue);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -26,10 +28,32 @@ export const TimePicker: React.FC<{
   }, [timeValue]);
 
   const isTimeValid = (time: string): boolean => {
-    const [hours, minutes] = time.split(':').map(Number);
-    const selectedDateTime = new Date(dateValue);
-    selectedDateTime.setHours(hours, minutes, 0, 0);
-    return selectedDateTime > new Date();
+    // Create date object in UTC
+    const selectedDateTime = new Date(`${dateValue}T${time}:00Z`);
+    
+    // Convert to the user's timezone
+    const userTimezone = new Intl.DateTimeFormat('en-US', {
+      timeZone: timezone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    });
+  
+    console.log(userTimezone.format(selectedDateTime));
+    // Get current time in the user's timezone
+    const now = new Date();
+    const currentInTimezone = userTimezone.format(now);
+    const currentDateTime = new Date(currentInTimezone);
+  
+    // Format selected time in the user's timezone
+    const selectedInTimezone = userTimezone.format(selectedDateTime);
+    const adjustedSelectedDateTime = new Date(selectedInTimezone);
+  
+    return adjustedSelectedDateTime > currentDateTime;
   };
 
   const timeSlots = Array.from({ length: 24 }, (_, hour) => {

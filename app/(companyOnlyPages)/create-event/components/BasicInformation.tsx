@@ -1,11 +1,11 @@
 import { TimePicker } from '@/app/components/CreateEventComponents/TimePicker';
 import TimezoneInput from '@/app/components/CreateEventComponents/TimezoneInput';
 import { EventFormData } from '@/app/types/EventForm';
-import React, { useRef } from 'react'
+import React, { Dispatch, SetStateAction, useRef } from 'react'
 
 interface Props {
     formData: EventFormData
-    setFormData: (data: EventFormData) => void;
+    setFormData: Dispatch<SetStateAction<EventFormData>>;
     inputClasses: string;
     timeValue: string;
     dateValue: string;
@@ -148,6 +148,7 @@ export default function BasicInformation ({formData, setFormData, inputClasses, 
                 dateValue={dateValue} 
                 handleDateChange={handleDateChange}
                 timeValue={timeValue}
+                timezone={formData.timezone}
             />
             </div>
         </div>

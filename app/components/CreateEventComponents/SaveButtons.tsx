@@ -3,21 +3,34 @@ import { EventFormData } from '@/app/types/EventForm';
 interface SaveOptionsProps {
   isDrafting: boolean;
   isCreating: boolean;
+  setIsDrafting: Dispatch<SetStateAction<boolean>>;
+  setIsCreating: Dispatch<SetStateAction<boolean>>;
   onSave: (status: 'draft' | 'published', e: FormEvent) => void;
   setFormData: Dispatch<SetStateAction<EventFormData>>;
 }
 
-export function SaveButtons({ isCreating, isDrafting, onSave, setFormData }: SaveOptionsProps) {
+export function SaveButtons({ 
+  isCreating, 
+  isDrafting, 
+  onSave, 
+  setFormData, 
+  setIsCreating, 
+  setIsDrafting 
+}: SaveOptionsProps) {
 
   const handleClick = (status: 'draft' | 'published', e: FormEvent) => {
     e.preventDefault();
     setFormData((prev) => ({ ...prev, status }));
-    console.log("Status", status);
+    if (status === 'draft') {
+      setIsDrafting(true);
+    } else {
+      setIsCreating(true);
+    }
     onSave(status, e);
   };
 
   return (
-    <div className="flex justify-end space-x-4">
+    <div className="flex justify-center sm:justify-end space-x-4">
       <button
         type="button"
         disabled={isDrafting || isCreating}
