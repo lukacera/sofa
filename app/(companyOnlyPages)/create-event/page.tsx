@@ -114,20 +114,30 @@ export default function CreateEventForm() {
           Fill in the details below to create your event. Fields marked with <span className="text-accent">*</span> are required.
         </p>
       </div>
-      <EventForm Buttons={Buttons} dateValue={dateValue}
-      error={error} formData={formData} inputClasses={inputClasses}
-      isCreating={isCreating} setError={setError} setFormData={setFormData}
-      setIsCreating={setIsCreating} setIsDrafting={setIsDrafting} textareaClasses={textareaClasses}
-      timeValue={timeValue} 
-      onSubmit={(e) => handleSubmit({
-        e: e as FormEvent<HTMLFormElement>,
-        formData: formData,
-        status: "published",
-        setError: setError,
-        setIsCreating: setIsCreating,
-        router: router,
-        setIsDrafting: setIsDrafting,
-      })}/>
+      <EventForm 
+        Buttons={Buttons} 
+        dateValue={dateValue}
+        error={error} 
+        formData={formData} 
+        inputClasses={inputClasses}
+        isCreating={isCreating} 
+        setError={setError} 
+        setFormData={setFormData}
+        setIsCreating={setIsCreating} 
+        setIsDrafting={setIsDrafting} 
+        textareaClasses={textareaClasses}
+        timeValue={timeValue} 
+        onSubmit={(e) => handleSubmit({
+          e: e as FormEvent<HTMLFormElement>,
+          formData: formData,
+          status: "published",
+          setError: setError,
+          setIsCreating: setIsCreating,
+          router: router,
+          setIsDrafting: setIsDrafting,
+        })}
+        setDateValue={setDateValue}
+      />
     </div>
   )
 }

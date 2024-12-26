@@ -5,9 +5,9 @@ export const TimePicker: React.FC<{
   timeValue: string;
   handleDateChange: (date: string, time: string) => void;
   dateValue: string;
+  setDateValue: React.Dispatch<React.SetStateAction<string>>;
   timezone: string;
-}> = ({dateValue, handleDateChange, timeValue, timezone}) => {
-
+}> = ({dateValue, handleDateChange, timeValue, timezone, setDateValue}) => {
   const [selectedTime, setSelectedTime] = useState(timeValue);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -24,36 +24,60 @@ export const TimePicker: React.FC<{
   }, []);
 
   useEffect(() => {
-    setSelectedTime(timeValue);
-  }, [timeValue]);
-
-  const isTimeValid = (time: string): boolean => {
-    // Create date object in UTC
-    const selectedDateTime = new Date(`${dateValue}T${time}:00Z`);
-    
-    // Convert to the user's timezone
-    const userTimezone = new Intl.DateTimeFormat('en-US', {
+    // Get current time in the specified timezone
+    const now = new Date();
+    const formatter = new Intl.DateTimeFormat('en-US', {
       timeZone: timezone,
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
       hour: '2-digit',
       minute: '2-digit',
-      second: '2-digit',
       hour12: false
     });
+    
+    // Get date and time in timezone
+    const [formattedDate, formattedTime] = formatter.format(now).split(', ');
+    
+    // Parse the date into ISO format (YYYY-MM-DD)
+    const [month, day, year] = formattedDate.split('/');
+    const isoDate = `${year}-${month}-${day}`;
+    
+    // Round minutes to next 30-min interval
+    const [hours, minutes] = formattedTime.split(':').map(Number);
+    const roundedMinutes = minutes <= 30 ? 30 : 0;
+    const roundedHours = minutes <= 30 ? hours : (hours + 1) % 24;
+    
+    // If we roll over to next day
+    if (hours === 23 && roundedHours === 0) {
+      const nextDate = new Date(formattedDate);
+      nextDate.setDate(nextDate.getDate() + 1);
+      const nextIsoDate = nextDate.toISOString().split('T')[0];
+      setDateValue(nextIsoDate);
+    } else {
+      setDateValue(isoDate);
+    }
   
-    console.log(userTimezone.format(selectedDateTime));
-    // Get current time in the user's timezone
+    const roundedTime = `${String(roundedHours).padStart(2, '0')}:${String(roundedMinutes).padStart(2, '0')}`;
+    handleDateChange(isoDate, roundedTime);
+    setSelectedTime(roundedTime);
+  }, [timezone]);
+  
+  useEffect(() => {
+    setSelectedTime(timeValue);
+  }, [timeValue]);
+
+  const isTimeValid = (time: string): boolean => {
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: timezone,
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+    
     const now = new Date();
-    const currentInTimezone = userTimezone.format(now);
-    const currentDateTime = new Date(currentInTimezone);
-  
-    // Format selected time in the user's timezone
-    const selectedInTimezone = userTimezone.format(selectedDateTime);
-    const adjustedSelectedDateTime = new Date(selectedInTimezone);
-  
-    return adjustedSelectedDateTime > currentDateTime;
+    const currentTime = formatter.format(now);
+    return time >= currentTime;
   };
 
   const timeSlots = Array.from({ length: 24 }, (_, hour) => {

@@ -243,6 +243,7 @@ useEffect(() => {
           textareaClasses={textareaClasses}
           timeValue={timeValue}
           onSubmit={handlePublish}
+          setDateValue={setDateValue}
         />
       </div>
     </div>

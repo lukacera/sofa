@@ -1,5 +1,5 @@
 import { EventFormData } from "@/app/types/EventForm";
-import { toZonedTime } from "date-fns-tz";
+import { fromZonedTime } from "date-fns-tz";
 import { FormEvent } from "react";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
@@ -47,8 +47,12 @@ export const handleSubmit = async (props: SubmitProps) => {
   
     try {
       const localDate = new Date(formData.date);
-      const utcTime = toZonedTime(localDate, formData.timezone);
+      const utcTime = fromZonedTime(localDate, formData.timezone);
   
+      console.log("localDate: ", localDate);
+      console.log("UTC Time: ", utcTime);
+      console.log("timezine: ", formData.timezone);
+      return
       // Create a new form data object with the UTC time
       const formDataToSend = new FormData();
       formDataToSend.append('image', formData.image as Blob);

@@ -37,10 +37,25 @@ function validateEvent(event: EventType) {
     if (!event.date) {
         errors.push({ field: 'date', message: 'Date is required' });
     } else {
+        // Consider the timezone when checking
+        const formatter = new Intl.DateTimeFormat('en-US', {
+            timeZone: event.timezone,
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        });
+        
         const eventDate = new Date(event.date);
+        const now = new Date();
+        
         if (isNaN(eventDate.getTime())) {
             errors.push({ field: 'date', message: 'Invalid date format' });
-        } else if (eventDate < new Date()) {
+        } else if (formatter.format(eventDate) < formatter.format(now)) {
+            console.log("Date is" + event.date)
+            console.log(formatter.format(eventDate));
             errors.push({ field: 'date', message: 'Event date cannot be in the past' });
         }
     }

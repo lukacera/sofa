@@ -17,6 +17,7 @@ interface EventFormProps {
     setIsCreating: React.Dispatch<React.SetStateAction<boolean>>;
     setIsDrafting: React.Dispatch<React.SetStateAction<boolean>>;
     dateValue: string;
+    setDateValue: React.Dispatch<React.SetStateAction<string>>;
     timeValue: string;
     inputClasses: string;
     textareaClasses: string;
@@ -30,6 +31,7 @@ export default function EventForm({
     error,
     setError,
     dateValue,
+    setDateValue,
     timeValue,
     inputClasses,
     textareaClasses,
@@ -46,6 +48,7 @@ export default function EventForm({
               inputClasses={inputClasses} 
               dateValue={dateValue} 
               timeValue={timeValue}
+              setDateValue={setDateValue}
             />
   
             <div className='flex flex-col gap-4'>

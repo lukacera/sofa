@@ -9,13 +9,14 @@ interface Props {
     inputClasses: string;
     timeValue: string;
     dateValue: string;
+    setDateValue: Dispatch<SetStateAction<string>>;
 }
 
 const RequiredStar = () => (
     <span className="text-accent ml-1">*</span>
 );
 
-export default function BasicInformation ({formData, setFormData, inputClasses, dateValue, timeValue}: Props) {
+export default function BasicInformation ({formData, setFormData, inputClasses, dateValue, timeValue, setDateValue}: Props) {
     // Get today's date in YYYY-MM-DD format
     const getTodayString = () => {
       const today = new Date();
@@ -149,6 +150,7 @@ export default function BasicInformation ({formData, setFormData, inputClasses, 
                 handleDateChange={handleDateChange}
                 timeValue={timeValue}
                 timezone={formData.timezone}
+                setDateValue={setDateValue}
             />
             </div>
         </div>
