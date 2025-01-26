@@ -95,15 +95,17 @@ export async function POST(
     }
 
     // Insert all valid events in a single operation
-    const insertedEvents = await Event.insertMany(validEvents);
+    const insertedEvents = await Event.create(validEvents);
 
+    console.log(insertedEvents)
     // Update organizers' eventsCreated arrays
-    const updates = validEvents.map(event => 
-      User.updateOne(
-        { _id: event.organizer },
-        { $push: { eventsCreated: event._id } }
-      )
-    );
+    const updates = insertedEvents.map(event => {
+      console.log(`Updating organizer ${event.organizer} with event ${event._id}`);
+      return User.updateOne(
+      { _id: event.organizer },
+      { $push: { eventsCreated: event._id } }
+      );
+    });
     await Promise.all(updates);
 
     return NextResponse.json({

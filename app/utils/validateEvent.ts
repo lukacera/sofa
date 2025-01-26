@@ -17,7 +17,10 @@ export function validateEvent(event: EventType) {
         errors.push({ field: 'description', message: 'Description is required' });
     }
     
-    // Location validation
+    // Description length validation
+    if (event.description && (event.description.length < 100 || event.description.length > 1000)) {
+        errors.push({ field: 'description', message: 'Description must be between 100 and 1000 characters' });
+    }
     if (!event.location?.city?.trim()) {
         errors.push({ field: 'location.city', message: 'City is required' });
     }

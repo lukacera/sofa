@@ -6,19 +6,19 @@ import { EventSchema } from "@/app/schemas/Event";
 
 export async function GET(
     req: NextRequest,
-    { params }: { params: { email: string } }
+    { params }: { params: { id: string } }
 ) {
     try {
         await connectToDB();
 
-        const { email } = await params;
+        const { id } = await params;
 
         // Force register Event model if it doesn't exist
         if (!mongoose.models.Event) {
             mongoose.model('Event', EventSchema);
         }
         
-        const user = await User.findOne({ email: email }).populate({
+        const user = await User.findById(id).populate({
             path: "eventsCreated",
             model: "Event",
             match: { status: "published" },

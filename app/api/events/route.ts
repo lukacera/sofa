@@ -202,6 +202,8 @@ export const GET = async (request: NextRequest): Promise<NextResponse<EventsResp
         .skip(skip)
         .limit(limit);
         
+        console.log(events.length)
+        console.log(filters)
         return NextResponse.json({
             events,
             pagination: {

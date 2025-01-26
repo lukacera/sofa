@@ -29,10 +29,10 @@ export const EventList = ({ type, gridCols = 1, showHeader = true }: EventListPr
 
   useEffect(() => {
     async function fetchEvents() {
-      if (!session?.user?.email) return
+      if (!session?.user?.id) return
 
       try {
-        const response = await fetch(`/api/users/${endpoint}/${session.user.email}`)
+        const response = await fetch(`/api/users/${endpoint}/${session.user.id}`)
         if (!response.ok) {
           throw new Error('Failed to fetch events')
         }
@@ -46,7 +46,7 @@ export const EventList = ({ type, gridCols = 1, showHeader = true }: EventListPr
     }
 
     fetchEvents()
-  }, [session?.user?.email, endpoint])
+  }, [session?.user?.id, endpoint])
 
   if (loading) {
     return (
