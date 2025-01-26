@@ -18,10 +18,27 @@ interface PaginationData {
   pages: number
 }
 
+function EventSkeleton() {
+  return (
+    <div className="border rounded-lg p-4 space-y-3 animate-pulse">
+      <div className="w-full h-32 bg-gray-200 rounded-lg"></div>
+      <div className="space-y-2">
+        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+        <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+      </div>
+      <div className="flex gap-2">
+        <div className="h-6 bg-gray-200 rounded w-20"></div>
+        <div className="h-6 bg-gray-200 rounded w-20"></div>
+      </div>
+    </div>
+  )
+}
+
 function EventsPageContent() {
   const [events, setEvents] = useState<EventType[]>([])
   const [loading, setLoading] = useState(true)
   const [initialized, setInitialized] = useState(false)
+  const [isTransitioning, setIsTransitioning] = useState(false)
   const [pagination, setPagination] = useState<PaginationData>({
     total: 0,
     page: 1,
@@ -151,7 +168,7 @@ function EventsPageContent() {
 
     async function fetchEvents() {
       try {
-        setLoading(true)
+        setIsTransitioning(true)
         const queryParams = new URLSearchParams({
           page: pagination.page.toString(),
           limit: pagination.limit.toString(),
@@ -174,15 +191,20 @@ function EventsPageContent() {
         const response = await fetch(`/api/events?${queryParams.toString()}`)
         const data = await response.json()
         
+        // Add a small delay before updating the UI to ensure smooth transitions
+        await new Promise(resolve => setTimeout(resolve, 300))
+        
         setEvents(data.events)
         setPagination(data.pagination)
       } catch (error) {
         console.error('Error fetching events:', error)
       } finally {
+        setIsTransitioning(false)
         setLoading(false)
       }
     }
 
+    setLoading(true)
     fetchEvents()
   }, [initialized, debouncedSearch, debouncedCountry, debouncedCity, sortBy, 
       pagination.page, pagination.limit, selectedTags, showFinishedEvents])
@@ -204,7 +226,6 @@ function EventsPageContent() {
     setPagination(prev => ({ ...prev, page: newPage }))
   }
 
-
   return (
     <main className="container mx-auto px-4 py-10 max-w-7xl">
       <div className="mb-5">
@@ -221,16 +242,19 @@ function EventsPageContent() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border rounded-lg"
+                disabled={loading || isTransitioning}
               />
             </div>
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="px-4 py-2 border rounded-lg flex items-center gap-2 hover:bg-gray-50"
+              className="px-4 py-2 border rounded-lg flex items-center gap-2 hover:bg-gray-50 disabled:opacity-50"
+              disabled={loading || isTransitioning}
             >
               <SlidersHorizontal size={20} />
               Filters
             </button>
           </div>
+
           {/* Advanced filters section */}
           {showFilters && (
             <div className="p-6 bg-white rounded-lg shadow-sm">
@@ -253,6 +277,7 @@ function EventsPageContent() {
                     />
                   </div>
                 </div>
+
                 {/* Filters Column */}
                 <div className="space-y-4">
                   <h2 className="font-medium text-gray-900">Filters</h2>
@@ -260,7 +285,8 @@ function EventsPageContent() {
                   <div className="relative" ref={dropdownRef}>
                     <button
                       onClick={() => setIsTagDropdownOpen(!isTagDropdownOpen)}
-                      className="w-full p-2.5 border rounded-lg text-left flex justify-between items-center hover:border-gray-400 transition-colors"
+                      className="w-full p-2.5 border rounded-lg text-left flex justify-between items-center hover:border-gray-400 transition-colors disabled:opacity-50"
+                      disabled={loading || isTransitioning}
                     >
                       <span className="text-gray-600">
                         {selectedTags.length === 0
@@ -282,6 +308,7 @@ function EventsPageContent() {
                               checked={selectedTags.includes(tag.name)}
                               onChange={() => handleTagSelect(tag.name)}
                               className="mr-3 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                              disabled={loading || isTransitioning}
                             />
                             <span className="text-gray-700">{tag.name}</span>
                           </label>
@@ -296,6 +323,7 @@ function EventsPageContent() {
                       checked={showFinishedEvents}
                       onChange={(e) => setShowFinishedEvents(e.target.checked)}
                       className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      disabled={loading || isTransitioning}
                     />
                     <span className="text-gray-700">Show finished events</span>
                   </label>
@@ -316,6 +344,7 @@ function EventsPageContent() {
                   <button
                     onClick={() => handleTagRemove(tag)}
                     className="hover:text-blue-900"
+                    disabled={loading || isTransitioning}
                   >
                     <X size={14} />
                   </button>
@@ -339,33 +368,44 @@ function EventsPageContent() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as SortOption)}
-              className="p-2 border rounded-lg text-sm bg-white"
+              className="p-2 border rounded-lg text-sm bg-white disabled:opacity-50"
+              disabled={loading || isTransitioning}
             >
               <option value="date-asc">Date (Earliest first)</option>
               <option value="date-desc">Date (Latest first)</option>
               <option value="capacity-asc">Capacity (Low to High)</option>
-              <option value="capacity-desc">Capacity (High to Low)</option>
+              <option               value="capacity-desc">Capacity (High to Low)</option>
             </select>
           </div>
         </div>
-        {/* Events grid */}
-        {loading && pagination.page === 1 && (
-          <div className="min-h-[15rem] flex items-center justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+
+        {/* Loading State */}
+        {(loading || isTransitioning) && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 transition-opacity duration-300">
+            {Array.from({ length: pagination.limit }).map((_, index) => (
+              <EventSkeleton key={index} />
+            ))}
           </div>
         )}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+        {/* Events Grid */}
+        <div 
+          className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 transition-opacity duration-300 ${
+            loading || isTransitioning ? 'opacity-0 absolute' : 'opacity-100 relative'
+          }`}
+        >
           {events.map((event) => (
             <EventCard key={event._id} event={event} className='max-h-[15rem]' />
           ))}
         </div>
       </div>
+
       {/* Pagination */}
-      {pagination.pages > 1 && (
+      {pagination.pages > 1 && !loading && !isTransitioning && (
         <div className="flex justify-center gap-2 mt-8">
           <button
             onClick={() => handlePageChange(pagination.page - 1)}
-            disabled={pagination.page === 1}
+            disabled={pagination.page === 1 || loading || isTransitioning}
             className="px-4 py-2 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
           >
             Previous
@@ -375,6 +415,7 @@ function EventsPageContent() {
             <button
               key={pageNum}
               onClick={() => handlePageChange(pageNum)}
+              disabled={loading || isTransitioning}
               className={`px-4 py-2 border rounded-lg ${
                 pageNum === pagination.page
                   ? 'bg-blue-500 text-white'
@@ -387,15 +428,16 @@ function EventsPageContent() {
     
           <button
             onClick={() => handlePageChange(pagination.page + 1)}
-            disabled={pagination.page === pagination.pages}
+            disabled={pagination.page === pagination.pages || loading || isTransitioning}
             className="px-4 py-2 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
           >
             Next
           </button>
         </div>
       )}
+
       {/* No results message */}
-      {events.length === 0 && !loading && (
+      {events.length === 0 && !loading && !isTransitioning && (
         <div className="text-center py-12">
           <p className="text-gray-500">No events found matching your criteria</p>
         </div>
@@ -406,7 +448,11 @@ function EventsPageContent() {
 
 export default function EventsPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div></div>}>
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    }>
       <EventsPageContent />
     </Suspense>
   );
