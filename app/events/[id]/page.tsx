@@ -58,6 +58,7 @@ export default function EventPage() {
    notFound();
  }
 
+ console.log(event.timezone);
  return (
    <main className="w-[90%] xl:w-[75%] mx-auto mt-10">
      <section>
@@ -137,12 +138,12 @@ export default function EventPage() {
                     <span>In your local time:</span>
                     <span className='font-medium text-gray-900'>
                         {new Date(event.date).toLocaleString('en-US', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: false
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          hour12: false
                         })}
                     </span>
                   </p>
@@ -265,9 +266,13 @@ export default function EventPage() {
      </section>
      
      {/* Registration Section */}      
-     {event && session && session.user.role === "individual" && (
+     {event && session && session.user.role === "individual" ? (
        <div className="mt-16 flex flex-col items-center justify-center">
-         {amIRegistered ? (
+         {isEventFinished ? (
+           <div className="text-2xl font-bold text-gray-600">
+             This event has already taken place
+           </div>
+         ) : amIRegistered ? (
            <div className="flex flex-col items-center gap-3">
              <div className="text-2xl font-bold mb-2">You&apos;re registered for this event!</div>
              <button
@@ -299,7 +304,7 @@ export default function EventPage() {
            </>
          )}
        </div>
-     )}
+     ) : null}
      <EditEventModal 
        isOpen={isEditModalOpen}
        onClose={() => setIsEditModalOpen(false)}

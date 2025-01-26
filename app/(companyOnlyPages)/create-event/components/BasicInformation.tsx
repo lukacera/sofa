@@ -10,18 +10,16 @@ interface Props {
     timeValue: string;
     dateValue: string;
     setDateValue: Dispatch<SetStateAction<string>>;
+    minDate?: string;
 }
 
 const RequiredStar = () => (
     <span className="text-accent ml-1">*</span>
 );
 
-export default function BasicInformation ({formData, setFormData, inputClasses, dateValue, timeValue, setDateValue}: Props) {
-    // Get today's date in YYYY-MM-DD format
-    const getTodayString = () => {
-      const today = new Date();
-      return today.toISOString().split('T')[0];
-    };
+export default function BasicInformation ({
+    formData, setFormData, inputClasses, dateValue, timeValue, setDateValue, minDate
+}: Props) {
     
     // Handle date and time changes
     const handleDateChange = (date: string, time: string) => {
@@ -125,7 +123,7 @@ export default function BasicInformation ({formData, setFormData, inputClasses, 
                     id="date"
                     ref={dateRef}
                     value={dateValue}
-                    min={getTodayString()}
+                    min={minDate}
                     onChange={(e) => {
                     const selectedDate = new Date(e.target.value);
                     const today = new Date();
@@ -133,7 +131,7 @@ export default function BasicInformation ({formData, setFormData, inputClasses, 
                     
                     if (selectedDate < today) {
                         alert("Please select a future date.");
-                        handleDateChange(getTodayString(), timeValue);
+                        handleDateChange(minDate!, timeValue);
                         return;
                     }
                     

@@ -23,6 +23,7 @@ interface EventFormProps {
     textareaClasses: string;
     Buttons: React.ComponentType;
     onSubmit: (e: FormEvent<HTMLFormElement>) => void;
+    minDate?: string;
 }
   
 export default function EventForm({
@@ -36,7 +37,8 @@ export default function EventForm({
     inputClasses,
     textareaClasses,
     Buttons,
-    onSubmit
+    onSubmit,
+    minDate
 }: EventFormProps) {
     return (
       <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
@@ -49,6 +51,7 @@ export default function EventForm({
               dateValue={dateValue} 
               timeValue={timeValue}
               setDateValue={setDateValue}
+              minDate={minDate}
             />
   
             <div className='flex flex-col gap-4'>

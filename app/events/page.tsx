@@ -21,6 +21,7 @@ interface PaginationData {
 function EventsPageContent() {
   const [events, setEvents] = useState<EventType[]>([])
   const [loading, setLoading] = useState(true)
+  const [initialized, setInitialized] = useState(false)
   const [pagination, setPagination] = useState<PaginationData>({
     total: 0,
     page: 1,
@@ -90,8 +91,11 @@ function EventsPageContent() {
         // Set initial values from URL
         if (cityFromUrl) setCity(cityFromUrl)
         if (tagFromUrl) setSelectedTags([tagFromUrl])
+
+        setInitialized(true);
       } catch (error) {
         console.error('Error initializing data:', error);
+        setInitialized(true);
       }
     }
 
@@ -100,6 +104,8 @@ function EventsPageContent() {
 
   // Update URL when filters change
   useEffect(() => {
+    if (!initialized) return;
+    
     const params = new URLSearchParams()
     
     if (city) params.set('city', city)
@@ -109,7 +115,7 @@ function EventsPageContent() {
     const newUrl = queryString ? `${pathname}?${queryString}` : pathname
     
     router.replace(newUrl, { scroll: false })
-  }, [city, selectedTags, pathname, router])
+  }, [city, selectedTags, pathname, router, initialized])
 
   // Handle clicks outside the tag dropdown
   useEffect(() => {
@@ -141,6 +147,8 @@ function EventsPageContent() {
 
   // Fetch events based on filters
   useEffect(() => {
+    if (!initialized) return;
+
     async function fetchEvents() {
       try {
         setLoading(true)
@@ -176,7 +184,8 @@ function EventsPageContent() {
     }
 
     fetchEvents()
-  }, [debouncedSearch, debouncedCountry, debouncedCity, sortBy, pagination.page, pagination.limit, selectedTags, showFinishedEvents])
+  }, [initialized, debouncedSearch, debouncedCountry, debouncedCity, sortBy, 
+      pagination.page, pagination.limit, selectedTags, showFinishedEvents])
 
   // Handler functions
   const handleTagSelect = (tag: string) => {

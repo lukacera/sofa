@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Loader2 } from 'lucide-react';
 import { EventType } from '@/app/types/Event';
 import { EventFormData } from '@/app/types/EventForm';
-import { toZonedTime, fromZonedTime } from 'date-fns-tz';
+import { fromZonedTime } from 'date-fns-tz';
 import EventForm from '../reusable/EventForm';
 
 interface EditEventModalProps {
@@ -44,8 +44,56 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
   const [isUpdating, setIsUpdating] = useState(false);
 
   const [error, setError] = useState<string | null>(null);
+  const [minDate, setMinDate] = useState<string>('');
 
-useEffect(() => {
+  // Add this at the beginning of the component, right after the state declarations
+  useEffect(() => { 
+    // Get current time in the event's timezone
+    const now = new Date();
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: formData.timezone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+
+    // Get date and time in timezone
+    const [formattedDate, formattedTime] = formatter.format(now).split(', ');
+    
+    // Parse the date into ISO format (YYYY-MM-DD)
+    const [month, day, year] = formattedDate.split('/');
+    const isoDate = `${year}-${month}-${day}`;
+    
+    setMinDate(isoDate);
+    // Round minutes to next 30-min interval
+    const [hours, minutes] = formattedTime.split(':').map(Number);
+    const roundedMinutes = minutes <= 30 ? 30 : 0;
+    const roundedHours = minutes <= 30 ? hours : (hours + 1) % 24;
+    
+    // Handle day rollover
+    if (hours === 23 && roundedHours === 0) {
+      const nextDate = new Date(formattedDate);
+      nextDate.setDate(nextDate.getDate() + 1);
+      setDateValue(nextDate.toISOString().split('T')[0]);
+    } else {
+      setDateValue(isoDate);
+    }
+
+    const roundedTime = `${String(roundedHours).padStart(2, '0')}:${String(roundedMinutes).padStart(2, '0')}`;
+    setTimeValue(roundedTime);
+
+    // Update formData date
+    const newDateTime = new Date(`${isoDate}T${roundedTime}`);
+    setFormData(prev => ({
+      ...prev,
+      date: newDateTime.toISOString()
+    }));
+}, [formData.timezone]); // Run only on initial render
+
+  useEffect(() => { 
     const date = new Date(formData.date);
     
     // Ensure the time is properly parsed as well
@@ -68,7 +116,7 @@ useEffect(() => {
       setError(null);
 
       const localDate = new Date(dateValue + 'T' + timeValue);
-      const utcTime = toZonedTime(localDate, formData.timezone!);
+      const utcTime = fromZonedTime(localDate, formData.timezone!);
 
       const response = await fetch(`/api/events/${event._id}`, {
         method: 'PATCH',
@@ -98,47 +146,60 @@ useEffect(() => {
     setIsPublishing(true);
     setError(null);
   
+    console.log("publishing event");
+    console.log(formData);
+    const validationErrors: string[] = [];
     try {
-      if (event.status === 'published') {
-        if (!formData.title?.trim()) {
-          throw new Error('Event title is required');
-        }
-  
-        if (!formData.description?.trim() || formData.description.length < 100) {
-          throw new Error('Description must be at least 100 characters');
-        }
-  
-        if (!formData.location.address || !formData.location.city || !formData.location.country) {
-          throw new Error('Complete location information is required');
-        }
-  
-        if (!formData.tags?.length) {
-          throw new Error('At least one tag is required');
-        }
-  
-        if (!formData.capacity || formData.capacity < 1) {
-          throw new Error('Valid capacity is required');
-        }
-  
-        if (!formData.date) {
-          throw new Error('Event date is required');
-        }
-  
-        const eventDate = new Date(dateValue + 'T' + timeValue);
-        const now = new Date();
-        if (eventDate < now) {
-          throw new Error('Event date must be in the future');
-        }
-      }
+        // Required field checks
+        if (!formData.title) validationErrors.push("Event title is required");
+        if (!formData.description || formData.description.length < 100) 
+          validationErrors.push("Description must be at least 100 characters");
+        if (!formData.location.address || !formData.location.city || !formData.location.country || 
+            formData.location.address.trim() === '' || formData.location.city.trim() === '' || formData.location.country.trim() === '') 
+          validationErrors.push("Complete location information is required");
+        if (!formData.tags || formData.tags.length === 0) 
+          validationErrors.push("At least one tag is required");
 
-      const localDate = new Date(dateValue + 'T' + timeValue);
-      const utcTime = toZonedTime(localDate, formData.timezone!);
+        const formatter = new Intl.DateTimeFormat('en-US', {
+          timeZone: formData.timezone,
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        });
+
+        const now = new Date();
+        const eventDate = new Date(`${dateValue}T${timeValue}`);
+
+        // Compare the formatted dates to check if event is in the past
+        if (formatter.format(eventDate) <= formatter.format(now)) {
+          console.log("Event date formatted is: "+formatter.format(eventDate));
+          console.log("Current date formatted is: " + formatter.format(now));
+          validationErrors.push("Event cannot be scheduled in the past");
+        }
+
+        const localDate = new Date(formData.date);
+        const utcTime = fromZonedTime(localDate, formData.timezone);
+    
+        // console.log("localDate: ", localDate);
+        // console.log("UTC Time: ", utcTime);
+        // console.log("timezine: ", formData.timezone);
+
+        if (validationErrors.length > 0) {
+          setError(validationErrors.join('\n'));
+          return;
+        }
+
+   
   
-      const dataToUpdate = {
-        ...formData,
-        date: utcTime.toISOString(),
-        image: formData.imagePreview
-      };
+        const dataToUpdate = {
+          ...formData,
+          date: utcTime.toISOString(),
+          image: formData.imagePreview,
+          status: 'published'
+        };
   
       const response = await fetch(`/api/events/${event._id}`, {
         method: 'PATCH',
@@ -151,7 +212,7 @@ useEffect(() => {
       if (!response.ok) throw new Error('Failed to update event');
   
       onClose();
-      // window.location.reload();
+      window.location.reload();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update event');
     } finally {

@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import Event from "@/app/schemas/Event";
 import { connectToDB } from "@/app/utils/connectWithDB";
 import { generateEventAnalysis } from "@/app/utils/generateEventAnalysis";
+import { validateEvent } from "@/app/utils/validateEvent";
 
 export async function GET(
   request: Request,
@@ -55,6 +56,16 @@ export async function PATCH(
 
     const data = await request.json();
 
+    if (data.status === "published") {
+      const { isValid, errors } = validateEvent(data);
+      if (!isValid) {
+        return NextResponse.json(
+          { message: "Validation error", errors },
+          { status: 400 }
+        );
+      }
+    }
+    
     let AiAnalysisText: string | null = "";
 
     if (data.title || data.description || data.location || data.tags) {
