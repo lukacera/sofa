@@ -61,7 +61,7 @@ export const TimePicker: React.FC<{
     const roundedTime = `${String(roundedHours).padStart(2, '0')}:${String(roundedMinutes).padStart(2, '0')}`;
     handleDateChange(isoDate, roundedTime);
     setSelectedTime(roundedTime);
-  }, [timezone]);
+  }, [timezone, handleDateChange, setDateValue]);
   
   useEffect(() => {
     setSelectedTime(timeValue);

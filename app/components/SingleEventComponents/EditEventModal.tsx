@@ -44,7 +44,6 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
   const [isUpdating, setIsUpdating] = useState(false);
 
   const [error, setError] = useState<string | null>(null);
-  const [minDate, setMinDate] = useState<string>('');
 
   // Add this at the beginning of the component, right after the state declarations
   useEffect(() => { 
@@ -67,7 +66,6 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
     const [month, day, year] = formattedDate.split('/');
     const isoDate = `${year}-${month}-${day}`;
     
-    setMinDate(isoDate);
     // Round minutes to next 30-min interval
     const [hours, minutes] = formattedTime.split(':').map(Number);
     const roundedMinutes = minutes <= 30 ? 30 : 0;

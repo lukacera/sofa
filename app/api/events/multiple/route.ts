@@ -39,7 +39,7 @@ export async function POST(
       try {
         // Remove null fields
         const cleanedEventData = Object.fromEntries(
-          Object.entries(eventData).filter(([_, value]) => value !== null)
+          Object.entries(eventData).filter(([value]) => value !== null)
         ) as Partial<EventType>;
 
         // Validate event
