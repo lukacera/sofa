@@ -242,6 +242,33 @@ const EventsCalendar = () => {
                 padding: 0.5rem 0.75rem;
                 font-size: 0.875rem;
               }
+                .event-tooltip {
+  position: fixed;
+  z-index: 1000; // Increased z-index to ensure visibility
+  padding: 0.5rem 1rem;
+  background-color: #1d3557;
+  color: white;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  pointer-events: none;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+              0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transform: translate(-50%, -100%);
+  margin-top: -8px;
+  white-space: nowrap; // Prevent tooltip text from wrapping
+  transition: opacity 0.15s ease; // Smooth fade effect
+}
+
+.event-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -6px; // Adjusted for better arrow positioning
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: #1d3557 transparent transparent transparent;
+}
             }
             `}
           </style>
@@ -273,12 +300,13 @@ const EventsCalendar = () => {
             eventMouseEnter={(info) => {
               if (currentView !== 'dayGridMonth') return 
               const rect = info.el.getBoundingClientRect();
+              const offset = 10; // Offset in pixels above the event
               setTooltip({
                 isVisible: true,
                 content: info.event.title,
                 position: {
                   x: rect.left + (rect.width / 2),
-                  y: rect.top * 1.45
+                  y: rect.top - offset
                 }
               });
             }}

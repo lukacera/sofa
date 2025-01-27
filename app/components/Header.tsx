@@ -17,7 +17,7 @@ export default function Header() {
     { name: "Events", href: "/events", icon: MicVocal },
     ...(session?.user.role === "individual" ? [{
       name: "Calendar",
-      href: "my-calendar", 
+      href: "/my-calendar", 
       icon: Calendar
     }] : [])
   ]
