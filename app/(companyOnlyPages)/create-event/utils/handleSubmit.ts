@@ -49,10 +49,6 @@ export const handleSubmit = async (props: SubmitProps) => {
       const localDate = new Date(formData.date);
       const utcTime = fromZonedTime(localDate, formData.timezone);
   
-      console.log("localDate: ", localDate);
-      console.log("UTC Time: ", utcTime);
-      console.log("timezine: ", formData.timezone);
-      return
       // Create a new form data object with the UTC time
       const formDataToSend = new FormData();
       formDataToSend.append('image', formData.image as Blob);

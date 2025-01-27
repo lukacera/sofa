@@ -4,13 +4,13 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
     req: NextRequest, 
-    { params }: { params: { email: string } }
+    { params }: { params: { id: string } }
 ) {
     try {
         await connectToDB();
         
-        const { email } = await params; 
-        const user = await User.findOne({ email })
+        const { id } = await params; 
+        const user = await User.findById(id)
         .populate({
             path: "eventsCreated",
             match: { status: "draft" },
