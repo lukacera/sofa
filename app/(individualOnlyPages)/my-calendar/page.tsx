@@ -277,8 +277,8 @@ const EventsCalendar = () => {
                 isVisible: true,
                 content: info.event.title,
                 position: {
-                  x: rect.left - 100,
-                  y: rect.top - 20
+                  x: rect.left + (rect.width / 2),
+                  y: rect.top * 1.45
                 }
               });
             }}

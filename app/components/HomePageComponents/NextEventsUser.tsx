@@ -76,7 +76,7 @@ export default function MyComponent({ nextEvents }: CompProps) {
                 <EventCard 
                   key={event._id!} 
                   event={event} 
-                  className="w-full max-w-sm mx-auto" // Add responsive width control to EventCard
+                  className="w-full mx-auto" // Add responsive width control to EventCard
                 />
               ))}
             </div>
